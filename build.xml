@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Copyright (C) 2008 Optaros, Inc. All rights reserved.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+    
+-->
+<project name="docasu" default="package-amp" basedir=".">
+	
+	<copy file="build-local.properties.sample" tofile="build-local.properties" overwrite="false"/>
+	<property file="build-local.properties" /> 
+
+	<property name="build.dir" value="./build" />
+	<property name="download.dir" value="./download" />
+	<property name="amp.build.dir" value="${build.dir}/amp" />
+	<property name="amp.dist.file" value="${build.dir}/docasu.amp" />
+	
+	<!-- Do not modify the following properties -->
+	<property name="ws.build.dir" value="${amp.build.dir}/config/alfresco/extension/templates/webscripts" />
+	<property name="client.build.dir" value="${amp.build.dir}/docasu" />
+	<property name="build.classes.dir" value="${build.dir}/classes" />
+	<property name="source.main.dir" value="./src/main" />
+	
+	<!-- include Alfresco jar files -->
+	<!-- TODO: remove dependency on Alfresco SDK and import JARs into ./vendor ! -->
+	<path id="class.path">
+		<dirset dir="${build.dir}" />
+	    <fileset dir="${download.dir}/${alfresco.sdk.version}/" includes="**/*.jar"/>
+	</path>
+	
+	<!-- prepare and deply are only used in development -->
+	<target name="prepare">
+		<mkdir dir="${tomcat.dir}/webapps/alfresco/docasu" />
+	</target>
+	
+	<!-- setup eclipse project -->
+	<target name="setup">	
+		<!-- download alfresco.sdk and unzip it -->
+		<mkdir dir="${download.dir}"/>
+		<get src="http://switch.dl.sourceforge.net/sourceforge/alfresco/${alfresco.sdk.version}.zip" dest="${download.dir}/${alfresco.sdk.version}.zip" usetimestamp="true" verbose="true"/> 	
+		<unzip src="${download.dir}/${alfresco.sdk.version}.zip" dest="${download.dir}/${alfresco.sdk.version}" overwrite="false"/>	
+	</target>	
+	
+	<target name="compile" depends="setup">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.classes.dir}" />
+		<javac classpathref="class.path" destdir="${build.classes.dir}"
+		       srcdir="${source.main.dir}/java" target="1.5"
+			   fork="true"
+			   encoding="UTF-8" />
+	</target>	
+
+	
+	<target name="deploy" depends="prepare, compile"
+		description="(dev) Copy modified web scripts to a running Alfresco instance.">
+		
+		<copy todir="${webscript.dir}" >
+			<fileset dir="./webscripts" />
+		</copy>
+		
+		<copy todir="${client.dir}/docasu">
+			<fileset dir="./client/extjs" />
+		</copy>
+		
+		<copy todir="${client.dir}/WEB-INF/classes">
+			<fileset dir="${build.dir}/classes/" />
+		</copy>
+		
+		<copy todir="${client.dir}/WEB-INF/classes/alfresco/extension/">
+			<fileset dir="${source.main.dir}/resources" />
+		</copy>
+		
+		<echo>Modified web scripts have been uploaded to Data Dictionary. Please refresh.</echo>	
+	</target>
+	
+	<target name="clean" depends="clean-amp" description="Remove all created artifacts.">
+		<delete dir="${build.dir}" />
+	</target>
+	
+	<target name="clean-amp">
+		<delete dir="${amp.build.dir}"/>
+		<delete file="${amp.dist.file}" />
+	</target>
+			
+	<!-- Generate Alfresco Module Package (AMP) file for easy installation -->
+	<target name="package-amp" depends="compile"
+		description="Bundle the Custom UI functionality into an Alfresco Module Package (AMP) file.">
+		<mkdir dir="${amp.build.dir}" />
+		<mkdir dir="${ws.build.dir}" />
+		<mkdir dir="${client.build.dir}" />
+		<copy todir="${ws.build.dir}" >
+			<fileset dir="./webscripts" />
+		</copy>
+		<copy todir="${client.build.dir}">
+			<fileset dir="./client/extjs" />
+		</copy>
+		<copy todir="${amp.build.dir}">
+			<fileset dir="config" />
+		</copy>
+		<copy todir="${amp.build.dir}/config">
+			<fileset dir="${build.classes.dir}" />
+		</copy>
+		<copy todir="${amp.build.dir}/config/alfresco/extension">
+			<fileset dir="src/main/resources" />
+		</copy>
+		<zip basedir="${amp.build.dir}" destfile="${amp.dist.file}" />
+		<echo>AMP file ${amp.dist.file} has been created.</echo>
+	</target>
+	
+	<!-- Patch an existing Alfresco war file to "deploy" our own AMP file -->
+	<target name="patch-war" depends="package-amp"
+		description="Install the AMP into the original Alfresco .war file">
+		<java jar="${alfresco.mmt.jar.file}" fork="true">
+			<arg line="install ${amp.dist.file} ${alfresco.war.file} ${alfresco.mmt.options}"/>
+		</java>
+		<echo>AMP file ${amp.dist.file} has been installed into ${alfresco.war.file}:</echo>
+		<java jar="${alfresco.mmt.jar.file}" fork="true">
+			<arg line="list ${alfresco.war.file}"/>
+		</java>
+	</target>
+	
+
+	<target name="deploy-war" depends="patch-war"
+		description="Deploy the alfresco .war file after installing the AMP" >
+		<!-- TODO: shutdown application server -->
+		<copy file="${alfresco.war.file}" todir="${war.deployment.dir}"/>
+		<!-- TODO: start up app server -->
+		<echo>Copied WAR file to the deployent directory. You might want to restart your application server!</echo>
+	</target>
+	
+	
+</project>

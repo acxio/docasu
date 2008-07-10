@@ -1,0 +1,41 @@
+#
+#    Copyright (C) 2008 Optaros, Inc. All rights reserved.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program. If not, see <http://www.gnu.org/licenses/>. 
+#
+
+
+# Path of the Alfresco .WAR file, where the AMP file will be installed
+alfresco.war.file=../../alfresco.war
+
+# Path to the Alfresco Module Management Tool (JAR file)
+alfresco.mmt.jar.file=../../alfresco-mmt.jar
+alfresco.mmt.options=-force
+
+# Deployment directory of your application server
+tomcat.dir=../../apache-tomcat-5.5.26
+# This is where the deploy-war task will copy your .war file 
+war.deployment.dir=../../apache-tomcat-5.5.26/webapps/
+
+## For development:
+# The version of the Alfresco SDK you want to use (will be downloaded)
+alfresco.sdk.version=alfresco-community-sdk-2.9.0dev
+
+# client.dir is the path to the directory where Tomcat unpacked
+# the alfresco.war file, usually something like "webapps/alfresco/"
+client.dir=../../apache-tomcat-5.5.26/webapps/alfresco
+
+# WebDAV / SMB mounted Data Dictionary/Web Scripts Space in Alfresco
+# The "deploy" task copies the modified web scripts here.
+webscript.dir=../../smb_mount/Data Dictionary/Web Scripts

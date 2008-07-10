@@ -1,0 +1,100 @@
+/*
+ *    Copyright (C) 2008 Optaros, Inc. All rights reserved.
+ *
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *    
+ */
+
+function updateFavorites() {
+
+	Ext.Ajax.request({
+		url: 'ui/shortcuts',
+		method: 'GET',
+		success: function(response, options){
+			//Ext.MessageBox.alert('Must have been 2xx http status code');
+			_updateFavorites(response.responseText);
+		}, 
+		failure: function(){
+			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
+		}
+	});
+}
+
+
+function _updateFavorites(responseText) {
+	var favHtml = '<table>';
+	
+	var favorites = eval(responseText).rows;
+	
+	for (i = 0; i < favorites.length; i++) {
+		var f = favorites[i];
+		favHtml += '<tr>'
+		favHtml += '<td><img src=\"' + f.icon + '\" /></td>';
+		if (f.isFile) {
+			favHtml += '<td><a target="_blank" href="' + f.url + '"> ' + f.name + '</a>&nbsp;<a href="#"  onclick="selectFolder(\'' + f.parentId + '\')" title="Open in Folder"><img src="'+f.parentIcon+'"/></a></td>';
+		}
+		else {
+			favHtml += '<td><a href="#" onclick="selectFolder(\'' + f.id + '\')">' + f.name + '</a></td>';
+		}
+		favHtml += '<td><a href="#" onclick="removeFavorite(\'' + f.id + '\')">' +
+			'<img src="../../docasu/images/delete.gif" /></a></td>';
+			
+		favHtml += '</tr>'
+	}
+	
+	favHtml += '</table>';
+	var favoritesEl = Ext.get('favorites');
+	favoritesEl.update(favHtml);
+	
+}
+
+function removeFavorite(nodeId) {
+	Ext.Ajax.request({
+		url: 'ui/removeshortcut',
+		method: 'GET',
+		params: 'nodeId=' + nodeId,
+		success: function(response, options){
+			//Ext.MessageBox.alert('Must have been 2xx http status code');
+			_removeFavorite(response.responseText);
+		}, 
+		failure: function(){
+			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
+		}
+	});
+}
+
+function _removeFavorite() {
+	updateFavorites();
+}
+
+function addFavorite(nodeId) {
+	Ext.Ajax.request({
+		url: 'ui/addshortcut',
+		method: 'GET',
+		params: 'nodeId=' + nodeId,
+		success: function(response, options){
+			//Ext.MessageBox.alert('Must have been 2xx http status code');
+			_addFavorite(response.responseText);
+		}, 
+		failure: function(){
+			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
+		}
+	});
+	
+	Ext.getCmp('favoritesPanel').expand();
+}
+
+function _addFavorite() {
+	updateFavorites();
+}

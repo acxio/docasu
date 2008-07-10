@@ -1,0 +1,163 @@
+/*
+
+    Copyright (C) 2008 Optaros, Inc. All rights reserved.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+body{font:normal 11px tahoma,arial,helvetica,sans-serif;}
+/* CSS class for community extension static text field
+ * see: http://extjs.com/forum/showthread.php?t=20992
+ */
+
+.actionIcon{
+	padding-right:7px;
+}
+
+.searchResults{
+	padding: 15px 0px 0px 6px;
+	color:#3280FF;
+}
+
+.ux-form-statictextfield {
+	background: transparent;
+	border: none;
+	padding-top: 2px !important;
+	color: #000;
+}
+.docInfoContainer {
+    padding: 5px;
+}
+.docInfoListItem {
+/*    margin-bottom: 5px;*/
+}
+
+.docInfoTable {
+/*	border:1px solid #bbb;*/
+	border-collapse:collapse;
+}
+ 
+.docInfoTable td, .docInfoTable th { 
+/*	border:1px solid #ccc;*/
+	border-collapse:collapse;
+	padding:5px; }
+}
+      
+.right-float-form {
+	float: right;
+	margin-right: 5px;
+}
+
+.pad-children {
+	margin: 20px;
+}
+
+
+#cifsLink {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+#cifsLink a {
+	text-decoration: none;
+}
+
+.black-header {
+	background: url(/alfresco/docasu/images/black_bgnd_strip.gif);
+	color: #fff;
+	height:15px;
+}
+
+.gray-bgnd {
+	background: url(/alfresco/docasu/images/gray_bgnd_strip.gif);
+}
+
+.header-bar table {
+	width: 100%;
+}
+
+.search-title {
+	font-weight: bold;
+	font-size: 120%;
+}
+
+.gray-bgnd div {
+	background: none;
+}
+
+.no-bgnd div {
+	background:none;
+}
+
+.gray-header {
+	background: url(/alfresco/docasu/images/grid3-hrow.gif);
+	border-bottom: none;
+}
+
+.x-accordion-hd {
+	background: url(/alfresco/docasu/images/grid3-hrow.gif);
+}
+
+.search-result {
+	height: 20px;
+}
+
+.search-result img {
+	margin: 2px;
+	float: left;
+}
+
+
+.search-result div {
+	line-height: 20px;
+	float: left;
+}
+
+a:link { 
+	color:#000000;
+	text-decoration:none; 
+}
+
+a:visited { 
+	color:#000000;
+	text-decoration:none; 
+}
+
+div.folderLogo{
+	color:#3280FF;
+	float:left;
+	padding-top:6px;
+	padding-left:6px;
+}
+
+a.header{
+	color:#000000;
+	text-decoration:underline;
+	margin-left:20px;
+}
+
+a.breadcrumb, a.breadcrumb:visited,a.breadcrumb:link{
+	color:#FFFFFF; 
+	text-decoration:none;
+}
+
+#actionTable{
+	margin:0px;
+	padding:0px;
+}
+
+
+
+
