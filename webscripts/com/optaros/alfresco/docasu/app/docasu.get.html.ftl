@@ -32,7 +32,7 @@
     <!-- script type="text/javascript" src="../../docasu/lib/tiny_mce3/tiny_mce.js"></script -->
 	<!-- script type="text/javascript" src="../../docasu/Ext.ux.TinyMCE.js"></script -->
 	
-    <!-- Custom DOCASU Script and CSS files  -->
+    <!-- Custom DoCASU Script and CSS files  -->
 	    
     <script type="text/javascript" src="../../docasu/docasu.js"> </script>
 
@@ -46,7 +46,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../docasu/docasu.css">
 	
-    <title>DOCASU Web Client</title>
+    <title>DoCASU Web Client</title>
 </head>
 <body style="background: none !important">
   <div id="north"></div>

@@ -1,5 +1,5 @@
 =========================================================================
-               DOCASU - Alfresco Custom UI
+               DoCASU - Alfresco Custom UI
 =========================================================================
 
     Copyright (C) 2008 Optaros, Inc. All rights reserved.
@@ -19,24 +19,24 @@
 
 =========================================================================
 
-Welcome to DOCASU!
+Welcome to DoCASU!
 
 =========================================================================
-1. DOCASU Features
+1. DoCASU Features
 =========================================================================
 
 Please have a look at:
 http://code.optaros.com/trac/docasu/wiki/Features
 
 =========================================================================
-2. DOCASU Installation Guide 
+2. DoCASU Installation Guide 
 =========================================================================
 
 Please have a look at: 
 http://code.optaros.com/trac/docasu/wiki/Install
 
 =========================================================================
-3. DOCASU Developer Guide
+3. DoCASU Developer Guide
 =========================================================================
 
 Please have a look at: 

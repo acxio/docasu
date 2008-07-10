@@ -420,7 +420,7 @@ function _init(result, request) {
 	        region: 'center',
 			margins: '0 2 0 2',
 			border: false,
-	   	    html:'<span class="search-title" style="margin-right:20px;margin-top:5px;">Welcome ' + user.firstName + ' ' + user.lastName + '</span> <a target="_blank" href="../../faces/jsp/browse/browse.jsp" class="header">Standard Alfresco Client</a> <a href="#" onClick="showHelp();" class="header" >Help</a> <a href="#" onClick="doLogout();" class="header" >Logout</a>'  
+	   	    html:'<span class="search-title" style="margin-right:20px;margin-top:5px;">Welcome ' + user.firstName + ' ' + user.lastName + '</span> <a target="_blank" href="../../faces/jsp/browse/browse.jsp" class="header">Standard Alfresco Client</a> <a href="#" onClick="showHelp();" class="header" >Help</a> <a href="#" id="logoutLink" onClick="doLogout();" class="header" >Logout</a>'  
 	    }, searchForm]
 	});
 	

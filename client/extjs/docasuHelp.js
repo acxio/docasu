@@ -43,7 +43,7 @@ function showHelp() {
 				  html:'<a target="_blank" href="http://www.alfresco.com/help/webclient">Alfresco Help</a>',
 				  height: 380
                },{
-                   title:"DOCASU",
+                   title:"DoCASU",
                    id:'docasu-help', 
 				   html:'<div>Coming soon</div>',
                    height: 380

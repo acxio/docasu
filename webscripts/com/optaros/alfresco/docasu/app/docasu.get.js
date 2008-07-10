@@ -16,7 +16,7 @@
  *    
  */
 if (url.service == url.serviceContext + "/docasu/ui") {
-	// load the DOCASU client app.
+	// load the DoCASU client app.
 } else {
 	status.code = 301;
 	status.redirect = true;

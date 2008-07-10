@@ -18,7 +18,7 @@
     
 -->
 <webscript>
-	<shortname>DOCASU</shortname>
+	<shortname>DoCASU</shortname>
 	<description>Load the Custom ui</description>
 	<url>/docasu/ui</url>
 	<!-- the following urls will get redirected -->
