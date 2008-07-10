@@ -795,7 +795,7 @@ function _initCompanyHome() {
 			draggable: false,
 			expanded: true
 		}),
-		rootVisible: false,
+		rootVisible: false
 	});
 
 	// Add click listener on header.
