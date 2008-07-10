@@ -155,6 +155,8 @@ function _init(result, request) {
 	// STORAGE
 	/* Data store for the file grid in the main content section */
 	gridStore = new Ext.data.Store({
+		remoteSort: true,
+		
 		proxy: new Ext.data.HttpProxy({
 			url: 'ui/docs',
 			method: 'GET'
@@ -219,13 +221,6 @@ function _init(result, request) {
 			'</div></a>'
 			
 			Ext.get('cifsLink').update(elem);
-			
-			
-//			// Load myHome tree now
-//			if (getMyHomeTree() == null) {
-//				_initMyHome();
-//			}
-			
 	});
 	
 	// SELECTION

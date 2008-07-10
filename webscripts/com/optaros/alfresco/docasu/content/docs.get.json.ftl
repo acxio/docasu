@@ -17,40 +17,36 @@
     
 -->
 	{ "total" : ${total}, "path": "${path}", "folderName": "${folderName}", "rows" : [
-<#list entries as child>
+<#list rows as row>
 	       	{
-	       	 "nodeId"		:"${child[0].id}",
-	       	 "name"	    	:"${child[0].name}",
-	       	 "title"	   	:"<#if child[0].properties.title?exists>${child[0].properties.title}<#else></#if>",
-	       	 "modified"		:"${child[0].properties.modified?string("yyyy-MM-dd HH:mm Z")}",
-	       	 "created"		:"${child[0].properties.created?string("yyyy-MM-dd HH:mm Z")}",
-	       	 "author"		:"<#if child[0].properties.author?exists>${child[0].properties.author}<#else></#if>",
-	       	 "size"			: ${child[0].size?c},
-	       	 "link"         : "${url.context}${child[0].url}?${randomNumber?string}",
-	       	 "creator"		: "${child[0].properties.creator}",
-	       	 "description"	: "${(child[0].properties.description!)?js_string}",
-	       	 "filePath"		: "${path}/${child[0].name}",
-	       	 "modifier"		: "${child[0].properties.modifier}",
-	       	 "mimetype"		: "<#if child[0].mimetype?exists>${child[0].mimetype}<#else></#if>",
-	       	 "downloadUrl"	: "${url.context}${child[0].downloadUrl}",
-	       	 "versionable"	: "${(hasAspect(child[0], "cm:versionable") == 1)?string}",
-	       	 <#if hasAspect(child[0], "cm:versionable") == 1>
-	       	 "version"		: "<#if child[0].properties.versionLabel?exists>${child[0].properties.versionLabel}<#else>1.0</#if>",
-	       	 <#else>
-			 "version"		: "Versioning not enabled",
-	         </#if>
-	         "writePermission" : "${(hasPermission(child[0], "Write") == 1)?string}",
-	         "createPermission": "${(hasPermission(child[0], "CreateChildren") == 1)?string}",
-	         "deletePermission": "${(hasPermission(child[0], "Delete") == 1)?string}",
-	         "locked"		: "${(child[0].isLocked)?string}",
-	         "editable"		: "${(child[1])?string}",
-	         "isWorkingCopy": "${(child[0].hasAspect("cm:workingcopy"))?string}",
-	         "iconUrl"		: "${url.context}${child[0].icon16}",
-	         "icon32Url"	: "${url.context}${child[0].icon32}",
-	         "icon64Url"	: "${url.context}${child[0].icon64}",
-	         "isFolder"     : "${child[0].isContainer?string}"
+	       	 "nodeId"			: "${row.nodeId}",
+	       	 "name"	    		: "${row.name}",
+	       	 "title"	  	 	: "${row.title}",
+	       	 "modified"			: "${row.modified?string("yyyy-MM-dd HH:mm Z")}",
+	       	 "created"			: "${row.created?string("yyyy-MM-dd HH:mm Z")}",
+	       	 "author"			: "${row.author}",
+	       	 "size"				: "${(row.size!0)?c}",
+	       	 "link"				: "${url.context}${row.url}?${randomNumber?string}",
+	       	 "creator"			: "${row.creator}",
+	       	 "description"		: "${row.description?js_string}",
+	       	 "filePath"			: "${path}/${row.name}",
+	       	 "modifier"			: "${row.modifier}",
+	       	 "mimetype"			: "${row.mimetype!}",
+	       	 "downloadUrl"		: "${url.context}${row.downloadUrl}",
+	       	 "versionable"		: "${row.versionable?string}",
+	       	 "version"			: "${row.version}",
+	         "writePermission"  : "${row.writePermission?string}",
+	         "createPermission" : "${row.createPermission?string}",
+	         "deletePermission" : "${row.deletePermission?string}",
+	         "locked"			: "${row.locked?string}",
+	         "editable"			: "${row.editable?string}",
+	         "isWorkingCopy"	: "${row.isWorkingCopy?string}",
+	         "iconUrl"			: "${url.context}${row.icon16}",
+	         "icon32Url"		: "${url.context}${row.icon32}",
+	         "icon64Url"		: "${url.context}${row.icon64}",
+	         "isFolder"     	: "${(row.isFolder!false)?string}"
 	       	}
-	       <#if child_has_next>,</#if>
+	       <#if row_has_next>,</#if>
 </#list>
 	  ]
 	}

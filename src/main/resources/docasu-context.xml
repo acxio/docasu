@@ -29,5 +29,8 @@
     
     <bean name="webscript.com.optaros.alfresco.docasu.dataModel.datamodel.get" class="com.optaros.alfresco.docasu.wcs.ModelData" parent="webscript">
     </bean>
-        
+     
+    <bean name="webscript.com.optaros.alfresco.docasu.content.docs.get" class="com.optaros.alfresco.docasu.wcs.Documents" parent="webscript">
+    </bean>
+
 </beans>
