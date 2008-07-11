@@ -367,6 +367,7 @@ function _init(result, request) {
 		region: 'east',
 		border: false,
 		frame: false,
+		width: 500,
 		layout: 'table',
 		items: [{html: '<span class="search-title">Search:</span>', colspan: 1, bodyStyle: 'margin-right: 4px; border-style:none'},
 				searchCombo,
