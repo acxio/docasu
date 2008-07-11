@@ -391,35 +391,6 @@ function _init(result, request) {
 		}
 	});
 	
-	
-
-	var header = new Ext.Panel({ 
-	    region:'north',
-		id: "top-bar",
-		contentEl: 'north',
-		height: 40,
-		layout: 'table',
-	    layoutConfig: {columns: 3 },
-		cls: 'header-bar',
-		itemCls: 'no-bgnd',
-		margins: '5',
-	    items: [{
-	        id: 'logo',
-	        region: 'west',
-			width: 205,
-			margins: '0 2 0 0',
-			border: false,
-			html: "<img src='../../docasu/images/logo.gif' alt='Alfresco ECMS' style='margin-top:3px;margin-left:3px;'/>"
- 	    },{
-	        id: 'center-header',
-	        region: 'center',
-			margins: '0 2 0 2',
-			border: false,
-	   	    html:'<span class="search-title" style="margin-right:20px;margin-top:5px;">Welcome ' + user.firstName + ' ' + user.lastName + '</span> <a target="_blank" href="../../faces/jsp/browse/browse.jsp" class="header">Standard Alfresco Client</a> <a href="#" onClick="showHelp();" class="header" >Help</a> <a href="#" id="logoutLink" onClick="doLogout();" class="header" >Logout</a>'  
-	    }, searchForm]
-	});
-	
-	
 	var actionComboBoxStore = new Ext.data.SimpleStore({
 		id: 'actionComboBoxStore',
 		fields: ['code', 'label'],
@@ -495,75 +466,99 @@ function _init(result, request) {
 				]
 	});	
 
-	      var dataview = new Ext.DataView({
-	        id: 'docInfoDataView',
-			//autoHeight:true,
-			minHeight: 100,
-			autoScroll: true,
-	        store: new Ext.data.Store({
-	            fields: ['creator', 'description', 'creator', 'modifier']
-	        }),
-	        tpl: new Ext.XTemplate(
-	            '<tpl for=".">',
-	            '<table id="infoTable" class="docInfoTable">',
-					'<tr valign="top">',
-						'<td colspan="4" class="docInfoListItem">',
-		            		'<tpl if="this.isImage(mimetype)">',
-								'<img height="64" src="{link}" alt="{title}"/>',
-							'</tpl>',
-		            		'<tpl if="!this.isImage(mimetype)">',
-								'<img height="32" src="{icon32Url}" alt="{title}"/>',
-							'</tpl>',
-						'</td>',
-			        '</tr>',
-					'<tr valign="top">',    
-						'<td><b>Title:</b></td><td colspan="3">{title}</td>',
-			        '</tr>',
-					'<tr valign="top">',    
-						'<td><b>Description:</b></td><td colspan="3">{description}</td>',
-			        '</tr>',
-					'<tr valign="top">',
-						'<td><b>Version:</b></td><td colspan="3">{version}</td>',
-			        '</tr>',
-					'<tr valign="top">',    
-						'<td><b>Author:</b></td><td colspan="3">{author}</td>',
-					'</tr>',
-					'<tr valign="top">',    
-						'<td><b>Creator:</b></td><td colspan="3">{creator}</td>',
-					'</tr>',
-					'<tr valign="top">',    
-						'<td><b>Modifier:</b></td><td colspan="3">{modifier}</td>',
-					'</tr>',
-					'<tr valign="top">',
-			            '<td><b>MIME:</b></td><td colspan="3">{mimetype}</td>',
-			        '</tr>',
-					'<tr valign="top">',
-			            '<td><b>Size:</b></td><td colspan="3">{[Ext.util.Format.fileSize(values.size)]}</td>',
-			        '</tr>',
-					'<tr valign="top">',
-			            '<td><b>Created:</b></td><td colspan="3">{[timeZoneAwareRenderer(values.created)]}</td>',
-			        '</tr>',
-					'<tr valign="top">',
-			            '<td><b>Modified:</b></td><td colspan="3">{[timeZoneAwareRenderer(values.modified)]}</td>',
-			        '</tr>',
-	            '</table>',
-	            '</tpl>',{
-		isImage: function(mimetype){
-			            return mimetype.indexOf("image") == 0;
-			        }
+	var dataview = new Ext.DataView({
+		id: 'docInfoDataView',
+		//autoHeight:true,
+		minHeight: 100,
+		autoScroll: true,
+		store: new Ext.data.Store({
+			fields: ['creator', 'description', 'creator', 'modifier']
+		}),
+		tpl: new Ext.XTemplate(
+				'<tpl for=".">',
+				'<table id="infoTable" class="docInfoTable">',
+				'<tr valign="top">',
+				'<td colspan="4" class="docInfoListItem">',
+				'<tpl if="this.isImage(mimetype)">',
+				'<img height="64" src="{link}" alt="{title}"/>',
+				'</tpl>',
+				'<tpl if="!this.isImage(mimetype)">',
+				'<img height="32" src="{icon32Url}" alt="{title}"/>',
+				'</tpl>',
+				'</td>',
+				'</tr>',
+				'<tr valign="top">',    
+				'<td><b>Title:</b></td><td colspan="3">{title}</td>',
+				'</tr>',
+				'<tr valign="top">',    
+				'<td><b>Description:</b></td><td colspan="3">{description}</td>',
+				'</tr>',
+				'<tr valign="top">',
+				'<td><b>Version:</b></td><td colspan="3">{version}</td>',
+				'</tr>',
+				'<tr valign="top">',    
+				'<td><b>Author:</b></td><td colspan="3">{author}</td>',
+				'</tr>',
+				'<tr valign="top">',    
+				'<td><b>Creator:</b></td><td colspan="3">{creator}</td>',
+				'</tr>',
+				'<tr valign="top">',    
+				'<td><b>Modifier:</b></td><td colspan="3">{modifier}</td>',
+				'</tr>',
+				'<tr valign="top">',
+				'<td><b>MIME:</b></td><td colspan="3">{mimetype}</td>',
+				'</tr>',
+				'<tr valign="top">',
+				'<td><b>Size:</b></td><td colspan="3">{[Ext.util.Format.fileSize(values.size)]}</td>',
+				'</tr>',
+				'<tr valign="top">',
+				'<td><b>Created:</b></td><td colspan="3">{[timeZoneAwareRenderer(values.created)]}</td>',
+				'</tr>',
+				'<tr valign="top">',
+				'<td><b>Modified:</b></td><td colspan="3">{[timeZoneAwareRenderer(values.modified)]}</td>',
+				'</tr>',
+				'</table>',
+				'</tpl>',{
+					isImage: function(mimetype){
+					return mimetype.indexOf("image") == 0;
 				}
-	        ),
-	        itemSelector: 'div.item-selector'
-	      });
+				}
+		),
+		itemSelector: 'div.item-selector'
+	});
 
-	
-	
+	var header = new Ext.Panel({ 
+		region:'north',
+		id: "top-bar",
+		contentEl: 'north',
+		height: 40,
+		layout: 'table',
+		layoutConfig: {columns: 3 },
+		cls: 'header-bar',
+		itemCls: 'no-bgnd',
+		margins: '5',
+		items: [{
+			id: 'logo',
+			region: 'west',
+			width: 205,
+			margins: '0 2 0 0',
+			border: false,
+			html: "<img src='../../docasu/images/logo.gif' alt='Alfresco ECMS' style='margin-top:3px;margin-left:3px;'/>"
+		},{
+			id: 'center-header',
+			region: 'center',
+			margins: '0 2 0 2',
+			border: false,
+			html:'<span class="search-title" style="margin-right:20px;margin-top:5px;">Welcome ' + user.firstName + ' ' + user.lastName + '</span> <a target="_blank" href="../../faces/jsp/browse/browse.jsp" class="header">Standard Alfresco Client</a> <a href="#" onClick="showHelp();" class="header" >Help</a> <a href="#" id="logoutLink" onClick="doLogout();" class="header" >Logout</a>'  
+		}, searchForm]
+	});
+
 	var center = new Ext.Panel({
 	    region:'center',
 		border: false,
 		contentEl: 'main-center',
 	    layout: 'border',
-		margins: '0 5 0 0',
+		margins: '0 0 5 0',
 		id: 'northPanel',
 		items: [{
 	        id: 'folderPathTitle',
@@ -590,37 +585,28 @@ function _init(result, request) {
 	    minSize: 175,
 	    maxSize: 400,
 	    layout: 'border',
-		margins: '0 5 0 0',	
+		margins: '0 5 5 0',	
 		items: [{
                 id: 'docInfoPanel',
     			name: 'docInfo',
+    		    border: false,
 				autoScroll: true,
 				region: 'center',
                 items: [dataview]
 	    	}
 		]
 	});
-	
-    /* FOOTER */
-    var footer = new Ext.Panel({
-        region: 'south',
-        contentEl: 'south',
-        split: true,
-        collapsible: false,
-        margins: '0 0 0 0'
-    });
-	
-    var viewport = new Ext.Viewport({
-        layout: 'border',
-        items: [
+
+	var viewport = new Ext.Viewport({
+		layout: 'border',
+		items: [
 			header,
 			getNavigator(),
 			center,
-			east,
-			footer
+			east
 		]
-    });
-    
+	});
+
 	var tooltip = new Ext.ToolTip({
 		target: 'fileGrid',
 		id: 'toolTip',
@@ -660,13 +646,13 @@ function _initNavigator() {
 		split: true,
 		collapsible: true,
 		collapseMode: 'mini',
-		margins: '0 5 0 5',
+		margins: '0 0 5 5',
 		layout: 'accordion',
 		layoutConfig: {
-		hideCollapseTool: true,
-		titleCollapse: true,
-		animate: false
-	}
+			hideCollapseTool: true,
+			titleCollapse: true,
+			animate: false
+		}
 	});
 
 	var companyHomeTree = _initCompanyHome();
@@ -778,6 +764,7 @@ function _initCompanyHome() {
 		margins: '35 0 5 5',
 		cmargins: '35 5 5 5',
 		frame: false,
+	    border: false,
 		// these are the config options for the tree itself				
 		autoScroll: true,
 		enableDD: false, // Allow tree nodes to be moved (dragged and dropped)
@@ -858,6 +845,7 @@ function _initMyHome() {
         collapsible: false,
         margins: '35 0 5 5',
         cmargins: '35 5 5 5',
+	    border: false,
         frame: false,
         // these are the config options for the tree itself				
         autoScroll: true,
