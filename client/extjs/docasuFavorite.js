@@ -84,20 +84,25 @@ function _removeFavorite() {
 }
 
 function addFavorite(nodeId) {
-	Ext.Ajax.request({
-		url: 'ui/addshortcut',
-		method: 'GET',
-		params: 'nodeId=' + nodeId,
-		success: function(response, options){
+	if (typeof nodeId != 'undefined') {
+		Ext.Ajax.request({
+			url: 'ui/addshortcut',
+			method: 'GET',
+			params: 'nodeId=' + nodeId,
+			success: function(response, options){
 			//Ext.MessageBox.alert('Must have been 2xx http status code');
 			_addFavorite(response.responseText);
 		}, 
 		failure: function(){
 			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
 		}
-	});
-	
-	Ext.getCmp('favoritesPanel').expand();
+		});
+
+		Ext.getCmp('favoritesPanel').expand();
+	}
+	else {
+		console.log('Warning, trying to add undefined node');
+	}
 }
 
 function _addFavorite() {

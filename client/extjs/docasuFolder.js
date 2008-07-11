@@ -90,7 +90,8 @@ function _showFolderDetailsWindow(folder) {
 		},
 		items: [name, path, /*url,*/ creator, created, modified],
 		buttons: [new Ext.Button({text: 'Add to favorites', handler: function() {
-			addFavorite(Ext.state.Manager.get('currentFolder'));
+			Ext.getCmp('folderDetailsWindow').close();
+			addFavorite(folder.nodeId);
 		}})]
 	});
 				

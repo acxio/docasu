@@ -1012,6 +1012,13 @@ function getFolderContextMenu(id) {
 		}
 	});
 	
+	contextMenu.add(
+		    {
+		    	text: 'Add to Favorites',
+		    	handler: function() {addFavorite(id);}
+		    }
+		);
+
 	return contextMenu;
 }
 

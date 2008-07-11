@@ -25,7 +25,7 @@ if (args.nodeId == undefined) {
    	status.message = "No nodeId supplied";
    	status.redirect = true;
 }
-// Possibly also check if node exists?
+// TODO check if node exists?
 
 var preferences = getPreferences();
 
