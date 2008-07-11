@@ -365,7 +365,6 @@ function _init(result, request) {
 		name: 'searchPanel',
 		bodyStyle: 'padding: 4px;margin-top:5px;',
 		region: 'east',
-		width: 460,
 		border: false,
 		frame: false,
 		layout: 'table',
@@ -373,7 +372,7 @@ function _init(result, request) {
 				searchCombo,
 				searchField,
 				simpleSearchImg,
-				{html: '<a href="#" class="header" onclick="showAdvancedSearch();">Advanced Search</a>', border: false, colspan: 1}],
+				{html: '<a href="#" class="header" onclick="showAdvancedSearch();">Advanced&nbsp;Search</a>', border: false, colspan: 1}],
 		url: 'ui/ss',
 		method: 'GET',	
 		listeners: {
