@@ -21,9 +21,6 @@ var advSearchWindow;
 
 var gridStore;
 var fileSelectionModel;
-var previousPreviousFolderName;
-var previousFolderName;
-var currentFolderName;
 var simpleSearchQuery = "";
 var advancedSearchQuery = "";
 var recentDocsStore;
@@ -104,8 +101,6 @@ Ext.onReady(function(){
 	// Use Ext.state.Manager.set("key", 'value'); to store values
 	// Initialize values
 	Ext.state.Manager.set("currentFolder", 'null');
-	Ext.state.Manager.set("previousFolder", 'null');
-	Ext.state.Manager.set("previousPreviousFolder", 'null');
 	
 	// current user
 	Ext.Ajax.request({
@@ -144,10 +139,10 @@ function _init(result, request) {
 	
     // Set the companyHome folder
     Ext.state.Manager.set('companyHomeId', user.companyHome);
-	Ext.state.Manager.set('currentFolder', user.companyHome);
     Ext.state.Manager.set('userHomeId', user.userHome);
     Ext.state.Manager.set('userHomeName', user.userHomeName);
     
+    _initBreadcrumbs();
 	_initNavigator();
   
     
@@ -197,30 +192,27 @@ function _init(result, request) {
             ]
 		})
 	});
-	
-	
+
 	gridStore.on("load", function() {
-        // Set currentFolder and select first row of grid
-		
-			//BREADCRUM
-			currentFolderName = gridStore.reader.jsonData.folderName;
-			createBreadcrum(currentFolderName, previousFolderName, previousPreviousFolderName);
-			
-			//create folder icon, name and CIFS path
-			var folderPath = gridStore.reader.jsonData.path;
-			var folderName = gridStore.reader.jsonData.folderName;
-			folderPath = '\\Alfresco' + folderPath.substr(13).replace('/', '\\');
-			
-			var name = folderName.substr(0, 21);
-			
-			var elem = '<a target="new" href="file:///\\\\' +
-			Ext.state.Manager.get('cifsHost') +
-			folderPath +
-			'"><div style="position:relative;top:10px;left:10px;"><img src="../../docasu/images/folder.gif" /></div><div class="folderLogo" style="overflow:hidden;position:relative;top:-20px;left:45px;">' +
-			name +
-			'</div></a>'
-			
-			Ext.get('cifsLink').update(elem);
+
+		var folderName = gridStore.reader.jsonData.folderName;
+		var folderId = gridStore.reader.jsonData.folderId;
+
+		updateCurrentFolder(folderId);
+		updateBreadcrumbs(folderName, folderId);
+
+		//create folder icon, name and CIFS path
+		var folderPath = gridStore.reader.jsonData.path;
+		folderPath = '\\Alfresco' + folderPath.substr(13).replace('/', '\\');
+		var name = folderName.substr(0, 21);
+		var elem = '<a target="new" href="file:///\\\\' +
+		Ext.state.Manager.get('cifsHost') +
+		folderPath +
+		'"><div style="position:relative;top:10px;left:10px;"><img src="../../docasu/images/folder.gif" /></div><div class="folderLogo" style="overflow:hidden;position:relative;top:-20px;left:45px;">' +
+		name +
+		'</div></a>'
+
+		Ext.get('cifsLink').update(elem);
 	});
 	
 	// SELECTION
@@ -787,8 +779,7 @@ function _initCompanyHome() {
 //			console.log('adding listener to companyHomeTree header');
 			panel.header.on('click', function () {
 //				console.log('click companyHomeTree header');
-				loadNode(Ext.state.Manager.get('companyHomeId'));
-				Ext.state.Manager.set("currentFolder", Ext.state.Manager.get('companyHomeId'));
+				loadFolder(Ext.state.Manager.get('companyHomeId'));
 			});
 		}
 	});
@@ -802,18 +793,12 @@ function _initCompanyHome() {
 	// Tree event handlers 	
 	companyHomeTree.addListener('click', function (node, event){
 
-		// Set previous Folder names for breadcrum
-		Ext.state.Manager.set("previousPreviousFolder", Ext.state.Manager.get('previousFolder'));
-		previousPreviousFolderName = previousFolderName; 	
-		Ext.state.Manager.set("previousFolder", Ext.state.Manager.get('currentFolder'));
-		previousFolderName = currentFolderName; 
-		Ext.state.Manager.set("currentFolder", node.id);
-
-		// Search
+		// TODO is this used?
 		simpleSearchQuery = "";
 		advancedSearchQuery = "";
 
-		loadNode(node.id);
+		loadFolder(node.id);
+		return false;
 	});
 
 	// Custom context menu.
@@ -871,27 +856,20 @@ function _initMyHome() {
 //			console.log('adding listener to myHomeTree header');
 			panel.header.on('click', function () {
 //				console.log('click');
-				loadNode(Ext.state.Manager.get('userHomeId'));
-				Ext.state.Manager.set("currentFolder", Ext.state.Manager.get('userHomeId'));
+				loadFolder(Ext.state.Manager.get('userHomeId'));
 			});
 		}
 	});
 
 	// Tree event handlers 	
     myHomeTree.addListener('click', function (node, event) {
-		// Set previous Folder names for breadcrum
-		Ext.state.Manager.set("previousPreviousFolder", Ext.state.Manager.get('previousFolder'));
-		previousPreviousFolderName = previousFolderName; 	
-		Ext.state.Manager.set("previousFolder", Ext.state.Manager.get('currentFolder'));
-		previousFolderName = currentFolderName; 
-        Ext.state.Manager.set("currentFolder", node.id);
-		
-		// search
+
+		// TODO is this used?
 		simpleSearchQuery = "";
 		advancedSearchQuery = "";
-		 
-		// Load file list for this folder
-		loadNode(node.id);
+
+		loadFolder(node.id);
+		return false;
 	});    
 
 	// Custom context menu.
@@ -932,7 +910,7 @@ function _initRencentDocs() {
 		id: 'recentDocsGrid',
 		store: recentDocsStore,
 		border: false,
-//		header: true,
+		// hideHeaders: true, // hide grid (column) headers
 		//layout: 'fit',
 		columns: [{id: 'name',dataIndex: 'nameIcon'}
 		//{id: 'path', header: "Path", sortable:true, dataIndex: 'path'},
@@ -940,7 +918,6 @@ function _initRencentDocs() {
 		],
 		viewConfig: {forceFit: true},
 //		sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
-//		frame:true,
 		title: 'Latest Documents',
 		iconCls: 'settings'
 	});
@@ -948,6 +925,45 @@ function _initRencentDocs() {
 	return recentDocsPanel;
 }
 
+function _initBreadcrumbs() {
+	Ext.state.Manager.set('breadcrumb3Name', null);
+	Ext.state.Manager.set('breadcrumb2Name', null);
+	Ext.state.Manager.set('breadcrumb1Name', null);
+}
+
+function updateCurrentFolder(folderId){
+	Ext.state.Manager.set("currentFolder", folderId);
+}
+
+function updateBreadcrumbs(folderName, folderId){
+	if (folderId != Ext.state.Manager.get('breadcrumb1Id')) {
+		var breadcrumbs = '';
+		var tempName = Ext.state.Manager.get('breadcrumb3Name');
+		var tempId = Ext.state.Manager.get('breadcrumb3Id');
+		if (typeof tempName != 'undefined') {
+			breadcrumbs = '<a href="#" class="breadcrumb" onclick="loadFolder(\'' + tempId + '\'); return false;">' + tempName + '</a> &gt; ';
+		}
+		tempName = Ext.state.Manager.get('breadcrumb2Name');
+		tempId = Ext.state.Manager.get('breadcrumb2Id');
+		if (typeof tempName != 'undefined') {
+			breadcrumbs += '<a href="#" class="breadcrumb" onclick="loadFolder(\'' + tempId + '\'); return false;">' + tempName + '</a> &gt; ';
+			Ext.state.Manager.set('breadcrumb3Name', tempName);
+			Ext.state.Manager.set('breadcrumb3Id', tempId);
+		}
+		tempName = Ext.state.Manager.get('breadcrumb1Name');
+		tempId = Ext.state.Manager.get('breadcrumb1Id');
+		if (typeof tempName != 'undefined') {
+			breadcrumbs += '<a href="#" class="breadcrumb" onclick="loadFolder(\'' + tempId + '\'); return false;">' + tempName + '</a> &gt; ';
+			Ext.state.Manager.set('breadcrumb2Name', tempName);
+			Ext.state.Manager.set('breadcrumb2Id', tempId);
+		}
+		breadcrumbs += '<a href="#" class="breadcrumb" onclick="loadFolder(\'' + folderId + '\'); return false;">' + folderName + '</a>';
+		Ext.state.Manager.set('breadcrumb1Name', folderName);
+		Ext.state.Manager.set('breadcrumb1Id', folderId);
+	
+		Ext.getCmp('folderPathTitle').setTitle(breadcrumbs);
+	}
+}
 
 function getFileContextMenu(record) {
 	var contextMenu = new Ext.menu.Menu({
@@ -1195,23 +1211,13 @@ function createActionItems(record) {
 }
 
 /* ACTIONS */
-function loadNode(nodeId) {
-	gridStore.baseParams.nodeId = nodeId;
+function loadFolder(folderId) {
+	gridStore.baseParams.nodeId = folderId;
 	clearDocumentInfoPane();
-	checkPermissions(nodeId);
+	checkPermissions(folderId);
 	gridStore.load();
-	// TODO update breadcrum.
 	// TODO update all panels !! (search box ?)
 }
-
-function updateFileGrid(node) {
-	gridStore.baseParams.nodeId = node.id;
-	gridStore.load();
-	// TODO update all panels !!
-	
-	// Do we really use this?
-}
-
 
  function checkPermissions(nodeId) {
 	
@@ -1257,22 +1263,6 @@ function _addActionItems(jsonData) {
 	}
 }
 
-
-function createBreadcrum(n1, n2, n3){
-	
-	var bc1 = '<a href="#" class="breadcrumb" onclick="selectFolder(\'' + Ext.state.Manager.get('currentFolder') + '\')">' + n1 + '</a>';
-	var title = bc1;
-	if (n2 != null){
-		var bc2 = '<a href="#" class="breadcrumb" onclick="selectFolder(\'' + Ext.state.Manager.get('previousFolder') + '\')">' + n2 + '</a>';
-		title = bc2 +' > '+ bc1;
-	}
-	if (n3 != null){
-		var bc3 = '<a href="#" class="breadcrumb" onclick="selectFolder(\'' + Ext.state.Manager.get('previousPreviousFolder') + '\')">' + n3 + '</a>';
-		title = bc3 +' > '+ bc2 +' > '+ bc1;
-	}
-	Ext.getCmp('folderPathTitle').setTitle(title);
-}
-
 /**
  * File renderer used in file grid to enable sorting while displaying file icons
  * for the first column.
@@ -1293,7 +1283,7 @@ function fileNameRenderer(value, column, record) {
 	*/    	 
 	
 	if (record.get('isFolder') == true) {
-		html += '<a href="#" onClick="selectFolder(\''+record.get('nodeId')+'\')">';
+		html += '<a href="#" onClick="loadFolder(\''+record.get('nodeId')+'\'); return false;">';
 	} else {
 		html += '<a href="'+record.get('downloadUrl')+'">';
 	}
@@ -1352,23 +1342,10 @@ function convertTimezone(value) {
  * Ext.state.Manager('nextActiveFolder');
  * @param {Boolean} autoExpand
  */
- /*
-function reloadTree(autoExpand) {
-    if (autoExpand) {
-        // The active folder is the one which will be selected after the
-        // tree has been reloaded
-        var treeNode = tree.getNodeById(Ext.state.Manager.get('currentFolder'));
-        Ext.state.Manager.set('nextActiveFolder', treeNode.getPath());
-    }
-    tree.root.reload();
-    Ext.getCmp('myHomeTree').root.reload();
-    selectFolder(Ext.state.Manager.get('currentFolder'));
-}
-*/
 function reloadTree(autoExpand) {
     getCompanyHomeTree().root.reload();
     getMyHomeTree().root.reload();
-    selectFolder(Ext.state.Manager.get('currentFolder'));
+    loadFolder(Ext.state.Manager.get('currentFolder'));
     if (autoExpand) {
         // The active folder is the one which will be selected after the
         // tree has been reloaded

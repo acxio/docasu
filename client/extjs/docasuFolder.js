@@ -234,14 +234,3 @@ function renameFolder(f) {
 	    }
 	});
 }
-
-function selectFolder(nodeId) {
-	// TODO: update the tree
-	Ext.state.Manager.set('currentFolder', nodeId);
-	gridStore.baseParams.nodeId = nodeId;
-	gridStore.load();
-	// TODO update all panels !!
-	// just clean the docinfo panel
-	clearDocumentInfoPane();
-	// TODO find out where this is called
-}

@@ -42,10 +42,10 @@ function _updateFavorites(responseText) {
 		favHtml += '<tr>'
 		favHtml += '<td><img src=\"' + f.icon + '\" /></td>';
 		if (f.isFile) {
-			favHtml += '<td><a target="_blank" href="' + f.url + '"> ' + f.name + '</a>&nbsp;<a href="#"  onclick="selectFolder(\'' + f.parentId + '\')" title="Open in Folder"><img src="'+f.parentIcon+'"/></a></td>';
+			favHtml += '<td><a target="_blank" href="' + f.url + '"> ' + f.name + '</a>&nbsp;<a href="#"  onclick="loadFolder(\'' + f.parentId + '\'); return false;" title="Open in Folder"><img src="'+f.parentIcon+'"/></a></td>';
 		}
 		else {
-			favHtml += '<td><a href="#" onclick="selectFolder(\'' + f.id + '\')">' + f.name + '</a></td>';
+			favHtml += '<td><a href="#" onclick="loadFolder(\'' + f.id + '\'); return false;">' + f.name + '</a></td>';
 		}
 		favHtml += '<td><a href="#" onclick="removeFavorite(\'' + f.id + '\')">' +
 			'<img src="../../docasu/images/delete.gif" /></a></td>';
