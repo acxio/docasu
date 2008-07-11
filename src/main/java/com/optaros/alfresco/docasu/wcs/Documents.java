@@ -176,6 +176,7 @@ public class Documents extends DeclarativeWebScript {
 		model.put("path", path);
 		model.put("randomNumber", Math.random());
 		model.put("folderName", fileInfo.getName());
+		model.put("folderId", nodeRef.getId());
 		model.put("rows", rows);
 		return model;
 	}

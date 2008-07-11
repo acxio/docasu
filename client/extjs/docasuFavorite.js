@@ -33,24 +33,29 @@ function updateFavorites() {
 
 
 function _updateFavorites(responseText) {
-	var favHtml = '<table>';
+	var favHtml = '<table style="width:100%;">';
 	
 	var favorites = eval(responseText).rows;
 	
 	for (i = 0; i < favorites.length; i++) {
 		var f = favorites[i];
-		favHtml += '<tr>'
-		favHtml += '<td><img src=\"' + f.icon + '\" /></td>';
+		favHtml += '<tr>';
 		if (f.isFile) {
-			favHtml += '<td><a target="_blank" href="' + f.url + '"> ' + f.name + '</a>&nbsp;<a href="#"  onclick="selectFolder(\'' + f.parentId + '\')" title="Open in Folder"><img src="'+f.parentIcon+'"/></a></td>';
+			favHtml += '<td><img src=\"' + f.icon + '\" /></td>';
+			favHtml += '<td><a target="_blank" href="' + f.url + '"> ' + f.name + '</a></td>';
+			favHtml += '<td style="text-align:right;">';
+			favHtml +=     '<a href="#" onclick="loadFolder(\'' + f.parentId + '\'); return false;" title="Open in Folder"><img src="../../docasu/lib/extjs/resources/images/default/tree/folder.gif"/></a>';
+			favHtml +=     '&nbsp;';
+			favHtml +=     '<a href="#" onclick="removeFavorite(\'' + f.id + '\')"><img src="../../docasu/images/delete.gif" /></a>';
+			favHtml += '</td>';
 		}
 		else {
-			favHtml += '<td><a href="#" onclick="selectFolder(\'' + f.id + '\')">' + f.name + '</a></td>';
+			favHtml += '<td><img src="../../docasu/lib/extjs/resources/images/default/tree/folder.gif"/></td>';
+			favHtml += '<td><a href="#" onclick="loadFolder(\'' + f.id + '\'); return false;">' + f.name + '</a></td>';
+			favHtml += '<td style="text-align:right;"><a href="#" onclick="removeFavorite(\'' + f.id + '\')"><img src="../../docasu/images/delete.gif" /></a></td>';
 		}
-		favHtml += '<td><a href="#" onclick="removeFavorite(\'' + f.id + '\')">' +
-			'<img src="../../docasu/images/delete.gif" /></a></td>';
 			
-		favHtml += '</tr>'
+		favHtml += '</tr>';
 	}
 	
 	favHtml += '</table>';
@@ -79,20 +84,25 @@ function _removeFavorite() {
 }
 
 function addFavorite(nodeId) {
-	Ext.Ajax.request({
-		url: 'ui/addshortcut',
-		method: 'GET',
-		params: 'nodeId=' + nodeId,
-		success: function(response, options){
+	if (typeof nodeId != 'undefined') {
+		Ext.Ajax.request({
+			url: 'ui/addshortcut',
+			method: 'GET',
+			params: 'nodeId=' + nodeId,
+			success: function(response, options){
 			//Ext.MessageBox.alert('Must have been 2xx http status code');
 			_addFavorite(response.responseText);
 		}, 
 		failure: function(){
 			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
 		}
-	});
-	
-	Ext.getCmp('favoritesPanel').expand();
+		});
+
+		Ext.getCmp('favoritesPanel').expand();
+	}
+	else {
+		console.log('Warning, trying to add undefined node');
+	}
 }
 
 function _addFavorite() {
