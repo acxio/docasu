@@ -801,6 +801,7 @@ function _initCompanyHome() {
 			panel.header.on('click', function () {
 //				console.log('click companyHomeTree header');
 				loadNode(Ext.state.Manager.get('companyHomeId'));
+				Ext.state.Manager.set("currentFolder", Ext.state.Manager.get('companyHomeId'));
 			});
 		}
 	});
@@ -883,6 +884,7 @@ function _initMyHome() {
 			panel.header.on('click', function () {
 //				console.log('click');
 				loadNode(Ext.state.Manager.get('userHomeId'));
+				Ext.state.Manager.set("currentFolder", Ext.state.Manager.get('userHomeId'));
 			});
 		}
 	});
