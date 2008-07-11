@@ -26,9 +26,12 @@ import java.util.Map;
 
 import org.alfresco.model.ApplicationModel;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.template.TemplateNode;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.cmr.repository.TemplateImageResolver;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.web.scripts.DeclarativeWebScript;
@@ -86,11 +89,14 @@ public class Shortcuts extends DeclarativeWebScript {
 		
 		List<String> shortcuts = (List<String>)nodeService.getProperty(preferences, PROP_SHORTCUTS);
 		
-		List<NodeRef> shortcutRefs = new ArrayList<NodeRef>();
+		List<TemplateNode> shortcutRefs = new ArrayList<TemplateNode>();
 		
+		StoreRef storeRef = new StoreRef("workspace://SpacesStore");
+		TemplateImageResolver imageResolver = getWebScriptRegistry().getTemplateImageResolver();
 		if (null != shortcuts) {
 			for (String n: shortcuts) {
-				shortcutRefs.add(new NodeRef("workspace://SpacesStore/" + n));
+				NodeRef shortcutNodeRef = new NodeRef(storeRef, n);
+				shortcutRefs.add(new TemplateNode(shortcutNodeRef, getServiceRegistry(), imageResolver));
 			}
 		} else {
 			nodeService.setProperty(preferences, PROP_SHORTCUTS, new ArrayList<String>());
