@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-	{ "success":true, "total" : ${total}, "path": "/", "folderName": "", "rows" : [
+	{ "noredirect": true, "success":true, "total" : ${total}, "path": "/", "folderName": "", "rows" : [
 <#list entries as child>
 
 	      

@@ -53,3 +53,6 @@ for each (ref in nodes) {
 	}
 }
 
+model.success = true;
+model.msg = 'ok';
+

@@ -44,3 +44,5 @@ if (addShortcut) {
 }
 
 preferences.save();
+model.msg = 'ok';
+model.success = true;

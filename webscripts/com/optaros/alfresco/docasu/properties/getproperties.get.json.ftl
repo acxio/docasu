@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-{ "properties":
+{ "noredirect": true, "success": true, "properties":
    	[ {
        	 "nodeId"	:"${file.id}",
        	 "name"		:"${file.name}",

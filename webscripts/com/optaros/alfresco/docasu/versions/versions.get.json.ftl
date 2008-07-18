@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-{ "rows" : [
+{ "noredirect": true, "success": true, "rows" : [
 	<#if hasAspect(d, "cm:versionable") == 1 && d.properties.versionLabel?exists>
 		<#list d.versionHistory?sort_by("versionLabel")?reverse as record>
 		{

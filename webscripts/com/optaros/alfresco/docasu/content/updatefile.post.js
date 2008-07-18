@@ -50,9 +50,11 @@ if (node == null)
 		node.properties.content.write(filecontent);
 		node.save();
 	
+		model.success = 'true';
 		model.msg = 'ok';
 	} catch(e) {
 		logger.log(e.message);
 		model.msg = 'generror';
+		model.success = 'false';
 	}
 }

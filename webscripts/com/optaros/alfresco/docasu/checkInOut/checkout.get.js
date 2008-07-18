@@ -26,8 +26,10 @@ var node = search.findNode("workspace://SpacesStore/" + nodeId);
 
 if (node != null) {
 	var workingCopy = node.checkout();
-	model.comment = "Document checked out";	
+	model.success = true;
+	model.msg = "Document checked out";	
 } else {
+	model.success = false;
 	logger.log("Couldn't check it out.");
-	model.comment = "Couldn't check it out.";
+	model.msg = "Couldn't check it out.";
 }

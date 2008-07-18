@@ -27,8 +27,11 @@ var node = search.findNode("workspace://SpacesStore/" + nodeId);
 if (node != null) {
 	// Check it in
 	node.checkin();		
-	model.comment = "Document checked in";	
+	model.success = true;
+	model.msg = "Document checked in";
+		
 } else {
 	logger.log("Couldn't check it in.");
+	model.success = false;
 	model.comment = "Couldn't check it in.";
 }

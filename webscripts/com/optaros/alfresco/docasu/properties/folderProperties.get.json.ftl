@@ -16,7 +16,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-({
+({   "noredirect":true,
+	 "success"	:true,
    	 "nodeId"	:"${folder.id}",
    	 "name"		:"${folder.name}",
   	 "size"		:"${folder.size}",

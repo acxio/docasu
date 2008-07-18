@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-{ "total" : "${total}", "permissions" : "${comment}", "rows" : [
+{ "noredirect": true, "success": true, "total" : "${total}", "permissions" : "${comment}", "rows" : [
 	<#list entries as item>
 		{
 			"code": "${item[0]}",

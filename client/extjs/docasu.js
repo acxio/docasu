@@ -215,6 +215,10 @@ function _init(result, request) {
 		Ext.get('cifsLink').update(elem);
 	});
 	
+	gridStore.on('loadexception', function(options, response, e) {
+	  doRedirectToUrl('ui');
+	});
+	
 	// SELECTION
 	// TODO remove this, seems to be unused!
 	var selectionModel = new Ext.grid.CellSelectionModel();
@@ -378,6 +382,7 @@ function _init(result, request) {
 				showSearchResults(responseObj);
 			},
 			actionfailure: function(form, action){
+				//Ext.MessageBox.alert(action.response.responseCode);
 				Ext.MessageBox.alert('An error occurred while searching.');
 			}	
 		}
@@ -745,6 +750,10 @@ function _initCompanyHome() {
 			Ext.state.Manager.set('nextActiveFolder', null);
 		}
 	}, this);
+	
+	companyHomeTreeLoader.on("loadexception", function() {
+		doRedirectToUrl('ui');
+	});
 
 	var companyHomeTree = new Ext.tree.TreePanel({
 		id: 'companyHomeTree',
@@ -870,7 +879,11 @@ function _initMyHome() {
 
 		loadFolder(node.id);
 		return false;
-	});    
+	});
+	
+	myHomeTreeLoader.on("loadexception", function() {
+		doRedirectToUrl('ui');
+	});
 
 	// Custom context menu.
     myHomeTree.on('contextmenu', function(node, e){
@@ -1235,8 +1248,15 @@ function loadFolder(folderId) {
 		fileUpload: true,
 		//form: Ext.getCmp('filePropertiesForm').getForm().getEl(),
 		success: function(response, options){	
-			var jsonData = eval("(" + response.responseText + ")" );		
-			_addActionItems(jsonData);
+			try {
+				var jsonData = eval("(" + response.responseText + ")" );
+				if (!jsonData.noredirect) {
+					redirectToURL('ui');
+				}	
+				_addActionItems(jsonData);
+			} catch (e) {
+				doRedirectToUrl('ui');
+			}
 	    }, 
 		failure: function(){
 			Ext.MessageBox.alert('Failed to check permissions.');

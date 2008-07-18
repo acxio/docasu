@@ -26,8 +26,10 @@ var node = search.findNode("workspace://SpacesStore/" + nodeId);
 
 if (node != null) {
 	node.cancelCheckout();
-	model.comment = "Undo checked out";	
+	model.success = true;
+	model.msg = "Undo checked out";	
 } else {
 	logger.log("Couldn't undo the checkout.");
-	model.comment = "Couldn't undo the checkout.";
+	model.msg = "Couldn't undo the checkout.";
+	model.success = false;
 }

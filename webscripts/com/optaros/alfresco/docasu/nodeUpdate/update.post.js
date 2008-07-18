@@ -36,8 +36,10 @@ var fileToWriteIn = search.findNode("workspace://SpacesStore/" + contentId );
 if (fileToWriteIn.hasPermission("Write")) {
 	fileToWriteIn.content = contentToWrite;
 	model.msg = "ok";
+	model.success = true;
 	logger.log("updated");
 } else {
 	model.msg = "privileges";
+	model.success = false;
 	logger.log("user didn't have privileges");
 }

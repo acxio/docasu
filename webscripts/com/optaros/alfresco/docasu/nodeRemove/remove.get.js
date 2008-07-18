@@ -32,9 +32,12 @@ if (node != null) {
 	try {
 		node.remove();
 		model.msg = "removed";
+		model.success = true;
 	} catch (e) {
+		model.success = false;
 		model.msg = e.message;
 	}
 } else {
+	model.success = false;
 	model.msg = "Node could not be found.";
 }

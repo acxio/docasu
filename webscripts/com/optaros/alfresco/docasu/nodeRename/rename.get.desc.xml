@@ -23,5 +23,5 @@
 	<url>/docasu/ui/node/rename?newName={newName}&amp;nodeId={nodeId}</url>
 	<authentication>user</authentication>
 	<transaction>required</transaction>
-	<format default="html">extension</format>
+	<format default="json">extension</format>
 </webscript>

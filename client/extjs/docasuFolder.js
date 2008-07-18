@@ -17,8 +17,14 @@
  */
 
 function _showFolderDetailsWindow(folder) {
-	
-	var folder = eval(folder);
+	var folder;
+	try {
+		folder = eval(folder);
+	} catch (e) {
+		// If the response isn't valid json it's probably the login page because the session timed out.
+		// Redirect the user to force a new login.
+		doRedirectToUrl('ui');
+	}
 
 	var name = new Ext.ux.form.StaticTextField({
 		id: 'folderpropName',
@@ -134,10 +140,11 @@ function showFolderDetailsWindow(folderId) {
 		params: 'folderId=' + folderId,
 		success: function(response, options){
 			//Ext.MessageBox.alert('Must have been 2xx http status code');
+			
 			_showFolderDetailsWindow(response.responseText);
 		}, 
-		failure: function(){
-			Ext.MessageBox.alert('An error occurred while loading the folder properties');
+		failure: function(response, options){
+			Ext.MessageBox.alert('Failed', 'An error occurred while loading the folder properties');
 		}
 	});
 }
@@ -149,11 +156,12 @@ function copyFolder() {
 		method: 'GET',
 		params: 'folderId=' + folderId,
 		success: function(response, options){
-			//Ext.MessageBox.alert('Must have been 2xx http status code');
+			// TODO: check new response format
+					// TODO: check for session timeout
 			_copyFolder(response.responseText);
 		}, 
 		failure: function(){
-			Ext.MessageBox.alert('An error occured while loading the folder');
+			Ext.MessageBox.alert('Failed', 'An error occured while loading the folder');
 		}
 	});
 }
@@ -165,7 +173,7 @@ function _copyFolder(data) {
 }
 
 /**
- * delets a folder
+ * deletes a folder
  * @param {String} folderId: the folder to delete
  */
 function deleteFolder(folderId) {
@@ -179,10 +187,18 @@ function deleteFolder(folderId) {
 				method: 'GET',
 				params: {nodeId : folderId},
 				success: function(response, options){
-                    if (response.responseText != "removed") {
-						Ext.MessageBox.alert('Failed', 'Failed to delete file. The following error occurred:\n\n' + response.responseText);
-					}
-                    reloadTree(true);
+                    try {
+                    	var result = eval(response);
+                    	
+	                    if (!result.success) {
+							Ext.MessageBox.alert('Failed', 'Failed to delete file. The following error occurred:\n\n' + response.msg);
+						} else {
+	                    	reloadTree(true);
+	                    }
+                    
+                    } catch (e) {
+                    	doRedirectToUrl('ui');
+                    }
 				}, 
 				failure: function(response, options){
 					Ext.MessageBox.alert('Failed', 'Failed to delete folder.\n\n');
@@ -206,6 +222,8 @@ function createFolder(folderId) {
 				method: 'GET',
 				params: {folderId : folderId, folderName : folderName},
 				success: function(response, options){
+					// TODO: check new response format
+					// TODO: check for session timeout
 					Ext.MessageBox.alert("New folder", "New folder "+ folderName +" created");
 			        reloadTree(true);
 				}, 
@@ -229,11 +247,13 @@ function renameFolder(f) {
 				method: 'GET',
 				params: {nodeId : f, newName : folderName},
 				success: function(response, options){
+					// TODO: check new response format
+					// TODO: check for session timeout
 					//Ext.MessageBox.alert("New folder "+ folderName +" renamed");
 					reloadTree(true);
 				}, 
 				failure: function(){
-					Ext.MessageBox.alert('The folder couldn\'t be renamed!');
+					Ext.MessageBox.alert('Failed', 'The folder couldn\'t be renamed!');
 				}
 			});
 	    }

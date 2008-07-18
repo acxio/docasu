@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-({"rows": [
+({ "noredirect": true, "success": true, "rows": [
 <#list shortcuts as shortcut>
 {	"id"	:"${shortcut.id}",
 	"icon"  :"${url.context}${shortcut.icon16}",

@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-({ "success": true, "rows": [
+({ "noredirect": true, "success": true, "rows": [
 <#list resultset as node>
      {"id"		:"${node.id}",
 	  "name"	:"${node.name}",

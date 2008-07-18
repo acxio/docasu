@@ -44,4 +44,4 @@ if (folder == undefined || !folder.isContainer)
    newFolder = folder.createFolder(args.folderName);
 }
 
-model.comment = args.folderName;
+model.msg = args.folderName;

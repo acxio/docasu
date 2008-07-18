@@ -16,4 +16,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-({"cifsServer": "${cifsServer}"})
+({
+	"noredirect": true,
+	"success"	: true,
+	"cifsServer": "${cifsServer}"
+})

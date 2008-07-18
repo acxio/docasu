@@ -16,7 +16,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-{ "categories": [
+{ "noredirect": true, "success": true,
+  "categories": [
 <#list categories as cat>
    	 {
        	 "nodeId"	:"${cat.id}",

@@ -55,4 +55,5 @@ else {
 	doc.save();
 	
 	model.msg = "ok";
+	model.success = true;
 }

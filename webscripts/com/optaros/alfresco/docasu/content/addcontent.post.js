@@ -65,7 +65,9 @@ if (folder == null || !folder.isContainer)
 		addAspect.execute(upload);
 	
 		model.msg = 'ok';
+		model.success = true;
 	} catch(e) {
+		model.success = false;
 		logger.log(e.message);
 		if (e.message.indexOf('FileExistsException') != -1) {
 			model.msg = 'duplicate';

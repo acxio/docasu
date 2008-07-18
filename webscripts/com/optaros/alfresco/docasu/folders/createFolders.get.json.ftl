@@ -16,4 +16,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-${comment}
+{
+	"noredirect": true,
+	"success"	: true,
+	"msg": "${msg}"
+}

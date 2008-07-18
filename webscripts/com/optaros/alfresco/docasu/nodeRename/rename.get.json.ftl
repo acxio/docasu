@@ -16,4 +16,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-${msg}
+{
+	"noredirect": true,
+	"success"	: ${success?string},
+	"msg"		: "${msg}"
+}

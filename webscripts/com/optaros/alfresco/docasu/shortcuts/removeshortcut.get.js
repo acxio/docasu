@@ -37,3 +37,5 @@ for (i = 0; i < shortcutNodes.length; i++) {
 }
 
 preferences.save();
+model.msg = 'ok';
+model.success = true;
