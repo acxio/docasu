@@ -1239,7 +1239,7 @@ function loadFolder(folderId) {
 			_addActionItems(jsonData);
 	    }, 
 		failure: function(){
-			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
+			Ext.MessageBox.alert('Failed to check permissions.');
 		}
 	});
 }

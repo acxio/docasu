@@ -450,7 +450,11 @@ function deleteFile(fileName, nodeId) {
 				url: 'ui/node/remove',
 				params: {nodeId : nodeId},
 				method: 'GET',
-				success: function(result, request){
+				success: function(response, options){
+					
+					if (response.responseText != "removed") {
+						Ext.MessageBox.alert('Failed', 'Failed to delete file. The following error occurred:\n\n' + response.responseText);
+					}
 					
 					if (advancedSearchQuery != "") {
 												
@@ -490,7 +494,8 @@ function deleteFile(fileName, nodeId) {
 						gridStore.load();
 					}
 				},
-				failure: function(result, request){
+				failure: function(response, options){
+					Ext.MessageBox.alert('Failed', 'Failed to delete file.\n\n' + response.responseText);
 				}
 	    	});
 		}
@@ -591,7 +596,7 @@ function checkoutFile(nodeId) {
 			gridStore.load();
 		},
 		failure: function(result, request){
-			Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
+			Ext.MessageBox.alert('Failed to checkout file.');
 		}
 	});
 }

@@ -26,7 +26,7 @@ function updateFavorites() {
 			_updateFavorites(response.responseText);
 		}, 
 		failure: function(){
-			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
+			Ext.MessageBox.alert('Failed to load favorites.');
 		}
 	});
 }
@@ -74,7 +74,7 @@ function removeFavorite(nodeId) {
 			_removeFavorite(response.responseText);
 		}, 
 		failure: function(){
-			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
+			Ext.MessageBox.alert('Failed to delete favorite.');
 		}
 	});
 }
@@ -94,7 +94,7 @@ function addFavorite(nodeId) {
 			_addFavorite(response.responseText);
 		}, 
 		failure: function(){
-			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
+			Ext.MessageBox.alert('Failed to add favorite.');
 		}
 		});
 

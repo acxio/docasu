@@ -29,7 +29,12 @@ if (node != null) {
 	model.comment = node.properties.name + " has been removed.";
 	
 	// Remove it
-	node.remove();
+	try {
+		node.remove();
+		model.msg = "removed";
+	} catch (e) {
+		model.msg = e.message;
+	}
 } else {
-	model.comment = "No node has been removed !!!";
+	model.msg = "Node could not be found.";
 }

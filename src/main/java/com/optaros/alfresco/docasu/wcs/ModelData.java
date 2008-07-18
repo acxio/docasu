@@ -38,6 +38,10 @@ public class ModelData extends DeclarativeWebScript {
 		//not available if loading the custom ui via "[...]/service/[...]" instead of "[...]/wcs/[...]"
 		//String cifsServername = ((CIFSServer)FacesHelper.getManagedBean(FacesContext.getCurrentInstance(), "cifsServer")).getConfiguration().getServerName();
 		String cifsServername = ((CIFSServer)WebApplicationContextUtils.getWebApplicationContext(this.getWebScriptRegistry().getContext()).getBean("cifsServer")).getConfiguration().getServerName();
+		
+		if (null == cifsServername) {
+			cifsServername = "";
+		}
 				
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("cifsServer", cifsServername);

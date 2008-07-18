@@ -137,7 +137,7 @@ function showFolderDetailsWindow(folderId) {
 			_showFolderDetailsWindow(response.responseText);
 		}, 
 		failure: function(){
-			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
+			Ext.MessageBox.alert('An error occurred while loading the folder properties');
 		}
 	});
 }
@@ -153,7 +153,7 @@ function copyFolder() {
 			_copyFolder(response.responseText);
 		}, 
 		failure: function(){
-			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
+			Ext.MessageBox.alert('An error occured while loading the folder');
 		}
 	});
 }
@@ -179,10 +179,14 @@ function deleteFolder(folderId) {
 				method: 'GET',
 				params: {nodeId : folderId},
 				success: function(response, options){
+                    if (response.responseText != "removed") {
+						Ext.MessageBox.alert('Failed', 'Failed to delete file. The following error occurred:\n\n' + response.responseText);
+					}
                     reloadTree(true);
 				}, 
-				failure: function(){
-					Ext.MessageBox.alert('Delete Folder failed!');
+				failure: function(response, options){
+					Ext.MessageBox.alert('Failed', 'Failed to delete folder.\n\n');
+					//Ext.MessageBox.alert('Delete Folder failed!');
 				}
 			});	
 			
