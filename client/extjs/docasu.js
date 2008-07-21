@@ -948,8 +948,9 @@ function updateCurrentFolder(folderId){
 	Ext.state.Manager.set("currentFolder", folderId);
 }
 
-function updateBreadcrumbs(folderName, folderId){
-	if (folderId != Ext.state.Manager.get('breadcrumb1Id')) {
+function updateBreadcrumbs(folderName, folderId) {
+	// The results of a search are displayed in the center view but have no nodeId, i.e. have undefined folderId.
+	if (typeof(folderId) != 'undefined' && folderId != Ext.state.Manager.get('breadcrumb1Id')) {
 		var breadcrumbs = '';
 		var tempName = Ext.state.Manager.get('breadcrumb3Name');
 		var tempId = Ext.state.Manager.get('breadcrumb3Id');
