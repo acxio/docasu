@@ -137,7 +137,8 @@
 		<!-- TODO: shutdown application server -->
 		<copy file="${alfresco.war.file}" todir="${war.deployment.dir}"/>
 		<!-- TODO: start up app server -->
-		<echo>Copied WAR file to the deployent directory. You might want to restart your application server!</echo>
+		<echo>Copied WAR file to the deployent directory.</echo>
+		<echo>You might want to delete the current webapp directory and restart your application server!</echo>
 	</target>
 	
 	
