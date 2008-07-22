@@ -555,7 +555,7 @@ function _init(result, request) {
 		border: false,
 		contentEl: 'main-center',
 	    layout: 'border',
-		margins: '0 0 5 0',
+		margins: '0 0 0 0',
 		id: 'northPanel',
 		items: [{
 	        id: 'folderPathTitle',
@@ -582,7 +582,7 @@ function _init(result, request) {
 	    minSize: 175,
 	    maxSize: 400,
 	    layout: 'border',
-		margins: '0 5 5 0',	
+		margins: '0 5 0 0',	
 		items: [{
                 id: 'docInfoPanel',
     			name: 'docInfo',
@@ -594,13 +594,24 @@ function _init(result, request) {
 		]
 	});
 
+	var footer = new Ext.Panel({ 
+		region:'south',
+		id: 'footer',
+		collapsible: false,
+		margins: '5',
+		border: false,
+		style: 'text-align:center;',
+		html: '<a href="http://code.optaros.com/trac/docasu">DoCASU @VERSION@</a> - Powered by <a href="http://www.optaros.com">Optaros</a>'
+	});
+
 	var viewport = new Ext.Viewport({
 		layout: 'border',
 		items: [
 			header,
 			getNavigator(),
 			center,
-			east
+			east,
+			footer
 		]
 	});
 
@@ -643,7 +654,7 @@ function _initNavigator() {
 		split: true,
 		collapsible: true,
 		collapseMode: 'mini',
-		margins: '0 0 5 5',
+		margins: '0 0 0 5',
 		layout: 'accordion',
 		layoutConfig: {
 			hideCollapseTool: true,
