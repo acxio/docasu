@@ -680,6 +680,7 @@ function _initNavigator() {
 	companyHomeTree.on('beforecollapse', function (panel) {
 //		console.log('before collapse company home');
 		if (getNavigator().activeTab == 'companyHomeTree') {
+			loadFolder(Ext.state.Manager.get('companyHomeId'));
 			return false;
 		}
 	});
@@ -691,6 +692,7 @@ function _initNavigator() {
 	myHomeTree.on('beforecollapse', function (panel) {
 //		console.log('before collapse my home');
 		if (getNavigator().activeTab == 'myHomeTree') {
+			loadFolder(Ext.state.Manager.get('userHomeId'));
 			return false;
 		}
 	});
@@ -785,18 +787,6 @@ function _initCompanyHome() {
 		rootVisible: false
 	});
 
-	// Add click listener on header.
-	companyHomeTree.on('render', function (panel) {
-		if (!('headerClickListener' in panel)) {
-			panel.headerClickListener = true;
-//			console.log('adding listener to companyHomeTree header');
-			panel.header.on('click', function () {
-//				console.log('click companyHomeTree header');
-				loadFolder(Ext.state.Manager.get('companyHomeId'));
-			});
-		}
-	});
-
 	// in case the tree is modfied via the standard Alfresco GUI, 
 	// it needs to be reloaded
 	companyHomeTree.on('beforecollapsenode', function (node, deep, anim){	
@@ -828,50 +818,38 @@ function _initCompanyHome() {
 }
 
 function _initMyHome() {
-	
-    // Tree loader for global directory tree
+
+	// Tree loader for global directory tree
 	var myHomeTreeLoader = new Ext.tree.TreeLoader({
-        dataUrl: 'ui/folders',
-        requestMethod: 'GET'
-    });
-    
-    var myHomeTree = new Ext.tree.TreePanel({
-        id: 'myHomeTree',
-        title: '<b>My Home</b> ',
-        minSize: 175,
-        maxSize: 400,
-        collapsible: false,
-        margins: '35 0 5 5',
-        cmargins: '35 5 5 5',
-	    border: false,
-        frame: false,
-        // these are the config options for the tree itself				
-        autoScroll: true,
-        animate: true,
-        enableDD: false,
-        containerScroll: true,
-        loader: myHomeTreeLoader,
-        // this adds a root node to the tree and tells it to expand when it is rendered
-        root: new Ext.tree.AsyncTreeNode({
-            id: Ext.state.Manager.get('userHomeId'),
-            text: Ext.state.Manager.get('userHomeName'),
-            draggable: false,
-            expanded: true,
-            iconCls: "folder"
-        }),
+		dataUrl: 'ui/folders',
+		requestMethod: 'GET'
+	});
+
+	var myHomeTree = new Ext.tree.TreePanel({
+		id: 'myHomeTree',
+		title: '<b>My Home</b> ',
+		minSize: 175,
+		maxSize: 400,
+		collapsible: false,
+		margins: '35 0 5 5',
+		cmargins: '35 5 5 5',
+		border: false,
+		frame: false,
+		// these are the config options for the tree itself				
+		autoScroll: true,
+		animate: true,
+		enableDD: false,
+		containerScroll: true,
+		loader: myHomeTreeLoader,
+		// this adds a root node to the tree and tells it to expand when it is rendered
+		root: new Ext.tree.AsyncTreeNode({
+			id: Ext.state.Manager.get('userHomeId'),
+			text: Ext.state.Manager.get('userHomeName'),
+			draggable: false,
+			expanded: true,
+			iconCls: "folder"
+		}),
 		rootVisible: false
-    });
-	
-	// Add click listener on header.
-    myHomeTree.on('render', function (panel) {
-		if (!('headerClickListener' in panel)) {
-			panel.headerClickListener = true;
-//			console.log('adding listener to myHomeTree header');
-			panel.header.on('click', function () {
-//				console.log('click');
-				loadFolder(Ext.state.Manager.get('userHomeId'));
-			});
-		}
 	});
 
 	// Tree event handlers 	
