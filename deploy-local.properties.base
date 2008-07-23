@@ -15,12 +15,12 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>. 
 #
 
-# DoCASU module properties
-module.id=com.optaros.alfresco.docasu
-module.version=1.0.1
-module.title=DoCASU - Optaros Alfresco Custom UI
-module.description=A Custom UI based on Web Scripts and ExtJS
+## For development:
+# Where you unpacked alfresco-*-tomcat-* bundle
+alfresco.root.dir=/opt/alfresco
 
-# The following optional properties can be used to prevent the module from being added
-# to inappropriate versions of the WAR file.
-module.repo.version.min=2.1
+# WebDAV / SMB mounted Data Dictionary/Web Scripts Space in Alfresco
+# The "deploy" task copies the modified web scripts here.
+webscript.dir=../smb_mount/Data Dictionary/Web Scripts
+# or copy the into the Alfresco's classpath and restart Alfresco.
+#webscript.dir=/opt/alfresco/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Copyright (C) 2008 Optaros, Inc. All rights reserved.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+    
+-->
+<project name="alfresco" default="list-modules" basedir=".">
+
+	<import file="build-common.xml"/>
+	
+	<target name="list-modules">
+    	<java jar="${alfresco.root.dir}/bin/alfresco-mmt.jar" fork="true">
+    		<arg line="list ${alfresco.root.dir}/tomcat/webapps/alfresco.war"/>
+    	</java>
+	</target>
+
+	<target name="check-running">
+		<available file="${alfresco.root.dir}/alfresco.started" property="alfresco.started"/>
+	</target>
+
+	<target name="no-start" if="alfresco.started">
+		<fail message="Alfresco is already running. Stop Alfresco first or delete '${alfresco.root.dir}/alfrecso.started' if you know Alfresco isn't running."/>
+	</target>
+	
+	<target name="start" description="Start Alfresco (i.e. start tomcat with alfresco.sh script)" depends="check-running, no-start">
+		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.sh">
+			<arg line="start"/>
+		</exec>
+		<touch file="${alfresco.root.dir}/alfresco.started"/>
+	</target>
+
+	<target name="stop" description="Stop Alfresco (i.e. stop tomcat with alfresco.sh script)">
+		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.sh">
+			<arg line="stop"/>
+		</exec>
+		<sleep seconds="5"/>
+		<delete file="${alfresco.root.dir}/alfresco.started"/>
+	</target>
+
+</project>
