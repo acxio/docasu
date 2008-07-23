@@ -158,6 +158,8 @@ a.breadcrumb, a.breadcrumb:visited,a.breadcrumb:link{
 	padding:0px;
 }
 
-
+.link:hover {
+	cursor: pointer;
+}
 
 

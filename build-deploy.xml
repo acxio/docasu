@@ -17,7 +17,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-<project name="docasu-deploy" basedir=".">
+<project name="docasu-deploy" default="deploy" basedir=".">
 	
 	<import file="build-module.xml"/>
 	

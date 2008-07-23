@@ -23,6 +23,7 @@
   	 "size"		:"${folder.size}",
    	 "modified"	:"${folder.properties.modified?string("yyyy-MM-dd HH:mm Z")}",
    	 "created"	:"${folder.properties.created?string("yyyy-MM-dd HH:mm Z")}",
+   	 "parentId" :"${folder.parent.id}",
    	 "path"     :"${folder.displayPath}",
    	 "url"      :"${folder.url}",
    	 "creator"  :"${folder.properties.creator}",

@@ -36,6 +36,7 @@ function showFileDetailsWindow(fileRecordSet) {
 	Ext.getCmp('filepropTitle').setValue(fileRecordSet.get('title'));
 	Ext.getCmp('filepropSize').setValue(fileRecordSet.get('size'));
 	Ext.getCmp('filepropMimetype').setValue(fileRecordSet.get('mimetype'));
+	Ext.state.Manager.set('parentFolderId', fileRecordSet.get('parentId'));
 	Ext.getCmp('filepropParentPath').setValue(fileRecordSet.get('parentPath'));
 	Ext.getCmp('filepropDescription').setValue(fileRecordSet.get('description'));
 	Ext.getCmp('filepropAuthor').setValue(fileRecordSet.get('author'));
@@ -393,6 +394,14 @@ function _initFileDetailsWindow() {
 		fieldLabel: 'Parent Folder',
 		autoHeight: true,
 		value: 'undefined'
+	});
+	
+	parent.on('render', function (parent) {
+		Ext.get('filepropParentPath').addClass('link');
+		Ext.get('filepropParentPath').on('click', function () {
+			Ext.getCmp('fileDetailsWindow').hide();
+			loadParentFolder();
+		});
 	});
 
 	var description = new Ext.form.TextArea({
