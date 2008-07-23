@@ -65,7 +65,7 @@
 			<fileset dir="${source.dir}/main/resources" />
 		</copy>
 		<copy todir="${amp.dir}/config/alfresco/extension/templates/webscripts" >
-			<fileset dir="webscripts" />
+			<fileset dir="${source.dir}/main/webscripts" />
 		</copy>
 		
 		<replace file="${amp.dir}/docasu/docasu.js"  token="@VERSION@" value="${docasu.version}"/>

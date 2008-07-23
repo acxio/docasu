@@ -41,7 +41,7 @@
 			<fileset dir="${source.dir}/main/resources" />
 		</copy>
 		<copy todir="${webscript.dir}" >
-			<fileset dir="webscripts" />
+			<fileset dir="${source.dir}/main/webscripts" />
 		</copy>
 		
 		<replace file="${alfresco.deploy.dir}/docasu/docasu.js" token="@VERSION@" value="${docasu.version}"/>
