@@ -32,7 +32,7 @@
 	<target name="deploy" depends="check-deployed, no-deploy, docasu-module.compile" description="(dev) Copy modified web scripts to a running Alfresco instance.">
 		
 		<copy todir="${alfresco.deploy.dir}/docasu">
-			<fileset dir="client/extjs"/>
+			<fileset dir="module/docasu"/>
 		</copy>
 		<copy todir="${alfresco.deploy.dir}/WEB-INF/classes">
 			<fileset dir="${build.dir}" />

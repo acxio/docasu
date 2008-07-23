@@ -58,9 +58,6 @@
 		<copy todir="${amp.dir}">
 			<fileset dir="module" />
 		</copy>
-		<copy todir="${amp.dir}/docasu">
-			<fileset dir="client/extjs"/>
-		</copy>
 		<copy todir="${amp.dir}/config">
 			<fileset dir="${build.dir}" />
 		</copy>
