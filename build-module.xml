@@ -24,7 +24,7 @@
 	<!-- include Alfresco jar files -->
 	<!-- TODO: remove dependency on Alfresco SDK and import JARs into ./vendor ! -->
 	<path id="class.path">
-	    <fileset dir="${download.dir}/${alfresco.sdk.version}/" includes="**/*.jar"/>
+	    <fileset dir="${download.dir}/${alfresco.sdk}/" includes="**/*.jar"/>
 	</path>
 	
 	<target name="init">
