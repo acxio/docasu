@@ -1247,6 +1247,7 @@ function createActionItems(record) {
 function loadFolder(folderId) {
 	gridStore.baseParams.nodeId = folderId;
 	clearDocumentInfoPane();
+	// TODO understand what this is.
 //	checkPermissions(folderId);
 	gridStore.load();
 	// TODO update all panels !! (search box ?)
