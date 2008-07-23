@@ -38,4 +38,8 @@
 
 	<property name="amp.file" value="${target.dir}/docasu-${docasu.version}.amp"/>
 
+	<target name="clean" description="Remove all created artifacts.">
+		<delete dir="${target.dir}" />
+	</target>
+
 </project>

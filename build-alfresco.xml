@@ -19,14 +19,8 @@
 -->
 <project name="alfresco" default="list-modules" basedir=".">
 
-	<import file="build-common.xml"/>
+	<import file="build-module.xml"/>
 	
-	<target name="list-modules">
-    	<java jar="${alfresco.root.dir}/bin/alfresco-mmt.jar" fork="true">
-    		<arg line="list ${alfresco.root.dir}/tomcat/webapps/alfresco.war"/>
-    	</java>
-	</target>
-
 	<target name="check-running">
 		<available file="${alfresco.root.dir}/alfresco.started" property="alfresco.started"/>
 	</target>
@@ -48,6 +42,21 @@
 		</exec>
 		<sleep seconds="5"/>
 		<delete file="${alfresco.root.dir}/alfresco.started"/>
+	</target>
+	
+	<!-- Patch an existing Alfresco war file to "deploy" our own AMP file -->
+	<target name="install-module" depends="docasu-module.package-amp" description="Install the AMP into the original Alfresco .war file">
+		<!-- TODO make sure alfresco is stopped -->
+		<java jar="${alfresco.mmt.jar.file}" fork="true">
+			<arg line="install ${amp.file} ${alfresco.root.dir}/tomcat/webapps/alfresco.war -force"/>
+		</java>
+		<echo>AMP file ${amp.file} has been installed into ${alfresco.root.dir}/tomcat/webapps/alfresco.war</echo>
+	</target>
+
+	<target name="list-modules">
+    	<java jar="${alfresco.root.dir}/bin/alfresco-mmt.jar" fork="true">
+    		<arg line="list ${alfresco.root.dir}/tomcat/webapps/alfresco.war"/>
+    	</java>
 	</target>
 
 	<target name="reset" description="Preform a similar cleanup than the one done in Alfresco's apply_amps.sh">
