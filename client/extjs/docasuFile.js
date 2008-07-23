@@ -25,319 +25,7 @@ function showFileDetailsWindow(fileRecordSet) {
 	
 	// Only create new window with content if doesn't exist
 	if (!Ext.getCmp('fileDetailsWindow')) {
-		// Text fields for displaying file properties
-		var name = new Ext.ux.form.StaticTextField({
-			id: 'filepropName',
-			fieldLabel: 'Name',
-			allowBlank: false,
-			name: 'name',
-			anchor: '90%',
-			value: fileRecordSet.get('name')
-		});
-		
-		var title = new Ext.ux.form.StaticTextField({
-			id: 'filepropTitle',
-			fieldLabel: 'Title',
-			allowBlank: false,
-			name: 'title',
-			anchor: '90%',
-			value: fileRecordSet.get('title')
-		});
-		
-		var mimetype = new Ext.ux.form.StaticTextField({
-			id: 'filepropMimetype',
-			fieldLabel: 'Content Type',
-			allowBlank: false,
-			name: 'mimetype',
-			anchor: '90%',
-			value: fileRecordSet.get('mimetype')
-		});
-		
-		var size = new Ext.ux.form.StaticTextField({
-			id: 'filepropSize',
-			fieldLabel: 'Size',
-			allowBlank: false,
-			name: 'size',
-			anchor: '90%',
-			value: fileRecordSet.get('size')
-		});
-		
-		var path = new Ext.ux.form.StaticTextField({
-			id: 'filepropPath',
-			fieldLabel: 'Path to file',
-			allowBlank: false,
-			name: 'filepath',
-			anchor: '90%',
-			value: fileRecordSet.get('filePath')
-		});
-		
-		var description = new Ext.form.TextArea({
-			id: 'filepropDescription',
-			fieldLabel: 'Description',
-			allowBlank: true,
-			name: 'description',
-			anchor: '90%',
-			submitValue: false,
-			readOnly: true,
-			value: fileRecordSet.get('description')
-		});
-		
-		var version = new Ext.ux.form.StaticTextField({
-			id: 'filepropVersion',
-			fieldLabel: 'Version',
-			allowBlank: false,
-			name: 'version',
-			anchor: '90%',
-			value: fileRecordSet.get('version')
-		});
-	
-		var author = new Ext.ux.form.StaticTextField({
-			id: 'filepropAuthor',
-			fieldLabel: 'Author',
-			allowBlank: false,
-			name: 'author',
-			anchor: '90%',
-			value: fileRecordSet.get('author')
-		});
-	
-		var creator = new Ext.ux.form.StaticTextField({
-			id: 'filepropCreator',
-			fieldLabel: 'Creator',
-			allowBlank: false,
-			name: 'creator',
-			anchor: '90%',
-			value: fileRecordSet.get('creator')
-		});
-		
-		var modifier = new Ext.ux.form.StaticTextField({
-			id: 'filepropModifier',
-			fieldLabel: 'Modifier',
-			allowBlank: false,
-			name: 'modifier',
-			anchor: '90%',
-			value: fileRecordSet.get('modifier')
-		});
-		
-		var modified = new Ext.ux.form.StaticTextField({
-			id: 'filepropModified',
-			fieldLabel: 'Last change',
-			allowBlank: false,
-			name: 'modified',
-			anchor: '90%',
-			value: convertTimezone(fileRecordSet.get('modified'))
-		});
-		
-		var created = new Ext.ux.form.StaticTextField({
-			id: 'filepropCreated',
-			fieldLabel: 'Creation time',
-			allowBlank: false,
-			name: 'created',
-			anchor: '90%',
-			value: convertTimezone(fileRecordSet.get('created'))
-		});
-	    
-		// Text fields for edit properties
-		var editName = new Ext.form.TextField({
-			id: 'filepropEditName',
-			fieldLabel: 'File name',
-			allowBlank: false,
-			name: 'name',
-			anchor: '90%',
-			value: fileRecordSet.get('name')
-		});
-	
-		var editTitle = new Ext.form.TextField({
-			id: 'filepropEditTitle',
-			fieldLabel: 'Title',
-			allowBlank: true,
-			name: 'title',
-			anchor: '90%',
-			value: fileRecordSet.get('title')
-		});
-		
-		var editAuthor = new Ext.form.TextField({
-			id: 'filepropEditAuthor',
-			fieldLabel: 'Author',
-			allowBlank: true,
-			name: 'author',
-			anchor: '90%',
-			value: fileRecordSet.get('author')
-		});
-		
-		var editDescription = new Ext.form.TextArea({
-			id: 'filepropEditDescription',
-			fieldLabel: 'Description',
-			allowBlank: true,
-			autoScroll: true,
-			name: 'description',
-			anchor: '90%',
-			value: fileRecordSet.get('description')
-		});
-		
-		var hiddenNodeId = new Ext.form.Hidden({
-			id: 'filepropEditNodeId',
-			name: 'nodeId',
-			value: fileRecordSet.get('nodeId')
-		});
-	
-		// VERSIONS GRID	
-	    var versionsGrid = new Ext.grid.GridPanel({
-	        id: 'versionsGrid',
-	        width: 700,
-	        height: 400,
-	        deferredRender:false,
-		    store: new Ext.data.Store({
-	    		proxy: new Ext.data.HttpProxy({
-	    			url: 'ui/versions',
-	    			method: 'GET'
-	    		}),
-	    		
-	            reader: new Ext.data.JsonReader({
-	                root: 'rows',
-	                totalProperty: 'total',
-	                id: 'nodeId',
-	    			fields: [
-	    				{name: 'label', type:'string'},
-	    				{name: 'name', type:'string'},
-	    				{name: 'created', type:'string'},
-	    				{name: 'author', type:'string'},
-	    				{name: 'downloadLink', type:'string'},
-	    				{name: 'description', type:'string'}
-	    			]
-	    		})
-	    	}),
-		    columns: [
-		        {header: "Version", width: 60, sortable: true, dataIndex: 'label'},
-		        {header: "Download Link", width: 100, sortable: false, dataIndex: 'downloadLink', renderer:function(value, column, record){return '<a href="'+value+'" target="_blank" title="'+record.get("name")+', Version '+record.get("label")+'" >Download</a>';}},
-		        {header: "Description", width: 310, sortable: false, dataIndex: 'description'},
-		        {header: "Uploaded by", width: 70, sortable: false, dataIndex: 'author'},
-		        {header: "Created on", width: 120, sortable: false, dataIndex: 'created', renderer: timeZoneAwareRenderer}
-		    ],
-		    sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
-		    frame: false
-		});
-		
-		// create form panel
-		var showDetailsPanel = new Ext.form.FormPanel({
-			id: 'fileDetailsPane',
-			title: "File details",
-			frame: false,
-			baseCls: 'x-plain',
-			labelWidth: 100,
-			items: [name, mimetype, title, description, path, author, size, creator, created, modifier, modified],
-	
-	        listeners: {activate: function() { 
-	            Ext.getCmp('fileDetailsSaveButton').hide();
-	            Ext.getCmp('mailtoButton').show();
-	            Ext.getCmp('favoritesButton').show();  
-	        }}
-		});
-	
-		
-	    // Panel with grid for file versions, if exist
-		var versionsPanel = new Ext.Panel({
-			id: 'versionsPanel',
-			title: "Versions",
-			frame: false,
-			baseCls: 'x-plain',
-			labelWidth: 75,
-			bodyStyle: 'padding: 0px',
-	        layout: 'fit',
-	        items: [ versionsGrid ],
-	        listeners: {activate: function() { 
-	            Ext.getCmp('fileDetailsSaveButton').hide();
-	            Ext.getCmp('mailtoButton').show();
-	            Ext.getCmp('favoritesButton').show();  
-	        }}
-		});
-	    
-		var editDetailsPanel = new Ext.form.FormPanel({
-			id: 'filePropertiesForm',
-			title: "Edit Properties",
-			frame: false,
-			url: 'ui/updateproperties',
-			method: 'POST',
-			fileUpload:true,
-			baseCls: 'x-plain',
-			labelWidth: 75,
-			bodyStyle: 'padding: 15px',
-			defaults: {
-				anchor: '-15',
-				submitValue: true
-			},
-			items: [editName, editTitle, editDescription, editAuthor, hiddenNodeId],
-	        listeners: {activate: function() { 
-	            Ext.getCmp('fileDetailsSaveButton').show();
-	            Ext.getCmp('mailtoButton').hide();
-	            Ext.getCmp('favoritesButton').hide();   
-	        }}
-		});
-	
-		new Ext.Window({
-			id: 'fileDetailsWindow',
-			title: '',
-			width: 500,
-			height: 500,
-	        layout: 'fit',
-			modal: true,
-			iconCls: 'icon-grid',
-			animCollapse: false,
-			constrainHeader: true,
-	        resizable: false,
-	        closeAction: 'hide',
-	        buttonAlign: 'center',
-			items: [{
-				xtype: 'tabpanel',
-				id: "fileDetailsPanel",
-				plain: true,
-				activeTab: 0,
-				//height: 330,
-				defaults: {
-					bodyStyle: 'padding:10px'
-				},
-				items: [showDetailsPanel, versionsPanel, editDetailsPanel]
-			}],
-			buttons: [
-	        {
-				text: 'Save',
-	            id: 'fileDetailsSaveButton',
-				handler: function(){
-					Ext.Ajax.request({
-						url: 'ui/updateproperties',
-						method: 'POST',
-						fileUpload: true,
-						form: Ext.getCmp('filePropertiesForm').getForm().getEl(),
-						success: function(response, options){
-							// document contents changed => refresh the data
-							// for the currently selected document
-							// Also reload the grid, since the filename might
-							// have changed.
-							gridStore.on('load', updateDocumentInfoPane); // !!
-							gridStore.load();
-							Ext.getCmp('fileDetailsWindow').close();
-					    }, 
-	    				failure: function(){
-							//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
-							Ext.MessageBox.alert('Failed', 'Failed on updating properties');
-	    				}
-					});
-				}
-			}, {
-	    		text: 'Add to favorites',
-	    		id: 'favoritesButton',
-	    		handler: function() {
-	    			var n = Ext.getCmp('filepropEditNodeId').getValue();
-	    			Ext.getCmp('fileDetailsWindow').close();
-	    			addFavorite(n);
-	    		}
-			}, {
-				text: 'Mail Link',
-				id: 'mailtoButton',
-				handler: function() {
-	    			mailLink(fileRecordSet.get('name'), fileRecordSet.get('link'));
-	    		}
-			}]
-		});
+		_initFileDetailsWindow();
 	}
 
 	// fill the existing window with new values
@@ -348,7 +36,7 @@ function showFileDetailsWindow(fileRecordSet) {
 	Ext.getCmp('filepropTitle').setValue(fileRecordSet.get('title'));
 	Ext.getCmp('filepropSize').setValue(fileRecordSet.get('size'));
 	Ext.getCmp('filepropMimetype').setValue(fileRecordSet.get('mimetype'));
-	Ext.getCmp('filepropPath').setValue(fileRecordSet.get('filePath'));
+	Ext.getCmp('filepropParentPath').setValue(fileRecordSet.get('parentPath'));
 	Ext.getCmp('filepropDescription').setValue(fileRecordSet.get('description'));
 	Ext.getCmp('filepropAuthor').setValue(fileRecordSet.get('author'));
 	Ext.getCmp('filepropCreator').setValue(fileRecordSet.get('creator'));
@@ -377,7 +65,9 @@ function showFileDetailsWindow(fileRecordSet) {
 	// set icon and file name as window title
 	Ext.getCmp('fileDetailsWindow').setTitle(fileRecordSet.get('nameIcon'));
 	// select the file details pane in case the edit pane is active
-	Ext.getCmp('fileDetailsPanel').setActiveTab(Ext.getCmp('fileDetailsPane'));
+	Ext.getCmp('fileDetailsTabPanel').setActiveTab(Ext.getCmp('fileDetailsPanel'));
+
+	Ext.getCmp('fileDetailsPanel').doLayout();
 		
 }
 
@@ -661,4 +351,304 @@ function showFileInfos(nodeId, canEditProp){
 	(canEditProp) ? fileDesc.enable() : fileDesc.disable();
 
 	Ext.getCmp('fileDetailsWindow').show();
+}
+
+function _initFileDetailsWindow() {
+
+	// Text fields for displaying file properties
+	var name = new Ext.ux.form.StaticTextField({
+		id: 'filepropName',
+		fieldLabel: 'Name',
+		allowBlank: false,
+		name: 'name',
+		anchor: '90%',
+	});
+
+	var title = new Ext.ux.form.StaticTextField({
+		id: 'filepropTitle',
+		fieldLabel: 'Title',
+		allowBlank: false,
+		name: 'title',
+		anchor: '90%',
+	});
+
+	var mimetype = new Ext.ux.form.StaticTextField({
+		id: 'filepropMimetype',
+		fieldLabel: 'Content Type',
+		allowBlank: false,
+		name: 'mimetype',
+		anchor: '90%',
+	});
+
+	var size = new Ext.ux.form.StaticTextField({
+		id: 'filepropSize',
+		fieldLabel: 'Size',
+		allowBlank: false,
+		name: 'size',
+		anchor: '90%',
+	});
+
+	var parent = new Ext.ux.form.StaticTextField({
+		id: 'filepropParentPath',
+		fieldLabel: 'Parent Folder',
+		autoHeight: true,
+		value: 'undefined'
+	});
+
+	var description = new Ext.form.TextArea({
+		id: 'filepropDescription',
+		fieldLabel: 'Description',
+		allowBlank: true,
+		name: 'description',
+		anchor: '90%',
+		submitValue: false,
+		readOnly: true,
+	});
+
+	var version = new Ext.ux.form.StaticTextField({
+		id: 'filepropVersion',
+		fieldLabel: 'Version',
+		allowBlank: false,
+		name: 'version',
+		anchor: '90%',
+	});
+
+	var author = new Ext.ux.form.StaticTextField({
+		id: 'filepropAuthor',
+		fieldLabel: 'Author',
+		allowBlank: false,
+		name: 'author',
+		anchor: '90%',
+	});
+
+	var creator = new Ext.ux.form.StaticTextField({
+		id: 'filepropCreator',
+		fieldLabel: 'Creator',
+		allowBlank: false,
+		name: 'creator',
+		anchor: '90%',
+	});
+
+	var modifier = new Ext.ux.form.StaticTextField({
+		id: 'filepropModifier',
+		fieldLabel: 'Modifier',
+		allowBlank: false,
+		name: 'modifier',
+		anchor: '90%',
+	});
+
+	var modified = new Ext.ux.form.StaticTextField({
+		id: 'filepropModified',
+		fieldLabel: 'Last change',
+		allowBlank: false,
+		name: 'modified',
+		anchor: '90%',
+	});
+
+	var created = new Ext.ux.form.StaticTextField({
+		id: 'filepropCreated',
+		fieldLabel: 'Creation time',
+		allowBlank: false,
+		name: 'created',
+		anchor: '90%',
+	});
+
+	// Text fields for edit properties
+	var editName = new Ext.form.TextField({
+		id: 'filepropEditName',
+		fieldLabel: 'File name',
+		allowBlank: false,
+		name: 'name',
+		anchor: '90%',
+	});
+
+	var editTitle = new Ext.form.TextField({
+		id: 'filepropEditTitle',
+		fieldLabel: 'Title',
+		allowBlank: true,
+		name: 'title',
+		anchor: '90%',
+	});
+
+	var editAuthor = new Ext.form.TextField({
+		id: 'filepropEditAuthor',
+		fieldLabel: 'Author',
+		allowBlank: true,
+		name: 'author',
+		anchor: '90%',
+	});
+
+	var editDescription = new Ext.form.TextArea({
+		id: 'filepropEditDescription',
+		fieldLabel: 'Description',
+		allowBlank: true,
+		autoScroll: true,
+		name: 'description',
+		anchor: '90%',
+	});
+
+	var hiddenNodeId = new Ext.form.Hidden({
+		id: 'filepropEditNodeId',
+		name: 'nodeId',
+	});
+
+	// VERSIONS GRID	
+	var versionsGrid = new Ext.grid.GridPanel({
+		id: 'versionsGrid',
+		width: 700,
+		height: 400,
+		deferredRender:false,
+		store: new Ext.data.Store({
+			proxy: new Ext.data.HttpProxy({
+				url: 'ui/versions',
+				method: 'GET'
+			}),
+
+			reader: new Ext.data.JsonReader({
+				root: 'rows',
+				totalProperty: 'total',
+				id: 'nodeId',
+				fields: [
+				         {name: 'label', type:'string'},
+				         {name: 'name', type:'string'},
+				         {name: 'created', type:'string'},
+				         {name: 'author', type:'string'},
+				         {name: 'downloadLink', type:'string'},
+				         {name: 'description', type:'string'}
+				         ]
+			})
+		}),
+		columns: [
+		          {header: "Version", width: 60, sortable: true, dataIndex: 'label'},
+		          {header: "Download Link", width: 100, sortable: false, dataIndex: 'downloadLink', renderer:function(value, column, record){return '<a href="'+value+'" target="_blank" title="'+record.get("name")+', Version '+record.get("label")+'" >Download</a>';}},
+		          {header: "Description", width: 310, sortable: false, dataIndex: 'description'},
+		          {header: "Uploaded by", width: 70, sortable: false, dataIndex: 'author'},
+		          {header: "Created on", width: 120, sortable: false, dataIndex: 'created', renderer: timeZoneAwareRenderer}
+		          ],
+		          sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
+		          frame: false
+	});
+
+	// create form panel
+	var showDetailsPanel = new Ext.form.FormPanel({
+		id: 'fileDetailsPanel',
+		title: "File details",
+		frame: false,
+		baseCls: 'x-plain',
+		labelWidth: 100,
+		items: [name, mimetype, title, description, parent, author, size, creator, created, modifier, modified],
+
+		listeners: {activate: function() { 
+		Ext.getCmp('fileDetailsSaveButton').hide();
+		Ext.getCmp('mailtoButton').show();
+		Ext.getCmp('favoritesButton').show();  
+	}}
+	});
+
+
+	// Panel with grid for file versions, if exist
+	var versionsPanel = new Ext.Panel({
+		id: 'versionsPanel',
+		title: "Versions",
+		frame: false,
+		baseCls: 'x-plain',
+		labelWidth: 75,
+		bodyStyle: 'padding: 0px',
+		layout: 'fit',
+		items: [ versionsGrid ],
+		listeners: {activate: function() { 
+		Ext.getCmp('fileDetailsSaveButton').hide();
+		Ext.getCmp('mailtoButton').show();
+		Ext.getCmp('favoritesButton').show();  
+	}}
+	});
+
+	var editDetailsPanel = new Ext.form.FormPanel({
+		id: 'filePropertiesForm',
+		title: "Edit Properties",
+		frame: false,
+		url: 'ui/updateproperties',
+		method: 'POST',
+		fileUpload:true,
+		baseCls: 'x-plain',
+		labelWidth: 75,
+		bodyStyle: 'padding: 15px',
+		defaults: {
+		anchor: '-15',
+		submitValue: true
+	},
+	items: [editName, editTitle, editDescription, editAuthor, hiddenNodeId],
+	listeners: {activate: function() { 
+		Ext.getCmp('fileDetailsSaveButton').show();
+		Ext.getCmp('mailtoButton').hide();
+		Ext.getCmp('favoritesButton').hide();   
+	}}
+	});
+
+	new Ext.Window({
+		id: 'fileDetailsWindow',
+		title: '',
+		width: 500,
+		height: 500,
+		layout: 'fit',
+		modal: true,
+		iconCls: 'icon-grid',
+		animCollapse: false,
+		constrainHeader: true,
+		resizable: false,
+		closeAction: 'hide',
+		buttonAlign: 'center',
+		items: [{
+			xtype: 'tabpanel',
+			id: "fileDetailsTabPanel",
+			plain: true,
+			activeTab: 0,
+			//height: 330,
+			defaults: {
+			bodyStyle: 'padding:10px'
+		},
+		items: [showDetailsPanel, versionsPanel, editDetailsPanel]
+		}],
+		buttons: [
+		          {
+		        	  text: 'Save',
+		        	  id: 'fileDetailsSaveButton',
+		        	  handler: function(){
+		        	  Ext.Ajax.request({
+		        		  url: 'ui/updateproperties',
+		        		  method: 'POST',
+		        		  fileUpload: true,
+		        		  form: Ext.getCmp('filePropertiesForm').getForm().getEl(),
+		        		  success: function(response, options){
+		        		  // document contents changed => refresh the data
+		        		  // for the currently selected document
+		        		  // Also reload the grid, since the filename might
+		        		  // have changed.
+		        		  gridStore.on('load', updateDocumentInfoPane); // !!
+		        		  gridStore.load();
+		        		  Ext.getCmp('fileDetailsWindow').close();
+		        	  }, 
+		        	  failure: function(){
+		        		  //Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
+		        		  Ext.MessageBox.alert('Failed', 'Failed on updating properties');
+		        	  }
+		        	  });
+		          }
+		          }, {
+		        	  text: 'Add to favorites',
+		        	  id: 'favoritesButton',
+		        	  handler: function() {
+		        	  var n = Ext.getCmp('filepropEditNodeId').getValue();
+		        	  Ext.getCmp('fileDetailsWindow').close();
+		        	  addFavorite(n);
+		          }
+		          }, {
+		        	  text: 'Mail Link',
+		        	  id: 'mailtoButton',
+		        	  handler: function() {
+		        	  mailLink(fileRecordSet.get('name'), fileRecordSet.get('link'));
+		          }
+		         }]
+	});
+
 }

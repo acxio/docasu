@@ -35,9 +35,9 @@ function _showFolderDetailsWindow(folder) {
 		value: folder.name
 	});
 	
-	var path = new Ext.ux.form.StaticTextField({
-		id: 'folderpropPath',
-		fieldLabel: 'Path to Folder',
+	var parent = new Ext.ux.form.StaticTextField({
+		id: 'folderpropParent',
+		fieldLabel: 'Parent Folder',
 		allowBlank: false,
 		name: 'folderpath',
 		anchor: '90%',
@@ -94,7 +94,7 @@ function _showFolderDetailsWindow(folder) {
 			xtype: 'statictextfield',
 			submitValue: true
 		},
-		items: [name, path, /*url,*/ creator, created, modified],
+		items: [name, parent, /*url,*/ creator, created, modified],
 		buttons: [new Ext.Button({text: 'Add to favorites', handler: function() {
 			Ext.getCmp('folderDetailsWindow').close();
 			addFavorite(folder.nodeId);

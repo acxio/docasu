@@ -166,7 +166,8 @@ function _init(result, request) {
 				{name: 'author', type:'string'},
 				{name: 'creator', type:'string'},
 				{name: 'description', mapping:'description'},
-				{name: 'filePath', type:'string'},
+				{name: 'parentId', type:'string'},
+				{name: 'parentPath', type:'string'},
 				{name: 'mimetype', type:'string'},
 				{name: 'url', type:'string'},
 				{name: 'downloadUrl', type:'string'},
@@ -1103,14 +1104,14 @@ function createActionItemsForFolder(id) {
 	var result = new Array();
 	var html = '';
 	
-	html += '<a href="#" onClick="showFolderDetailsWindow(\''+id+'\');">'+
+	html += '<a href="#" onClick="showFolderDetailsWindow(\''+id+'\'); return false;">'+
 			'<img title="View details" class="actionIcon" src="../../docasu/images/info.gif"/>'+
 			'</a>';
 	result.push({
 		text: 'View details',
 		icon: '../../docasu/images/info.gif',
-		handler: function() {showFolderDetailsWindow(id)}}
-	);
+		handler: function() {showFolderDetailsWindow(id); return false;}
+	});
 	
 	
 	result.push({
@@ -1153,10 +1154,10 @@ function createActionItems(record) {
 	result.push({
 		 text: 'Show infos',
 		 icon: '../../docasu/images/info.gif',
-		 handler: function() {showFileInfos(record.get('nodeId'), record.get('writePermission'))}}
-	);
+		 handler: function() { showFileInfos(record.get('nodeId'), record.get('writePermission')); return false;}
+	});
 	html += 
-		'<a href="#" onclick="showFileInfos(\''+record.get('nodeId')+'\','+record.get('writePermission')+')">'+
+		'<a href="#" onclick="showFileInfos(\''+record.get('nodeId')+'\','+record.get('writePermission')+'); return false;">'+
 			'<img title="Show infos" class="actionIcon" src="../../docasu/images/info.gif"/>'+
 		'</a>';
 	
