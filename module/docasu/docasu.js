@@ -217,7 +217,7 @@ function _init(result, request) {
 	});
 	
 	gridStore.on('loadexception', function(options, response, e) {
-	  doRedirectToUrl('ui');
+		checkStatusAndReload(e.status);
 	});
 	
 	// SELECTION
@@ -547,7 +547,7 @@ function _init(result, request) {
 			region: 'center',
 			margins: '0 2 0 2',
 			border: false,
-			html:'<span class="search-title" style="margin-right:20px;margin-top:5px;">Welcome ' + user.firstName + ' ' + user.lastName + '</span> <a target="_blank" href="../../faces/jsp/browse/browse.jsp" class="header">Standard Alfresco Client</a> <a href="#" onClick="showHelp();" class="header" >Help</a> <a href="#" id="logoutLink" onClick="doLogout();" class="header" >Logout</a>'  
+			html:'<span class="search-title" style="margin-right:20px;margin-top:5px;">Welcome ' + user.firstName + ' ' + user.lastName + '</span> <a target="_blank" href="../../faces/jsp/browse/browse.jsp" class="header">Standard Alfresco Client</a> <a href="#" onClick="showHelp();" class="header" >Help</a> <a href="#" id="logoutLink" onClick="doLogout(); return false;" class="header" >Logout</a>'  
 		}, searchForm]
 	});
 
@@ -763,8 +763,8 @@ function _initCompanyHome() {
 		}
 	}, this);
 	
-	companyHomeTreeLoader.on("loadexception", function() {
-		doRedirectToUrl('ui');
+	companyHomeTreeLoader.on("loadexception", function(options, response, e) {
+		checkStatusAndReload(e.status);
 	});
 
 	var companyHomeTree = new Ext.tree.TreePanel({
@@ -893,8 +893,8 @@ function _initMyHome() {
 		return false;
 	});
 	
-	myHomeTreeLoader.on("loadexception", function() {
-		doRedirectToUrl('ui');
+	myHomeTreeLoader.on("loadexception", function(options, response, e) {
+		checkStatusAndReload(e.status);
 	});
 
 	// Custom context menu.
@@ -1247,9 +1247,13 @@ function createActionItems(record) {
 function loadFolder(folderId) {
 	gridStore.baseParams.nodeId = folderId;
 	clearDocumentInfoPane();
-	checkPermissions(folderId);
+//	checkPermissions(folderId);
 	gridStore.load();
 	// TODO update all panels !! (search box ?)
+}
+
+function loadParentFolder() {
+	loadFolder(Ext.state.Manager.get('parentFolderId'));
 }
 
  function checkPermissions(nodeId) {
@@ -1264,11 +1268,15 @@ function loadFolder(folderId) {
 			try {
 				var jsonData = eval("(" + response.responseText + ")" );
 				if (!jsonData.noredirect) {
-					redirectToURL('ui');
+					// TODO understand this!
+					// was doRedirectToUrl('ui');
+					checkStatusAndReload(200);
 				}	
 				_addActionItems(jsonData);
 			} catch (e) {
-				doRedirectToUrl('ui');
+				// TODO understand this!
+				// was doRedirectToUrl('ui');
+				checkStatusAndReload(200);
 			}
 	    }, 
 		failure: function(){
@@ -1401,43 +1409,48 @@ function reloadTree(autoExpand) {
 /*
  * Logout
  */
-function doRedirectToUrl(url) {
-       window.location = url;
+function checkStatusAndReload(status) {
+	// Status code (200) indicating the request succeeded normally.
+	// An failure with status code (200) indicates a timeout
+	// or a successful logout!
+	if(status == 200) {
+		window.location = 'ui';
+	}
 }
 
 function doLogout() {
-        Ext.MessageBox.show({
-           msg: 'Logout',
-           progressText: 'Processing...',
-           width:200,
-           wait:true,
-           waitConfig: {interval:200},
-           icon: Ext.MessageBox.INFO
-       });
-        setTimeout(function(){
-           //This simulates a short delay for better
-           //readability of the message dialog.
-	       Ext.Ajax.request({
-	       	url: 'ui/logout',
-	       	method: 'GET',
-	       	success: function(response, options){
-	       		// Decodes (parses) a JSON string to an object. If the JSON is invalid,
-	       		// this function throws a SyntaxError.
-	       		var responseObj = Ext.util.JSON.decode(response.responseText);
-	       		//Must have been 2xx http status code
-				Ext.MessageBox.hide();				
-				doRedirectToUrl(responseObj.logout.redirect_url + '?' + ((new Date()).getTime()));
-				}, 
-			failure: function(){
-				//Must have been 4xx or a 5xx http status code
-				Ext.MessageBox.hide();
-				Ext.Msg.show({
-					title:'Logout failed!',
-					msg: 'Please try again!', 
-					buttons: Ext.Msg.OK,
-					icon: Ext.MessageBox.ERROR});}
-			});
-	        }, 1000);
+	Ext.MessageBox.show({
+		msg: 'Logout',
+		progressText: 'Processing...',
+		width:200,
+		wait:true,
+		waitConfig: {interval:200},
+		icon: Ext.MessageBox.INFO
+	});
+	setTimeout(function(){
+		//This simulates a short delay for better
+		//readability of the message dialog.
+		Ext.Ajax.request({
+			url: 'ui/logout',
+			method: 'GET',
+			success: function(response, options) {
+			// Decodes (parses) a JSON string to an object. If the JSON is invalid,
+			// this function throws a SyntaxError.
+			var responseObj = Ext.util.JSON.decode(response.responseText);
+			//Must have been 2xx http status code
+			Ext.MessageBox.hide();
+			checkStatusAndReload(response.status);
+		}, 
+		failure: function(){
+			//Must have been 4xx or a 5xx http status code
+			Ext.MessageBox.hide();
+			Ext.Msg.show({
+				title:'Logout failed!',
+				msg: 'Please try again!', 
+				buttons: Ext.Msg.OK,
+				icon: Ext.MessageBox.ERROR});}
+		});
+	}, 1000);
 }
 
 
