@@ -51,10 +51,6 @@ function preventMe(e) {
 document.oncontextmenu = preventMe; 
 
 function setManualStyles() {
-//	var navigator = getNavigator();
-//	var cssClass = navigator.getEl().dom.firstChild.className;
-//	navigator.getEl().dom.firstChild.className = cssClass + ' black-header';
-	
 	var cmp = Ext.getCmp('east-panel');
 	var cssClass = cmp.getEl().dom.firstChild.className;
 	cmp.getEl().dom.firstChild.className = cssClass + ' black-header';
@@ -528,7 +524,6 @@ function _init(result, request) {
 	var header = new Ext.Panel({ 
 		region:'north',
 		id: "top-bar",
-		contentEl: 'north',
 		height: 40,
 		layout: 'table',
 		layoutConfig: {columns: 3 },
@@ -554,7 +549,6 @@ function _init(result, request) {
 	var center = new Ext.Panel({
 	    region:'center',
 		border: false,
-		contentEl: 'main-center',
 	    layout: 'border',
 		margins: '0 0 0 0',
 		id: 'northPanel',
@@ -575,7 +569,6 @@ function _init(result, request) {
 	    id: 'east-panel',
 		title: 'Document Info',
 		border: true,
-		contentEl: 'east',
 		split: true,
 		collapsible: true,
 		collapseMode: 'mini',
@@ -646,7 +639,6 @@ function _initNavigator() {
 	
 	var navigator = new Ext.Panel({
 		region: 'west', // position in viewport
-		contentEl: 'west',
 		id: 'navigator',
 		title: 'Navigator',
 		width: 200,

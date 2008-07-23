@@ -48,12 +48,5 @@
 
 	<title>DoCASU Web Client</title>
 </head>
-<body style="background: none !important">
-	<div id="north"></div>
-	<div id="west"></div>
-	<div id="main-center">
-		<div id="fileGridLoading" style="align: center; valign: middle"/>
-	</div>
-	<div id="east"></div>
-</body>
+<body style="background: none !important"></body>
 </html>
