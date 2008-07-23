@@ -50,4 +50,11 @@
 		<delete file="${alfresco.root.dir}/alfresco.started"/>
 	</target>
 
+	<target name="reset" description="Preform a similar cleanup than the one done in Alfresco's apply_amps.sh">
+		<!-- TODO make sure alfresco is stopped -->
+		<delete dir="${alfresco.root.dir}/tomcat/temp/Alfresco"/>
+		<delete dir="${alfresco.root.dir}/tomcat/work/Catalina/localhost/alfresco"/>
+		<delete dir="${alfresco.deploy.dir}"/>
+	</target>
+
 </project>
