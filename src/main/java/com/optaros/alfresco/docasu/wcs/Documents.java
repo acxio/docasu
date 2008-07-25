@@ -52,7 +52,7 @@ public class Documents extends DeclarativeWebScript {
 
 	private static final String EDITABLE_EXTENSION_REGEX = "txt|html?";
 	
-	protected static boolean FOLDERS=false;
+	protected boolean folders=false;
 	
 	private CustomFileFolderService customFileFolderService;
 
@@ -61,10 +61,14 @@ public class Documents extends DeclarativeWebScript {
 		this.customFileFolderService = customFileFolderService;
 	}
 
+	public boolean isFolders() {
+		return folders;
+	}
+	
 	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
 		String nodeId;
-		log.debug("XXXXX FOLDERS "+FOLDERS);
-		if (!FOLDERS){			
+		log.debug("XXXXX FOLDERS "+isFolders());
+		if (!isFolders()){			
 			nodeId = req.getParameter("nodeId");
 			log.debug("nodeid document: "+nodeId);
 		}
@@ -115,7 +119,7 @@ public class Documents extends DeclarativeWebScript {
 		String path = generatePath(nodeService, fileFolderService, nodeRef);
 		//List<FileInfo> children = fileFolderService.list(nodeRef);
 		//filtered children list
-		List<FileInfo> children = customFileFolderService.list(nodeRef,FOLDERS);
+		List<FileInfo> children = customFileFolderService.list(nodeRef,isFolders());
 		
 		if (log.isDebugEnabled()) {
 			log.debug("node is folder = " + fileInfo.isFolder());
