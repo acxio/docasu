@@ -203,6 +203,7 @@ function showUploadFile(folder) {
 	
 	var uploadForm = new Ext.form.FormPanel({
 		title: "Choose file",
+		id: 'uploadForm',
 		width: 200,
 		frame: false,
 		fileUpload: true,
@@ -241,9 +242,9 @@ function showUploadFile(folder) {
 			url: 'ui/ac',
 			method: 'POST',
 			form: uploadForm.getForm().el,
-			success: function(response, options){
+			success: function(response, options) {
+				Ext.getCmp('uploadContent').close();
 				if (response.responseText == '"ok"') {
-					uploadContentWindow.close();
 					// TODO: update all panels !!
 					gridStore.load();
 				}
@@ -251,12 +252,16 @@ function showUploadFile(folder) {
 					if (response.responseText == '"duplicate"') {
 						Ext.MessageBox.alert('File already exists.');
 					}
-					else 
+					else {
 						if (response.responseText == '"generror"') {
 							Ext.MessageBox.alert('A general error occurred.');
 						}
+						else {
+							Ext.MessageBox.alert('A unknown error occurred.');
+						}
+					}
 			},
-			failure: function(){Ext.MessageBox.alert('Failed to upload file')}
+			failure: function(){ Ext.MessageBox.alert('Failed to upload file'); }
 		});
 	}
 }
@@ -360,33 +365,29 @@ function _initFileDetailsWindow() {
 	var name = new Ext.ux.form.StaticTextField({
 		id: 'filepropName',
 		fieldLabel: 'Name',
-		allowBlank: false,
 		name: 'name',
-		anchor: '90%',
+		value: 'none'
 	});
 
 	var title = new Ext.ux.form.StaticTextField({
 		id: 'filepropTitle',
 		fieldLabel: 'Title',
-		allowBlank: false,
 		name: 'title',
-		anchor: '90%',
+		value: 'undefined'
 	});
 
 	var mimetype = new Ext.ux.form.StaticTextField({
 		id: 'filepropMimetype',
 		fieldLabel: 'Content Type',
-		allowBlank: false,
 		name: 'mimetype',
-		anchor: '90%',
+		value: 'undefined'
 	});
 
 	var size = new Ext.ux.form.StaticTextField({
 		id: 'filepropSize',
 		fieldLabel: 'Size',
-		allowBlank: false,
 		name: 'size',
-		anchor: '90%',
+		value: 'undefined'
 	});
 
 	var parent = new Ext.ux.form.StaticTextField({
@@ -412,54 +413,49 @@ function _initFileDetailsWindow() {
 		anchor: '90%',
 		submitValue: false,
 		readOnly: true,
+		value: 'undefined'
 	});
 
 	var version = new Ext.ux.form.StaticTextField({
 		id: 'filepropVersion',
 		fieldLabel: 'Version',
-		allowBlank: false,
 		name: 'version',
-		anchor: '90%',
+		value: 'undefined'
 	});
 
 	var author = new Ext.ux.form.StaticTextField({
 		id: 'filepropAuthor',
 		fieldLabel: 'Author',
-		allowBlank: false,
 		name: 'author',
-		anchor: '90%',
+		value: 'undefined'
 	});
 
 	var creator = new Ext.ux.form.StaticTextField({
 		id: 'filepropCreator',
 		fieldLabel: 'Creator',
-		allowBlank: false,
 		name: 'creator',
-		anchor: '90%',
+		value: 'undefined'
 	});
 
 	var modifier = new Ext.ux.form.StaticTextField({
 		id: 'filepropModifier',
 		fieldLabel: 'Modifier',
-		allowBlank: false,
 		name: 'modifier',
-		anchor: '90%',
+		value: 'undefined'
 	});
 
 	var modified = new Ext.ux.form.StaticTextField({
 		id: 'filepropModified',
 		fieldLabel: 'Last change',
-		allowBlank: false,
 		name: 'modified',
-		anchor: '90%',
+		value: 'undefined'
 	});
 
 	var created = new Ext.ux.form.StaticTextField({
 		id: 'filepropCreated',
 		fieldLabel: 'Creation time',
-		allowBlank: false,
 		name: 'created',
-		anchor: '90%',
+		value: 'undefined'
 	});
 
 	// Text fields for edit properties
@@ -469,6 +465,7 @@ function _initFileDetailsWindow() {
 		allowBlank: false,
 		name: 'name',
 		anchor: '90%',
+		value: 'undefined'
 	});
 
 	var editTitle = new Ext.form.TextField({
@@ -477,6 +474,7 @@ function _initFileDetailsWindow() {
 		allowBlank: true,
 		name: 'title',
 		anchor: '90%',
+		value: 'undefined'
 	});
 
 	var editAuthor = new Ext.form.TextField({
@@ -485,6 +483,7 @@ function _initFileDetailsWindow() {
 		allowBlank: true,
 		name: 'author',
 		anchor: '90%',
+		value: 'undefined'
 	});
 
 	var editDescription = new Ext.form.TextArea({
@@ -494,11 +493,12 @@ function _initFileDetailsWindow() {
 		autoScroll: true,
 		name: 'description',
 		anchor: '90%',
+		value: 'undefined'
 	});
 
 	var hiddenNodeId = new Ext.form.Hidden({
 		id: 'filepropEditNodeId',
-		name: 'nodeId',
+		name: 'nodeId'
 	});
 
 	// VERSIONS GRID	
@@ -565,11 +565,11 @@ function _initFileDetailsWindow() {
 		bodyStyle: 'padding: 0px',
 		layout: 'fit',
 		items: [ versionsGrid ],
-		listeners: {activate: function() { 
-		Ext.getCmp('fileDetailsSaveButton').hide();
-		Ext.getCmp('mailtoButton').show();
-		Ext.getCmp('favoritesButton').show();  
-	}}
+		listeners: { activate: function() { 
+			Ext.getCmp('fileDetailsSaveButton').hide();
+			Ext.getCmp('mailtoButton').show();
+			Ext.getCmp('favoritesButton').show();  
+		}}
 	});
 
 	var editDetailsPanel = new Ext.form.FormPanel({
@@ -583,15 +583,15 @@ function _initFileDetailsWindow() {
 		labelWidth: 75,
 		bodyStyle: 'padding: 15px',
 		defaults: {
-		anchor: '-15',
-		submitValue: true
-	},
-	items: [editName, editTitle, editDescription, editAuthor, hiddenNodeId],
-	listeners: {activate: function() { 
-		Ext.getCmp('fileDetailsSaveButton').show();
-		Ext.getCmp('mailtoButton').hide();
-		Ext.getCmp('favoritesButton').hide();   
-	}}
+			anchor: '-15',
+			submitValue: true
+		},
+		items: [editName, editTitle, editDescription, editAuthor, hiddenNodeId],
+		listeners: {activate: function() { 
+			Ext.getCmp('fileDetailsSaveButton').show();
+			Ext.getCmp('mailtoButton').hide();
+			Ext.getCmp('favoritesButton').hide();   
+		}}
 	});
 
 	new Ext.Window({
@@ -614,50 +614,49 @@ function _initFileDetailsWindow() {
 			activeTab: 0,
 			//height: 330,
 			defaults: {
-			bodyStyle: 'padding:10px'
-		},
-		items: [showDetailsPanel, versionsPanel, editDetailsPanel]
+				bodyStyle: 'padding:10px'
+			},
+			items: [showDetailsPanel, versionsPanel, editDetailsPanel]
 		}],
-		buttons: [
-		          {
-		        	  text: 'Save',
-		        	  id: 'fileDetailsSaveButton',
-		        	  handler: function(){
-		        	  Ext.Ajax.request({
-		        		  url: 'ui/updateproperties',
-		        		  method: 'POST',
-		        		  fileUpload: true,
-		        		  form: Ext.getCmp('filePropertiesForm').getForm().getEl(),
-		        		  success: function(response, options){
-		        		  // document contents changed => refresh the data
-		        		  // for the currently selected document
-		        		  // Also reload the grid, since the filename might
-		        		  // have changed.
-		        		  gridStore.on('load', updateDocumentInfoPane); // !!
-		        		  gridStore.load();
-		        		  Ext.getCmp('fileDetailsWindow').close();
-		        	  }, 
-		        	  failure: function(){
-		        		  //Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
-		        		  Ext.MessageBox.alert('Failed', 'Failed on updating properties');
-		        	  }
-		        	  });
-		          }
-		          }, {
-		        	  text: 'Add to favorites',
-		        	  id: 'favoritesButton',
-		        	  handler: function() {
-		        	  var n = Ext.getCmp('filepropEditNodeId').getValue();
-		        	  Ext.getCmp('fileDetailsWindow').close();
-		        	  addFavorite(n);
-		          }
-		          }, {
-		        	  text: 'Mail Link',
-		        	  id: 'mailtoButton',
-		        	  handler: function() {
-		        	  mailLink(fileRecordSet.get('name'), fileRecordSet.get('link'));
-		          }
-		         }]
+		buttons: [{
+			text: 'Save',
+			id: 'fileDetailsSaveButton',
+			handler: function(){
+				Ext.Ajax.request({
+					url: 'ui/updateproperties',
+					method: 'POST',
+					fileUpload: true,
+					form: Ext.getCmp('filePropertiesForm').getForm().getEl(),
+					success: function(response, options) {
+						// document contents changed => refresh the data
+						// for the currently selected document
+						// Also reload the grid, since the filename might
+						// have changed.
+						gridStore.on('load', updateDocumentInfoPane); // !!
+						gridStore.load();
+						Ext.getCmp('fileDetailsWindow').close();
+					}, 
+					failure: function(){
+						//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
+						Ext.MessageBox.alert('Failed', 'Failed on updating properties');
+					}
+				});
+			}
+		}, {
+			text: 'Add to favorites',
+			id: 'favoritesButton',
+			handler: function() {
+				var n = Ext.getCmp('filepropEditNodeId').getValue();
+				Ext.getCmp('fileDetailsWindow').close();
+				addFavorite(n);
+			}
+		}, {
+			text: 'Mail Link',
+			id: 'mailtoButton',
+			handler: function() {
+				mailLink(fileRecordSet.get('name'), fileRecordSet.get('link'));
+			}
+		}]
 	});
 
 }

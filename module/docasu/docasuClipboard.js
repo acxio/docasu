@@ -37,6 +37,7 @@ clipboard.update = function() {
 	
 	var clipHtml = '<table>';
 	
+	var i;
 	for (i = 0; i < nodes.length; i++) {
 		var c = nodes[i].split(';');
 		clipHtml += '<tr>'

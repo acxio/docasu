@@ -26,11 +26,6 @@ body{font:normal 11px tahoma,arial,helvetica,sans-serif;}
 	padding-right:7px;
 }
 
-.searchResults{
-	padding: 15px 0px 0px 6px;
-	color:#3280FF;
-}
-
 .ux-form-statictextfield {
 	background: transparent;
 	border: none;
@@ -64,16 +59,6 @@ body{font:normal 11px tahoma,arial,helvetica,sans-serif;}
 	margin: 20px;
 }
 
-
-#cifsLink {
-	font-size: 14px;
-	font-weight: bold;
-}
-
-#cifsLink a {
-	text-decoration: none;
-}
-
 .black-header {
 	background: url(/alfresco/docasu/images/black_bgnd_strip.gif);
 	color: #fff;
@@ -84,14 +69,65 @@ body{font:normal 11px tahoma,arial,helvetica,sans-serif;}
 	background: url(/alfresco/docasu/images/gray_bgnd_strip.gif);
 }
 
-.header-bar table {
+#top-bar {
+	background: url(/alfresco/docasu/images/gray_bgnd_strip.gif);
+}
+
+#top-bar div {
+	white-space: nowrap;
+	background: none;
+}
+
+#top-bar td.filler {
 	width: 100%;
 }
 
-.search-title {
+#top-bar .title {
 	font-weight: bold;
 	font-size: 120%;
 }
+
+.center-header-bar {
+	background: #f1f1f1;
+	padding: 5px;
+}
+
+.center-header-bar table {
+	width: 100%;
+}
+
+.center-header-bar img {
+	vertical-align: middle;
+}
+
+.center-header-bar div {
+	white-space: nowrap;
+	background: #f1f1f1;
+}
+
+.center-header-bar #folderName {
+	overflow: hidden;
+	width: 300px;
+}
+
+.center-header-bar #folderName div {
+	display: inline;
+	font-size: 14px;
+	font-weight: bold;
+	color: #3280FF;
+	padding-left: 5px;
+	vertical-align: middle;
+}
+
+.center-header-bar .folderActionsLabel {
+	margin-right: 20px;
+}
+
+.center-header-bar td.filler {
+	height: 27px;
+	width: 100%;
+}
+
 
 .gray-bgnd div {
 	background: none;

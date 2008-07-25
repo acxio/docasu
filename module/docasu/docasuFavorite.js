@@ -37,6 +37,7 @@ function _updateFavorites(responseText) {
 	
 	var favorites = eval(responseText).rows;
 	
+	var i;
 	for (i = 0; i < favorites.length; i++) {
 		var f = favorites[i];
 		favHtml += '<tr>';

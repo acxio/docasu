@@ -182,25 +182,3 @@ function showAdvancedSearch() {
 	}
 }
 
-/* search results are shown in main grid */
-function showSearchResults(data){
-	
-	/* load search results into grid */
-	gridStore.loadData(data);
-	
-	/* clear the document info panel */
-	clearDocumentInfoPane();
-	
-	/* no breadcrumb displayed */
-	Ext.getCmp('folderPathTitle').setTitle('');	
-	
-	/* Set the title to "Search results" */
-	var elem = '<div class="searchResults">Search Results</div>';
-	Ext.get('cifsLink').update(elem);
-	
-	/* Set variables */
-	Ext.state.Manager.set("currentFolderName", '');
-	Ext.state.Manager.set("previousFolderName", '');
-	Ext.state.Manager.set("previousPreviousFolder", '');
- 
-}

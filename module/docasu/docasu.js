@@ -25,6 +25,10 @@ var simpleSearchQuery = "";
 var advancedSearchQuery = "";
 var recentDocsStore;
 
+function getNavigator() {
+	return Ext.getCmp('navigator');
+}
+
 function getCompanyHomeTree() {
 	return Ext.getCmp('companyHomeTree');
 }
@@ -37,44 +41,14 @@ function getToolTip() {
 	return Ext.getCmp('toolTip');
 }
 
-function getNavigator() {
-	return Ext.getCmp('navigator');
-}
-
 function preventMe(e) {
-	if(!e) e=window.event;
-	if(e.returnValue) e.returnValue = false;
-	if(e.preventDefault) e.preventDefault();
+	if(!e) {e = window.event;}
+	if(e.returnValue) {e.returnValue = false;}
+	if(e.preventDefault) {e.preventDefault();}
 	return false;
-};
+}
 
 document.oncontextmenu = preventMe; 
-
-function setManualStyles() {
-	var cmp = Ext.getCmp('east-panel');
-	var cssClass = cmp.getEl().dom.firstChild.className;
-	cmp.getEl().dom.firstChild.className = cssClass + ' black-header';
-	
-	cmp = Ext.getCmp('folderPathTitle');
-	cssClass = cmp.getEl().dom.firstChild.className;
-	cmp.getEl().dom.firstChild.className = cssClass + ' black-header';
-	cmp.getEl().dom.lastChild.firstChild.style.height = '50px';
-	cmp.getEl().dom.style.width = '100%';
-	
-	cmp = Ext.getCmp('center-header');
-	cmp.getEl().dom.parentNode.style.width = '100%';
-	
-	cmp = Ext.getCmp('center-action');
-	cmp.getEl().dom.parentNode.style.width = '100%';
-	
-	cmp = Ext.getCmp('top-bar');
-	cssClass = cmp.getEl().dom.firstChild.firstChild.className;
-	cmp.getEl().dom.firstChild.firstChild.className = cssClass + ' gray-bgnd';
-	
-	var cmp = Ext.getCmp('docInfoPanel');
-	var cssClass = cmp.getEl().dom.firstChild.className;
-	cmp.getEl().dom.firstChild.className = cssClass + ' gray-header';
-}
 
 function mailLink(name, link) {
 	parent.location='mailto:?subject=mailing:%20'+name+'&body=' + escape('<a href="'+location.protocol + '//' + location.host + link+'">'+name+'</a>');		
@@ -109,25 +83,23 @@ Ext.onReady(function(){
 		}
 	});
 	
-	Ext.Ajax.request({
-		url: 'ui/datamodel',
-		method: 'GET',
-		success: _loadDataModel,
-		failure: function(result, request){
-			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
-			Ext.MessageBox.alert('Failed', 'Failed to load Data Model. \n\r\n\r' + result.responseText);
-		}
-	});
+	// TODO delete ?
+//	Ext.Ajax.request({
+//		url: 'ui/datamodel',
+//		method: 'GET',
+//		success: _loadDataModel,
+//		failure: function(result, request){
+//			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
+//			Ext.MessageBox.alert('Failed', 'Failed to load Data Model. \n\r\n\r' + result.responseText);
+//		}
+//	});
 		
-				//shortcut Node
-	//alert('create Short cut node 1!');
-	//createShortcutNode();
 });
 
-function _loadDataModel(result, request) {
-	var modelData = eval(result.responseText);
-	Ext.state.Manager.set('cifsHost', modelData.cifsServer);
-}
+//function _loadDataModel(result, request) {
+//	var modelData = eval(result.responseText);
+//	Ext.state.Manager.set('cifsHost', modelData.cifsServer);
+//}
 
 function _init(result, request) {
 	
@@ -139,9 +111,258 @@ function _init(result, request) {
     Ext.state.Manager.set('userHomeName', user.userHomeName);
     
     _initBreadcrumbs();
-	_initNavigator();
-  
-    
+	
+	var dataview = new Ext.DataView({
+		id: 'docInfoDataView',
+		//autoHeight:true,
+		minHeight: 100,
+		autoScroll: true,
+		store: new Ext.data.Store({
+			fields: ['creator', 'description', 'creator', 'modifier']
+		}),
+		tpl: new Ext.XTemplate(
+				'<tpl for=".">',
+				'<table id="infoTable" class="docInfoTable">',
+				'<tr valign="top">',
+				'<td colspan="4" class="docInfoListItem">',
+				'<tpl if="this.isImage(mimetype)">',
+				'<img height="64" src="{link}" alt="{title}"/>',
+				'</tpl>',
+				'<tpl if="!this.isImage(mimetype)">',
+				'<img height="32" src="{icon32Url}" alt="{title}"/>',
+				'</tpl>',
+				'</td>',
+				'</tr>',
+				'<tr valign="top">',    
+				'<td><b>Title:</b></td><td colspan="3">{title}</td>',
+				'</tr>',
+				'<tr valign="top">',    
+				'<td><b>Description:</b></td><td colspan="3">{description}</td>',
+				'</tr>',
+				'<tr valign="top">',
+				'<td><b>Version:</b></td><td colspan="3">{version}</td>',
+				'</tr>',
+				'<tr valign="top">',    
+				'<td><b>Author:</b></td><td colspan="3">{author}</td>',
+				'</tr>',
+				'<tr valign="top">',    
+				'<td><b>Creator:</b></td><td colspan="3">{creator}</td>',
+				'</tr>',
+				'<tr valign="top">',    
+				'<td><b>Modifier:</b></td><td colspan="3">{modifier}</td>',
+				'</tr>',
+				'<tr valign="top">',
+				'<td><b>MIME:</b></td><td colspan="3">{mimetype}</td>',
+				'</tr>',
+				'<tr valign="top">',
+				'<td><b>Size:</b></td><td colspan="3">{[Ext.util.Format.fileSize(values.size)]}</td>',
+				'</tr>',
+				'<tr valign="top">',
+				'<td><b>Created:</b></td><td colspan="3">{[timeZoneAwareRenderer(values.created)]}</td>',
+				'</tr>',
+				'<tr valign="top">',
+				'<td><b>Modified:</b></td><td colspan="3">{[timeZoneAwareRenderer(values.modified)]}</td>',
+				'</tr>',
+				'</table>',
+				'</tpl>',{
+					isImage: function(mimetype) {
+					return mimetype.indexOf("image") === 0;
+				}
+				}
+		),
+		itemSelector: 'div.item-selector'
+	});
+
+	var east = new Ext.Panel({
+		region: 'east',
+	    id: 'east-panel',
+		title: 'Document Info',
+		border: true,
+		split: true,
+		collapsible: true,
+		collapseMode: 'mini',
+		width: 200,
+	    minSize: 175,
+	    maxSize: 400,
+	    layout: 'border',
+		margins: '0 5 0 0',	
+		items: [{
+                id: 'docInfoPanel',
+    			name: 'docInfo',
+    		    border: false,
+				autoScroll: true,
+				region: 'center',
+                items: [dataview]
+	    	}
+		]
+	});
+
+	east.on('render', function (panel) {
+		panel.header.addClass('black-header');		
+	});
+	
+	var footer = new Ext.Panel({ 
+		region:'south',
+		id: 'footer',
+		collapsible: false,
+		margins: '5',
+		border: false,
+		style: 'text-align:center;',
+		html: '<a href="http://code.optaros.com/trac/docasu">DoCASU @VERSION@</a> - Powered by <a href="http://www.optaros.com">Optaros</a>'
+	});
+
+	var viewport = new Ext.Viewport({
+		layout: 'border',
+		items: [
+			_initTopBar(user),
+			_initNavigator(),
+			_initCenter(),
+			east,
+			footer
+		]
+	});
+
+	var tooltip = new Ext.ToolTip({
+		target: 'fileGrid',
+		id: 'toolTip',
+		trackMouse: true,
+		showDelay: 500,
+		hideDelay: 0,
+		dismissDelay: 5000
+	});
+	// to prevent strange js errors;
+	tooltip.render(document.body);
+
+	// disable tooltip on empty rows
+	tooltip.on("beforeshow", function(e, t){
+//		console.log('tt no data ' + getToolTip().noData);
+		if (getToolTip().noData) {
+			return false;
+		}
+		return undefined;
+    });
+	
+	updateFavorites();
+	clipboard.update();	
+
+	// TODO understand this.
+	checkPermissions(null);
+
+	// Load data into grid.
+	gridStore.load();
+
+}
+
+function _initTopBar(user) {
+
+	/* SEARCH */
+	var searchCombo = new Ext.form.ComboBox({
+		colspan: 1,
+		hiddenName: 't',
+		width: 100,
+		store: new Ext.data.SimpleStore({
+			fields: ['code', 'label'],
+			data: [
+				['', 'All items'],
+				['content', 'Documents'],
+				['filename', 'File names'],
+				['space', 'Spaces']
+			]}),
+		displayField: 'label',
+		valueField: 'code',
+		mode: 'local',
+		value: '',
+		triggerAction: 'all',
+		selectOnFocus: true,
+		editable: false
+	});
+	
+	var searchField = new Ext.form.TextField({
+		colspan: 1,
+		style: 'margin-left: 4px',
+		name: 'q',
+		hideLabel: true
+		});
+	searchField.on('specialkey', function(f, event) {
+		if(event.getKey() == event.ENTER) {
+    		searchForm.form.submit();
+		}
+	}, this);
+	
+	var simpleSearchImg = new Ext.Button({
+		text: 'Go',
+		minWidth: 40,
+		handler: function() {
+			Ext.getCmp('search-panel').form.submit();
+		}
+	});
+	
+	var searchForm = new Ext.form.FormPanel({
+		id: 'search-panel',
+		name: 'searchPanel',
+		bodyStyle: 'padding: 4px;margin-top:5px;',
+		region: 'east',
+		border: false,
+		frame: false,
+		layout: 'table',
+		items: [{html: '<span class="title">Search:</span>', colspan: 1, bodyStyle: 'margin-right: 4px; border-style:none'},
+				searchCombo,
+				searchField,
+				simpleSearchImg,
+				{html: '<a href="#" class="header" style="margin-right:10px;" onclick="showAdvancedSearch();">Advanced&nbsp;Search</a>', border: false, colspan: 1}],
+		url: 'ui/ss',
+		method: 'GET',	
+		listeners: {
+			actioncomplete: function(form, action){
+				var responseObj = Ext.util.JSON.decode(action.response.responseText);
+				
+				simpleSearchQuery = searchField.getValue();
+				advancedSearchQuery = "";
+				
+				showSearchResults(responseObj);
+			},
+			actionfailure: function(form, action){
+				//Ext.MessageBox.alert(action.response.responseCode);
+				Ext.MessageBox.alert('An error occurred while searching.');
+			}	
+		}
+	});
+
+	var centerHeader = new Ext.Panel({ 
+		id: 'center-header',
+		margins: '0 2 0 2',
+		border: false,
+		html:'<span class="title" style="margin-right:20px;margin-top:5px;">Welcome ' + user.firstName + ' ' + user.lastName + '</span> <a target="_blank" href="../../faces/jsp/browse/browse.jsp" class="header">Standard Alfresco Client</a> <a href="#" onClick="showHelp();" class="header" >Help</a> <a href="#" id="logoutLink" onClick="doLogout(); return false;" class="header" >Logout</a>'
+	});
+
+	var topBar = new Ext.Panel({ 
+		region:'north',
+		id: "top-bar",
+		height: 40,
+		layout: 'table',
+		layoutConfig: {columns: 3 },
+		cls: 'header-bar',
+		itemCls: 'no-bgnd',
+		margins: '5',
+		items: [{
+			id: 'logo',
+			width: 205,
+			margins: '0 2 0 0',
+			border: false,
+			html: "<img src='../../docasu/images/logo.gif' alt='Alfresco ECMS' style='margin-top:3px;margin-left:3px;'/>"
+		}, centerHeader, searchForm]
+	});
+	
+	centerHeader.on('render', function(panel) {
+		panel.getEl().parent('td').addClass('filler');
+	});
+	
+	
+	return topBar;
+}
+
+function _initCenter() {
+	
 	/* FILE GRID */
 	// STORAGE
 	/* Data store for the file grid in the main content section */
@@ -185,7 +406,7 @@ function _init(result, request) {
 				{name: 'iconUrl', type:'string'},
 				{name: 'icon32Url', type:'string'},
 				{name: 'icon64Url', type:'string'},
-				{name: 'isFolder', type:'boolean'},
+				{name: 'isFolder', type:'boolean'}
             ]
 		})
 	});
@@ -195,11 +416,13 @@ function _init(result, request) {
 		var folderName = gridStore.reader.jsonData.folderName;
 		var folderId = gridStore.reader.jsonData.folderId;
 
+		showFolderData(folderId, folderName);
 		updateCurrentFolder(folderId);
 		updateBreadcrumbs(folderName, folderId);
 
-		//create folder icon, name and CIFS path
-		
+		var name = folderName.substr(0, 21);
+		Ext.get('folderName').child('img').show();
+		Ext.get('folderName').child('div').update(name);
 	});
 	
 	gridStore.on('loadexception', function(options, response, e) {
@@ -254,7 +477,7 @@ function _init(result, request) {
 	gridList.on('contextmenu', function(e){
         e.preventDefault();
         
-		if (advancedSearchQuery == '' && simpleSearchQuery == '') {
+		if (advancedSearchQuery === '' && simpleSearchQuery === '') {
 			this.contextMenu = getFolderContextMenu(Ext.state.Manager.get('currentFolder'));
         
 			var xy = e.getXY();
@@ -296,85 +519,8 @@ function _init(result, request) {
  
 	// Set sorting for file name, ascending
 	gridStore.setDefaultSort('name', 'asc');
-	// Load data into grid
-	gridStore.load();
-	
-	/* SEARCH */
-	var searchCombo = new Ext.form.ComboBox({
-		colspan: 1,
-		hiddenName: 't',
-		width: 100,
-		store: new Ext.data.SimpleStore({
-			fields: ['code', 'label'],
-			data: [
-				['', 'All items'],
-				['content', 'Documents'],
-				['filename', 'File names'],
-				['space', 'Spaces']
-			]}),
-		displayField: 'label',
-		valueField: 'code',
-		mode: 'local',
-		value: '',
-		triggerAction: 'all',
-		selectOnFocus: true,
-		editable: false
-	});
-	
-	var searchField = new Ext.form.TextField({
-		colspan: 1,
-		style: 'margin-left: 4px',
-		name: 'q',
-		hideLabel: true
-		});
-	searchField.on('specialkey', function(f, event) {
-		if(event.getKey() == event.ENTER) {
-    		searchForm.form.submit();
-		}
-	}, this);
-	
-	var simpleSearchImg = new Ext.Button({
-		text: 'Go',
-		minWidth: 40,
-		handler: handleAddFavorite = function() {
-			Ext.getCmp('search-panel').form.submit();
-		}
-	});
 	
 
-	
-	var searchForm = new Ext.form.FormPanel({
-		id: 'search-panel',
-		name: 'searchPanel',
-		bodyStyle: 'padding: 4px;margin-top:5px;',
-		region: 'east',
-		border: false,
-		frame: false,
-		width: 500,
-		layout: 'table',
-		items: [{html: '<span class="search-title">Search:</span>', colspan: 1, bodyStyle: 'margin-right: 4px; border-style:none'},
-				searchCombo,
-				searchField,
-				simpleSearchImg,
-				{html: '<a href="#" class="header" onclick="showAdvancedSearch();">Advanced&nbsp;Search</a>', border: false, colspan: 1}],
-		url: 'ui/ss',
-		method: 'GET',	
-		listeners: {
-			actioncomplete: function(form, action){
-				var responseObj = Ext.util.JSON.decode(action.response.responseText);
-				
-				simpleSearchQuery = searchField.getValue();
-				advancedSearchQuery = "";
-				
-				showSearchResults(responseObj);
-			},
-			actionfailure: function(form, action){
-				//Ext.MessageBox.alert(action.response.responseCode);
-				Ext.MessageBox.alert('An error occurred while searching.');
-			}	
-		}
-	});
-	
 	var actionComboBoxStore = new Ext.data.SimpleStore({
 		id: 'actionComboBoxStore',
 		fields: ['code', 'label'],
@@ -390,12 +536,9 @@ function _init(result, request) {
 		]
 	});
 
-	var actionComboBox = new Ext.form.ComboBox({
-		name: 'actionComboBox',
-		id: 'actionComboBox',
+	var folderActions = new Ext.form.ComboBox({
+		id: 'folderActions',
 	    hiddenName: 't',
-		width: 150,
-		style: 'margin-left: 12px',
 		typeAhead: true,
 		emptyText:'View details',
 		store: actionComboBoxStore,
@@ -432,220 +575,56 @@ function _init(result, request) {
 			}
 		}
 	});
-	
-	/** FORM FIELDS */
-	var comboBoxTable = new Ext.Panel({
-	    layout:'table',
-		border: false,
-		id:'actionTable',
-		height: 50,
-		layoutConfig: {columns: 3},
-		bodyStyle:'background: #f1f1f1;width:100%;',
-		cls: 'wideTable',
-	    items: [{html: '<div id="cifsLink" />', id:'cifsLink', border: false, width: 220, bodyStyle: 'background: none;'},
-				{id: 'center-action', border:false, html: '<div />'},
-				{html: '<div id="actions" />', id:'actions', layout: 'table', width: 290, border:false, cls:'no-bgnd', items:[
-					{html: '<span>Folder actions:</span>', border: false, bodyStyle: 'font-weight:bold;margin-left:20px;width: 100px;'},
-					actionComboBox]}
-				]
-	});	
 
-	var dataview = new Ext.DataView({
-		id: 'docInfoDataView',
-		//autoHeight:true,
-		minHeight: 100,
-		autoScroll: true,
-		store: new Ext.data.Store({
-			fields: ['creator', 'description', 'creator', 'modifier']
-		}),
-		tpl: new Ext.XTemplate(
-				'<tpl for=".">',
-				'<table id="infoTable" class="docInfoTable">',
-				'<tr valign="top">',
-				'<td colspan="4" class="docInfoListItem">',
-				'<tpl if="this.isImage(mimetype)">',
-				'<img height="64" src="{link}" alt="{title}"/>',
-				'</tpl>',
-				'<tpl if="!this.isImage(mimetype)">',
-				'<img height="32" src="{icon32Url}" alt="{title}"/>',
-				'</tpl>',
-				'</td>',
-				'</tr>',
-				'<tr valign="top">',    
-				'<td><b>Title:</b></td><td colspan="3">{title}</td>',
-				'</tr>',
-				'<tr valign="top">',    
-				'<td><b>Description:</b></td><td colspan="3">{description}</td>',
-				'</tr>',
-				'<tr valign="top">',
-				'<td><b>Version:</b></td><td colspan="3">{version}</td>',
-				'</tr>',
-				'<tr valign="top">',    
-				'<td><b>Author:</b></td><td colspan="3">{author}</td>',
-				'</tr>',
-				'<tr valign="top">',    
-				'<td><b>Creator:</b></td><td colspan="3">{creator}</td>',
-				'</tr>',
-				'<tr valign="top">',    
-				'<td><b>Modifier:</b></td><td colspan="3">{modifier}</td>',
-				'</tr>',
-				'<tr valign="top">',
-				'<td><b>MIME:</b></td><td colspan="3">{mimetype}</td>',
-				'</tr>',
-				'<tr valign="top">',
-				'<td><b>Size:</b></td><td colspan="3">{[Ext.util.Format.fileSize(values.size)]}</td>',
-				'</tr>',
-				'<tr valign="top">',
-				'<td><b>Created:</b></td><td colspan="3">{[timeZoneAwareRenderer(values.created)]}</td>',
-				'</tr>',
-				'<tr valign="top">',
-				'<td><b>Modified:</b></td><td colspan="3">{[timeZoneAwareRenderer(values.modified)]}</td>',
-				'</tr>',
-				'</table>',
-				'</tpl>',{
-					isImage: function(mimetype){
-					return mimetype.indexOf("image") == 0;
-				}
-				}
-		),
-		itemSelector: 'div.item-selector'
+	var folderName = new Ext.Panel({
+		border: false,
+		html: '<div id="folderName"><img src="../../docasu/images/folder.gif"/><div></div></div>'
 	});
 
-	var header = new Ext.Panel({ 
-		region:'north',
-		id: "top-bar",
+	var filler = new Ext.Panel({
+		border: false,
+		html: ''
+	});
+
+	var folderActionsLabel = new Ext.Panel({
+		border: false,
+		cls: 'folderActionsLabel',
+		html: '<div>Folder actions:</div>'
+	});
+
+	var centerHeader = new Ext.Panel({
+		id: 'centerHeader',
+		region: 'north',
 		height: 40,
+		border: false,
 		layout: 'table',
-		layoutConfig: {columns: 3 },
-		cls: 'header-bar',
-		itemCls: 'no-bgnd',
-		margins: '5',
-		items: [{
-			id: 'logo',
-			region: 'west',
-			width: 205,
-			margins: '0 2 0 0',
-			border: false,
-			html: "<img src='../../docasu/images/logo.gif' alt='Alfresco ECMS' style='margin-top:3px;margin-left:3px;'/>"
-		},{
-			id: 'center-header',
-			region: 'center',
-			margins: '0 2 0 2',
-			border: false,
-			html:'<span class="search-title" style="margin-right:20px;margin-top:5px;">Welcome ' + user.firstName + ' ' + user.lastName + '</span> <a target="_blank" href="../../faces/jsp/browse/browse.jsp" class="header">Standard Alfresco Client</a> <a href="#" onClick="showHelp();" class="header" >Help</a> <a href="#" id="logoutLink" onClick="doLogout(); return false;" class="header" >Logout</a>'  
-		}, searchForm]
+		layoutConfig: {columns: 4},
+		cls: 'center-header-bar',
+	    items: [folderName, filler, folderActionsLabel, folderActions]
+	});
+	
+	filler.on('render', function(panel) {
+		panel.getEl().parent('td').addClass('filler');
 	});
 
 	var center = new Ext.Panel({
+	    layout:'border',
 	    region:'center',
-		border: false,
-	    layout: 'border',
 		margins: '0 0 0 0',
-		id: 'northPanel',
-		items: [{
-	        id: 'folderPathTitle',
-			height: 70,
-			region: 'north',
-            title: '',
-			header: true,
-			items:[comboBoxTable]},
-	    	gridList
-		]
-	});
-		
-		
-	var east = new Ext.Panel({
-		region: 'east',
-	    id: 'east-panel',
-		title: 'Document Info',
-		border: true,
-		split: true,
-		collapsible: true,
-		collapseMode: 'mini',
-		width: 200,
-	    minSize: 175,
-	    maxSize: 400,
-	    layout: 'border',
-		margins: '0 5 0 0',	
-		items: [{
-                id: 'docInfoPanel',
-    			name: 'docInfo',
-    		    border: false,
-				autoScroll: true,
-				region: 'center',
-                items: [dataview]
-	    	}
-		]
+		id: 'centerPanel',
+		header: true,
+		items: [centerHeader, gridList]
 	});
 
-	var footer = new Ext.Panel({ 
-		region:'south',
-		id: 'footer',
-		collapsible: false,
-		margins: '5',
-		border: false,
-		style: 'text-align:center;',
-		html: '<a href="http://code.optaros.com/trac/docasu">DoCASU @VERSION@</a> - Powered by <a href="http://www.optaros.com">Optaros</a>'
+	center.on('render', function (panel) {
+		panel.header.addClass('black-header');		
 	});
-
-	var viewport = new Ext.Viewport({
-		layout: 'border',
-		items: [
-			header,
-			getNavigator(),
-			center,
-			east,
-			footer
-		]
-	});
-
-	var tooltip = new Ext.ToolTip({
-		target: 'fileGrid',
-		id: 'toolTip',
-		trackMouse: true,
-		showDelay: 500,
-		hideDelay: 0,
-		dismissDelay: 5000
-	});
-	// to prevent strange js errors;
-	tooltip.render(document.body);
-
-	// disable tooltip on empty rows
-	tooltip.on("beforeshow", function(e, t){
-//		console.log('tt no data ' + getToolTip().noData);
-		if (getToolTip().noData) {
-			return false;
-		}
-    });
 	
-	setManualStyles();
-	updateFavorites();
-	clipboard.update();	
-	checkPermissions(null);
-
+	return center;
 }
-
+	
 function _initNavigator() {
 	
-	var navigator = new Ext.Panel({
-		region: 'west', // position in viewport
-		id: 'navigator',
-		title: 'Navigator',
-		width: 200,
-		minSize: 175,
-		maxSize: 400,
-		split: true,
-		collapsible: true,
-		collapseMode: 'mini',
-		margins: '0 0 0 5',
-		layout: 'accordion',
-		layoutConfig: {
-			hideCollapseTool: true,
-			titleCollapse: true,
-			animate: false
-		}
-	});
-
 	var companyHomeTree = _initCompanyHome();
 	var myHomeTree = _initMyHome();
 	var recentDocs = _initRencentDocs();
@@ -673,6 +652,7 @@ function _initNavigator() {
 			loadFolder(Ext.state.Manager.get('companyHomeId'));
 			return false;
 		}
+		return undefined;
 	});
 
 	myHomeTree.on('beforeexpand', function (panel) {
@@ -685,6 +665,7 @@ function _initNavigator() {
 			loadFolder(Ext.state.Manager.get('userHomeId'));
 			return false;
 		}
+		return undefined;
 	});
 
 	recentDocs.on('beforeexpand', function (panel) {
@@ -696,6 +677,7 @@ function _initNavigator() {
 		if (getNavigator().activeTab == 'recentDocs') {
 			return false;
 		}
+		return undefined;
 	});
 
 	favorites.on('beforeexpand', function (panel) {
@@ -707,6 +689,7 @@ function _initNavigator() {
 		if (getNavigator().activeTab == 'favorites') {
 			return false;
 		}
+		return undefined;
 	});
 
 	clipboard.on('beforeexpand', function (panel) {
@@ -718,16 +701,36 @@ function _initNavigator() {
 		if (getNavigator().activeTab == 'clipboard') {
 			return false;
 		}
+		return undefined;
 	});
+
+	var navigator = new Ext.Panel({
+		region: 'west', // position in viewport
+		id: 'navigator',
+		title: 'Navigator',
+		width: 200,
+		minSize: 175,
+		maxSize: 400,
+		split: true,
+		collapsible: true,
+		collapseMode: 'mini',
+		margins: '0 0 0 5',
+		layout: 'accordion',
+		layoutConfig: {
+			hideCollapseTool: true,
+			titleCollapse: true,
+			animate: false
+		},
+		items: [companyHomeTree, recentDocs, favorites, clipboard, myHomeTree]
+	});
+
+	navigator.on('render', function (panel) {
+		panel.header.addClass('black-header');		
+	});
+
+	navigator.activeTab = 'companyHomeTree';
 	
-	navigator.add(companyHomeTree);
- 	navigator.add(recentDocs);
- 	navigator.add(favorites);
- 	navigator.add(clipboard);
- 	navigator.add(myHomeTree);
- 	navigator.doLayout();
- 	
- 	navigator.activeTab = 'companyHomeTree';
+	return navigator;
 }
 
 function _initCompanyHome() {
@@ -740,16 +743,17 @@ function _initCompanyHome() {
 
 	companyHomeTreeLoader.on("load", function(treeLoader, node) {
 		var path = Ext.state.Manager.get('nextActiveFolder');
-		if (path != null) {
+		if (typeof(path) != 'undefined') {
 			// Expand the active folder in the tree structure
 			getCompanyHomeTree().expandPath(path);
 			Ext.state.Manager.set('nextActiveFolder', null);
 		}
 	}, this);
 	
-	companyHomeTreeLoader.on("loadexception", function(options, response, e) {
-		checkStatusAndReload(e.status);
-	});
+	 // TODO understant why this forces IE6 to throw exceptions all the time
+//	companyHomeTreeLoader.on("loadexception", function(loader, node, response) {
+//		checkStatusAndReload(response.status);
+//	});
 
 	var companyHomeTree = new Ext.tree.TreePanel({
 		id: 'companyHomeTree',
@@ -853,9 +857,10 @@ function _initMyHome() {
 		return false;
 	});
 	
-	myHomeTreeLoader.on("loadexception", function(options, response, e) {
-		checkStatusAndReload(e.status);
-	});
+    // TODO understant why this forces IE6 to throw exceptions all the time
+//	myHomeTreeLoader.on("loadexception", function(loader, node, response) {
+//		checkStatusAndReload(response.status);
+//	});
 
 	// Custom context menu.
     myHomeTree.on('contextmenu', function(node, e){
@@ -947,7 +952,7 @@ function updateBreadcrumbs(folderName, folderId) {
 		Ext.state.Manager.set('breadcrumb1Name', folderName);
 		Ext.state.Manager.set('breadcrumb1Id', folderId);
 	
-		Ext.getCmp('folderPathTitle').setTitle(breadcrumbs);
+		Ext.getCmp('centerPanel').setTitle(breadcrumbs);
 	}
 }
 
@@ -965,22 +970,22 @@ function getFileContextMenu(record) {
 	contextMenu.add(
 	    {
 	    	text: 'View in Browser',
-	    	handler: function() {window.open(record.get('link'), '', '')}
+	    	handler: function() {window.open(record.get('link'), '', '');}
 	    }, {
 	    	text: 'Download File/ Open with...',
-	    	handler: function() {window.open(record.get('downloadUrl'), '', '')}
+	    	handler: function() {window.open(record.get('downloadUrl'), '', '');}
 	    }, {
 	    	text: 'Add to Favorites',
-	    	handler: function() {addFavorite(record.get('nodeId'))}
+	    	handler: function() {addFavorite(record.get('nodeId'));}
 	    }, {
 	    	text: 'Mail Link',
-	    	handler: function() {mailLink(record.get('name'), record.get('link'))}
+	    	handler: function() {mailLink(record.get('name'), record.get('link'));}
 	    }, {
 	    	text: 'Copy File Path to System Clipboard',
-	    	handler: function() {copyTextToSystemClipboard(record.get('filePath'))}
+	    	handler: function() {copyTextToSystemClipboard(record.get('filePath'));}
 	    }, {
 	    	text: 'Copy File Url To System Clipboard',
-	    	handler: function() {copyTextToSystemClipboard(location.protocol + '//' + location.host + record.get('link'))}
+	    	handler: function() {copyTextToSystemClipboard(location.protocol + '//' + location.host + record.get('link'));}
 	    }
 	);
 	
@@ -1076,32 +1081,32 @@ function createActionItemsForFolder(id) {
 	
 	result.push({
 		text: 'Create folder',
-		handler: function() {createFolder(id)}}
-	);
+		handler: function() {createFolder(id);}
+	});
 	result.push({
 		text: 'Delete folder',
-		handler: function() {deleteFolder(id)}}
-	);
+		handler: function() {deleteFolder(id);}
+	});
 	result.push({
 		text: 'Rename folder',
-		handler: function() {renameFolder(id)}}
-	);
+		handler: function() {renameFolder(id);}
+	});
 	result.push({
 		text: 'Paste all',
-		handler: function() {pasteAll(id)}}
-	);
+		handler: function() {pasteAll(id);}
+	});
 	result.push({
 		text: 'Create HTML content',
-		handler: function() {createContent('HTML', id)}}
-	);
+		handler: function() {createContent('HTML', id);}
+	});
 	result.push({
 		text: 'Create text content',
-		handler: function() {createContent('text', id)}}
-	);	
+		handler: function() {createContent('text', id);}
+	});	
 	result.push({
 		text: 'Upload file',
-		handler: function() {showUploadFile(id)}}
-	);	
+		handler: function() {showUploadFile(id);}
+	});	
 		
 	var returnValue = new Array(result, html);
 	return returnValue;
@@ -1125,10 +1130,12 @@ function createActionItems(record) {
 		if (record.get('writePermission')) {
 			if (record.get('editable')) {
 				result.push({
-					 text: 'Edit',
-					 icon: '../../docasu/images/edit.gif',
-					 handler: function() {editContent(record.get('name'), record.get('nodeId'))}}
-				);
+					text: 'Edit',
+					icon: '../../docasu/images/edit.gif',
+					handler: function() {
+						editContent(record.get('name'), record.get('nodeId'));
+					}
+				});
 				html += 
 					'<a href="#" onclick="editContent(\''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
 						'<img title="Edit" class="actionIcon" src="../../docasu/images/edit.gif"/>'+
@@ -1137,19 +1144,21 @@ function createActionItems(record) {
 	   		if (record.get('createPermission')) {
 	   			if (record.get('isWorkingCopy')) {
 	   				result.push({
-	   					 text: 'Checkin',
-	   					 icon: '../../docasu/images/checkin.gif',
-	   					 handler: function() {checkinFile(record.get('nodeId'))}}
-		    		);
+	   					text: 'Checkin',
+	   					icon: '../../docasu/images/checkin.gif',
+	   					handler: function() {
+	   						checkinFile(record.get('nodeId'));
+	   					}
+	   				});
 					html += 
 						'<a href="#" onclick="checkinFile(\''+record.get('nodeId')+'\')">'+
 							'<img title="Checkin" class="actionIcon" src="../../docasu/images/checkin.gif"/>'+
 						'</a>';
 	   				result.push({
-	   					 text: 'Undo checkout',
-	   					 icon: '../../docasu/images/undo_checkout.gif',
-	   					 handler: function() {undoCheckout(record.get('nodeId'))}}
-		    		);
+	   					text: 'Undo checkout',
+	   					icon: '../../docasu/images/undo_checkout.gif',
+	   					handler: function() {undoCheckout(record.get('nodeId'));}
+	   				});
 					html += 
 						'<a href="#" onclick="undoCheckout(\''+record.get('nodeId')+'\')">'+
 							'<img title="Undo checkout" class="actionIcon" src="../../docasu/images/undo_checkout.gif"/>'+
@@ -1157,20 +1166,20 @@ function createActionItems(record) {
 	   			}
 	   			else {
 	   				result.push({
-	   					 text: 'Checkout',
-	   					 icon: '../../docasu/images/checkout.gif',
-	   					 handler: function() {checkoutFile(record.get('nodeId'))}}
-		    		);
+	   					text: 'Checkout',
+	   					icon: '../../docasu/images/checkout.gif',
+	   					handler: function() {checkoutFile(record.get('nodeId'));}
+	   				});
 	   				html += 
 						'<a href="#" onclick="checkoutFile(\''+record.get('nodeId')+'\')">'+
 							'<img title="Checkout" class="actionIcon" src="../../docasu/images/checkout.gif"/>'+
 						'</a>';
 	   				if (record.get('deletePermission')) {
 	   					result.push({
-	    					 text: 'Delete',
-	    					 icon: '../../docasu/images/delete.gif',
-	    					 handler: function() {deleteFile(record.get('name'), record.get('nodeId'))}}
-		    			);
+	    					text: 'Delete',
+	    					icon: '../../docasu/images/delete.gif',
+	    					handler: function() {deleteFile(record.get('name'), record.get('nodeId'));}
+	   					});
 	   					html += 
    							'<a href="#" onclick="deleteFile(\''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
    								'<img title="Delete" class="actionIcon" src="../../docasu/images/delete.gif"/>'+
@@ -1181,8 +1190,8 @@ function createActionItems(record) {
 	   		result.push({
 				 text: 'Update',
 				 icon: '../../docasu/images/update.gif',
-				 handler: function() {updateFile(record.get('name'), record.get('nodeId'))}}
-			);
+				 handler: function() {updateFile(record.get('name'), record.get('nodeId'));}
+	   		});
 	   		html += 
 				'<a href="#" onclick="updateFile(\''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
 					'<img title="Update" class="actionIcon" src="../../docasu/images/update.gif"/>'+
@@ -1191,8 +1200,8 @@ function createActionItems(record) {
 	   	result.push({
 			 text: 'Copy',
 			 icon: '../../docasu/images/copy.gif',
-			 handler: function() {copyLink(record.get('copyLink'), record.get('name'), record.get('nodeId'))}}
-		);
+			 handler: function() {copyLink(record.get('copyLink'), record.get('name'), record.get('nodeId'));}
+	   	});
 	   	html += 
 			'<a href="#" onclick="copyLink(\''+record.get('copyLink')+'\', \''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
 				'<img title="Copy" class="actionIcon" src="../../docasu/images/copy.gif"/>'+
@@ -1200,7 +1209,7 @@ function createActionItems(record) {
    }
 	
 	var returnValue = new Array(result, html);
-   return returnValue;
+	return returnValue;
 }
 
 /* ACTIONS */
@@ -1208,13 +1217,43 @@ function loadFolder(folderId) {
 	gridStore.baseParams.nodeId = folderId;
 	clearDocumentInfoPane();
 	// TODO understand what this is.
-//	checkPermissions(folderId);
+	checkPermissions(folderId);
 	gridStore.load();
 	// TODO update all panels !! (search box ?)
 }
 
 function loadParentFolder() {
 	loadFolder(Ext.state.Manager.get('parentFolderId'));
+}
+
+function showFolderData(folderId, folderName) {
+
+	updateCurrentFolder(folderId);
+	updateBreadcrumbs(folderName, folderId);
+
+	var name = folderName.substr(0, 21);
+	Ext.get('folderName').child('img').show();
+	Ext.get('folderName').child('div').update(name);
+	
+}
+
+/* search results are shown in main grid */
+function showSearchResults(data) {
+	
+	/* clear the document info panel */
+	clearDocumentInfoPane();
+
+	/* no breadcrumbs displayed */
+	Ext.getCmp('centerPanel').setTitle('');	
+
+	/* load search results into grid */
+	gridStore.loadData(data);
+	
+	/* Set the title to "Search results" */
+	Ext.get('folderName').child('img').setVisibilityMode(Ext.Element.DISPLAY);
+	Ext.get('folderName').child('img').hide();
+	Ext.get('folderName').child('div').update('Search Results');
+
 }
 
  function checkPermissions(nodeId) {
@@ -1237,6 +1276,7 @@ function loadParentFolder() {
 			} catch (e) {
 				// TODO understand this!
 				// was doRedirectToUrl('ui');
+				console.error('Exception in checkPermissions(): ' + e)
 				checkStatusAndReload(200);
 			}
 	    }, 
@@ -1253,7 +1293,7 @@ function loadParentFolder() {
  */
 function _addActionItems(jsonData) {
 	
-	var store = Ext.getCmp('actionComboBox').store;
+	var store = Ext.getCmp('folderActions').store;
 	// We first remove all items from the list
 	store.removeAll();
 	
@@ -1270,6 +1310,7 @@ function _addActionItems(jsonData) {
 	    });
 		store.add(myNewRecord);
 	}
+
 }
 
 /**
@@ -1291,14 +1332,14 @@ function fileNameRenderer(value, column, record) {
 	<div>&nbsp;${child[0].name}</div> 
 	*/    	 
 	
-	if (record.get('isFolder') == true) {
+	if (record.get('isFolder')) {
 		html += '<a href="#" onClick="loadFolder(\''+record.get('nodeId')+'\'); return false;">';
 	} else {
 		html += '<a href="'+record.get('downloadUrl')+'">';
 	}
 	html += '<div style="float:left">';
 	
-	if (record.get('isFolder') == true) {
+	if (record.get('isFolder')) {
 		html += '<img src="../../docasu/lib/extjs/resources/images/default/tree/folder.gif"';
 	} else {
 		html += '<img src="'+record.get('iconUrl')+'"';
@@ -1359,7 +1400,7 @@ function reloadTree(autoExpand) {
         // The active folder is the one which will be selected after the
         // tree has been reloaded
         var treeNode = getCompanyHomeTree().getNodeById(Ext.state.Manager.get('currentFolder'));
-		if (treeNode != undefined) {
+		if (typeof(treeNode) != 'undefined') {
         	Ext.state.Manager.set('nextActiveFolder', treeNode.getPath());
         }
         getCompanyHomeTree().root.reload();
@@ -1375,7 +1416,8 @@ function checkStatusAndReload(status) {
 	// An failure with status code (200) indicates a timeout
 	// or a successful logout!
 	if(status == 200) {
-		window.location = 'ui';
+		alert('Timeout or error. Redirecting to start page.');
+//		window.location = 'ui';
 	}
 }
 
