@@ -246,22 +246,25 @@ function showUploadFile(folder) {
 			form: uploadForm.getForm().el,
 			success: function(response, options) {
 				Ext.getCmp('uploadContent').close();
-				if (response.responseText == '"ok"') {
-					// TODO: update all panels !!
-					reloadView(true);
-				}
-				else 
-					if (response.responseText == '"duplicate"') {
-						Ext.MessageBox.alert('File already exists.');
-					}
-					else {
-						if (response.responseText == '"generror"') {
-							Ext.MessageBox.alert('A general error occurred.');
-						}
-						else {
-							Ext.MessageBox.alert('A unknown error occurred.');
-						}
-					}
+				reloadView(true);
+				// TODO the webscript fails but the upload works. We don't understand why yet.
+//				if (response.responseText == '"ok"') {
+//					// TODO: update all panels !!
+//					reloadView(true);
+//				}
+//				else {
+//					if (response.responseText == '"duplicate"') {
+//						Ext.MessageBox.alert('File already exists.');
+//					}
+//					else {
+//						if (response.responseText == '"generror"') {
+//							Ext.MessageBox.alert('A general error occurred.');
+//						}
+//						else {
+//							Ext.MessageBox.alert('A unknown error occurred.');
+//						}
+//					}
+//				}
 			},
 			failure: function(){ Ext.MessageBox.alert('Failed to upload file'); }
 		});
