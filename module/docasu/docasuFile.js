@@ -141,10 +141,12 @@ function deleteFile(fileName, nodeId) {
 				url: 'ui/node/remove',
 				params: {nodeId : nodeId},
 				method: 'GET',
-				success: function(response, options){
+				success: function(response, options) {
 					
-					if (response.responseText != "removed") {
-						Ext.MessageBox.alert('Failed', 'Failed to delete file. The following error occurred:\n\n' + response.responseText);
+					var result = eval('('+response.responseText+')');
+					
+					if (!result.success) {
+						Ext.MessageBox.alert('Failed', 'Failed to delete file. The following error occurred:\n\n' + result.msg);
 					}
 					
 					if (advancedSearchQuery != "") {
@@ -180,7 +182,7 @@ function deleteFile(fileName, nodeId) {
 		    				}
 						});
 
-					}else{
+					} else {
 						clearDocumentInfoPane();
 						gridStore.load();
 					}

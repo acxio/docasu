@@ -21,6 +21,7 @@
 	<shortname>Remove a node</shortname>
 	<description>Remove the name of a given node ID</description>
 	<url>/docasu/ui/node/remove?nodeId={nodeId}</url> 
+   <format default="json">extension</format>
 	<authentication>user</authentication>	
     <transaction>required</transaction>
 </webscript>
