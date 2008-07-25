@@ -178,23 +178,23 @@ function deleteFolder(folderId) {
 	
 	Ext.Msg.confirm('Confirm Folder Delete','Do you really want to delete this folder and its content?', function(btn, text){
 		if (btn == 'yes'){
-			var treeNode = getMyHomeTree().getNodeById(folderId);
-			Ext.state.Manager.set('currentFolder', treeNode.parentNode.id);
 			Ext.Ajax.request({
 				url: 'ui/node/remove',
 				method: 'GET',
 				params: {nodeId : folderId},
 				success: function(response, options){
 					try {
-						var result = eval(response);
+						var result = eval('(' + response.responseText + ')');
 
-	                    if (!result.success) {
-							Ext.MessageBox.alert('Failed', 'Failed to delete file. The following error occurred:\n\n' + response.msg);
+	                    if (result.success) {
+	            			Ext.state.Manager.set('currentFolder', result.parentId);
+	                    	reloadView(true);
 						} else {
-	                    	reloadTree(true);
+							Ext.MessageBox.alert('Failed', 'Failed to delete file. The following error occurred:\n\n' + result.msg);
 	                    }
                     
                     } catch (e) {
+                    	console.error(e);
                 		// TODO: not good. (#53)
                 		checkStatusAndReload(200);
                     }
@@ -224,7 +224,7 @@ function createFolder(folderId) {
 					// TODO: check new response format
 					// TODO: check for session timeout
 					Ext.MessageBox.alert("New folder", "New folder "+ folderName +" created");
-			        reloadTree(true);
+			        reloadView(true);
 				}, 
 				failure: function(){
 					Ext.MessageBox.alert("New folder", "The folder "+ folderName + " couldn\'t be created!");
@@ -249,7 +249,7 @@ function renameFolder(f) {
 					// TODO: check new response format
 					// TODO: check for session timeout
 					//Ext.MessageBox.alert("New folder "+ folderName +" renamed");
-					reloadTree(true);
+					reloadView(true);
 				}, 
 				failure: function(){
 					Ext.MessageBox.alert('Failed', 'The folder couldn\'t be renamed!');

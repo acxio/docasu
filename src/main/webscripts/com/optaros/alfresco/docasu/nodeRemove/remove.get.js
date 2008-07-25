@@ -26,12 +26,12 @@ var node = search.findNode("workspace://SpacesStore/" + nodeId);
 
 if (node != null) {
 	// Get the old name
-	model.comment = node.properties.name + " has been removed.";
+	model.msg = node.properties.name + " has been removed.";
+	model.parent = node.parent.id;
 	
 	// Remove it
 	try {
 		node.remove();
-		model.msg = "removed";
 		model.success = true;
 	} catch (e) {
 		model.success = false;

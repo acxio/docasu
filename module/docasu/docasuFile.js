@@ -248,7 +248,7 @@ function showUploadFile(folder) {
 				Ext.getCmp('uploadContent').close();
 				if (response.responseText == '"ok"') {
 					// TODO: update all panels !!
-					gridStore.load();
+					reloadView(true);
 				}
 				else 
 					if (response.responseText == '"duplicate"') {

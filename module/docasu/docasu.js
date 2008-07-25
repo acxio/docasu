@@ -1392,11 +1392,11 @@ function convertTimezone(value) {
  * Ext.state.Manager('nextActiveFolder');
  * @param {Boolean} autoExpand
  */
-function reloadTree(autoExpand) {
+function reloadView(autoExpandTrees) {
     getCompanyHomeTree().root.reload();
     getMyHomeTree().root.reload();
     loadFolder(Ext.state.Manager.get('currentFolder'));
-    if (autoExpand) {
+    if (autoExpandTrees) {
         // The active folder is the one which will be selected after the
         // tree has been reloaded
         var treeNode = getCompanyHomeTree().getNodeById(Ext.state.Manager.get('currentFolder'));
@@ -1404,6 +1404,7 @@ function reloadTree(autoExpand) {
         	Ext.state.Manager.set('nextActiveFolder', treeNode.getPath());
         }
         getCompanyHomeTree().root.reload();
+        // TODO try to expand myHomeTree.
     }
 }
 
