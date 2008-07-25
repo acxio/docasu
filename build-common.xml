@@ -34,6 +34,8 @@
 	<property name="build.dir" value="${target.dir}/build"/>
 	<property name="amp.dir" value="${target.dir}/amp"/>
 
+	<property name="alfresco.mmt.jar.file" value="${download.dir}/alfresco-mmt.jar"/>
+
 	<property name="alfresco.deploy.dir" value="${alfresco.root.dir}/tomcat/webapps/alfresco"/>
 
 	<property name="amp.file" value="${target.dir}/docasu-${docasu.version}.amp"/>
