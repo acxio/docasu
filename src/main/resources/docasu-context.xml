@@ -32,7 +32,11 @@
      
     <bean name="webscript.com.optaros.alfresco.docasu.content.docs.get" class="com.optaros.alfresco.docasu.wcs.Documents" parent="webscript">
     	<property name="customFileFolderService" ref="CustomFileFolderService" />
-    </bean>    
+    </bean>  
+    
+    <bean name="webscript.com.optaros.alfresco.docasu.folders.folders.get" class="com.optaros.alfresco.docasu.wcs.Folders" parent="webscript">
+    	<property name="customFileFolderService" ref="CustomFileFolderService" />
+    </bean>
     
     <bean id="CustomFileFolderService" class="org.springframework.aop.framework.ProxyFactoryBean">
         <property name="proxyInterfaces">
@@ -46,7 +50,7 @@
     <bean name="customFileFolderService" class="com.optaros.alfresco.docasu.wcs.CustomFileFolderServiceImpl" init-method="init">     
       <property name="dictionaryService" ref="DictionaryService" />
       <property name="nodeService" ref="NodeService" />
-      <property name="tenantService" ref="tenantService" /> 
+      <!-- property name="tenantService" ref="tenantService" /--> 
       <property name="searchService" ref="admSearchService" />      
       <property name="blacklist">
 	    <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">

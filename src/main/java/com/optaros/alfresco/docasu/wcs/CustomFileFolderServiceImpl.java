@@ -10,7 +10,6 @@ import java.util.Properties;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.search.QueryParameterDefImpl;
-import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -39,7 +38,7 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	private static final QName PARAM_QNAME_PARENT = QName.createQName(
 			NamespaceService.CONTENT_MODEL_1_0_URI, "parent");
 
-	private TenantService tenantService;
+	//private TenantService tenantService;
 	private NodeService nodeService;
 	private DictionaryService dictionaryService;
 	private SearchService searchService;
@@ -56,7 +55,7 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	 * Construct a filtered query with the values from blacklist.properties and whitelist.properties
 	 * @return
 	 */
-	public String constructQuery() {
+	public String constructQuery(boolean folders) {
 		StringBuffer query = new StringBuffer();
 		query.append("+PARENT:\"${cm:parent}\"");
 		query.append("-(");
@@ -65,6 +64,9 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 		for (Iterator iterator = blacklist.values().iterator(); iterator.hasNext();) {
 			String value = (String) iterator.next();
 			query.append("TYPE:\"" + value + "\" ");
+		}
+		if(folders){
+			query.append("TYPE:\"" + ContentModel.TYPE_CONTENT + "\" ");
 		}
 		query.append(")");
 		query.append("+(");
@@ -82,9 +84,9 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	 * 
 	 * @see com.optaros.alfresco.docasu.wcs.CustomFileFolderImpl#setTenantService(org.alfresco.repo.tenant.TenantService)
 	 */
-	public void setTenantService(TenantService tenantService) {
-		this.tenantService = tenantService;
-	}
+//	public void setTenantService(TenantService tenantService) {
+//		this.tenantService = tenantService;
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -218,9 +220,9 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	 * 
 	 * @see com.optaros.alfresco.docasu.wcs.CustomFileFolderImpl#list(org.alfresco.service.cmr.repository.NodeRef)
 	 */
-	public List<FileInfo> list(NodeRef contextNodeRef) {
+	public List<FileInfo> list(NodeRef contextNodeRef,boolean folders) {
 		// execute the query
-		List<NodeRef> nodeRefs = luceneSearch(contextNodeRef, true, true);
+		List<NodeRef> nodeRefs = luceneSearch(contextNodeRef, folders, true);
 		// convert the noderefs
 		List<FileInfo> results = toFileInfo(nodeRefs);
 		// done
@@ -235,7 +237,7 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	private List<NodeRef> luceneSearch(NodeRef contextNodeRef, boolean folders,
 			boolean files) {
 
-		contextNodeRef = tenantService.getName(contextNodeRef);
+		//contextNodeRef = tenantService.getName(contextNodeRef);
 
 		SearchParameters params = new SearchParameters();
 		params.setLanguage(SearchService.LANGUAGE_LUCENE);
@@ -245,14 +247,8 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 				PARAM_QNAME_PARENT, dataTypeNodeRef, true, contextNodeRef
 						.toString());
 		params.addQueryParameterDefinition(parentParamDef);
+		params.setQuery(constructQuery(folders));
 		
-		if (folders && files) // search for both files and folders
-		{
-			params.setQuery(constructQuery());
-		} else {
-			throw new IllegalArgumentException(
-					"Must search for either files or folders or both");
-		}
 		ResultSet rs = searchService.query(params);
 		int length = rs.length();
 		List<NodeRef> nodeRefs = new ArrayList<NodeRef>(length);
