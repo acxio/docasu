@@ -199,17 +199,7 @@ function _init(result, request) {
 		updateBreadcrumbs(folderName, folderId);
 
 		//create folder icon, name and CIFS path
-		var folderPath = gridStore.reader.jsonData.path;
-		folderPath = '\\Alfresco' + folderPath.substr(13).replace('/', '\\');
-		var name = folderName.substr(0, 21);
-		var elem = '<a target="new" href="file:///\\\\' +
-		Ext.state.Manager.get('cifsHost') +
-		folderPath +
-		'"><div style="position:relative;top:10px;left:10px;"><img src="../../docasu/images/folder.gif" /></div><div class="folderLogo" style="overflow:hidden;position:relative;top:-20px;left:45px;">' +
-		name +
-		'</div></a>'
-
-		Ext.get('cifsLink').update(elem);
+		
 	});
 	
 	gridStore.on('loadexception', function(options, response, e) {
