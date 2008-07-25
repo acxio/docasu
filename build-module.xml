@@ -34,13 +34,22 @@
 	
 	<!-- setup eclipse project -->
 	<target name="download-sdk" depends="init">	
-		<!-- download alfresco.sdk and unzip it -->
+		<!-- download alfresco.sdk and unzip it 
 		<get src="http://switch.dl.sourceforge.net/sourceforge/alfresco/${alfresco.sdk}.zip" dest="${download.dir}/${alfresco.sdk}.zip" usetimestamp="true" verbose="true"/> 	
 		<get src="http://switch.dl.sourceforge.net/sourceforge/alfresco/alfresco-mmt-2.1.0.jar" dest="${download.dir}/alfresco-mmt.jar" usetimestamp="true" verbose="true"/> 	
 		<unzip src="${download.dir}/${alfresco.sdk}.zip" dest="${download.dir}/${alfresco.sdk}" overwrite="false"/>	
-	</target>	
+-->	</target>	
 	
-	<target name="compile" depends="init, download-sdk">
+	<target name="copy-ressources" depends="init">
+		<copy todir="${build.dir}">
+			<fileset dir="${source.dir}/main/java">
+				<include name="**/*"/>
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+	</target>	
+
+	<target name="compile" depends="init, download-sdk, copy-ressources">
 		<javac destdir="${build.dir}"
 			classpathref="class.path"
 			srcdir="${source.dir}/main/java"
@@ -48,7 +57,7 @@
 			fork="true"
 			encoding="UTF-8"
 		/>
-	</target>	
+	</target>
 
 	<!-- Generate Alfresco Module Package (AMP) file for easy installation -->
 	<target name="package-amp" depends="compile" description="Bundle the Custom UI functionality into an Alfresco Module Package (AMP) file.">
