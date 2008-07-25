@@ -51,6 +51,15 @@ public class Documents extends DeclarativeWebScript {
 	private static final org.apache.commons.logging.Log log = LogFactory.getLog(Documents.class);
 
 	private static final String EDITABLE_EXTENSION_REGEX = "txt|html?";
+	
+	private static final boolean FOLDERS=false;
+	
+	private CustomFileFolderService customFileFolderService;
+
+	public void setCustomFileFolderService(
+			CustomFileFolderService customFileFolderService) {
+		this.customFileFolderService = customFileFolderService;
+	}
 
 	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
 		
@@ -91,12 +100,14 @@ public class Documents extends DeclarativeWebScript {
 		NodeService nodeService = getServiceRegistry().getNodeService();
 		PermissionService permissionService = getServiceRegistry().getPermissionService();
 		VersionService versionService = getServiceRegistry().getVersionService();
-
+		//invoke the custom filefolder service
 		TemplateImageResolver imageResolver = getWebScriptRegistry().getTemplateImageResolver();
 
 		FileInfo fileInfo = fileFolderService.getFileInfo(nodeRef);
 		String path = generatePath(nodeService, fileFolderService, nodeRef);
-		List<FileInfo> children = fileFolderService.list(nodeRef);
+		//List<FileInfo> children = fileFolderService.list(nodeRef);
+		//filtered children list
+		List<FileInfo> children = customFileFolderService.list(nodeRef);
 		
 		if (log.isDebugEnabled()) {
 			log.debug("node is folder = " + fileInfo.isFolder());
@@ -130,6 +141,11 @@ public class Documents extends DeclarativeWebScript {
 		Object[] rows = new Object[children.size()]; 
 		int i = 0;
 		for (FileInfo info : children) {
+			if (log.isDebugEnabled()) {
+				log.debug("node is folder = " + info.isFolder());
+				log.debug("node name = " + info.getName());
+				log.debug("node properties = " + info.getProperties());
+			}
 			TemplateNode templateNode = new TemplateNode(info.getNodeRef(), getServiceRegistry(), imageResolver);
 			Map<String, Object> row = new HashMap<String, Object>();
 			row.put("nodeId", info.getNodeRef().getId());
