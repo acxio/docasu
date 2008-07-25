@@ -1417,8 +1417,8 @@ function checkStatusAndReload(status) {
 	// An failure with status code (200) indicates a timeout
 	// or a successful logout!
 	if(status == 200) {
-		alert('Timeout or error. Redirecting to start page.');
-//		window.location = 'ui';
+//		alert('Timeout or error. Redirecting to start page.');
+		window.location = 'ui';
 	}
 }
 
