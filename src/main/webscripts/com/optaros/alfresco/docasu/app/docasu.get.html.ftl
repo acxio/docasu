@@ -25,7 +25,6 @@
 	<link rel="stylesheet" type="text/css" href="../../docasu/lib/extjs/resources/css/xtheme-gray.css">
 	<script type="text/javascript" src="../../docasu/lib/extjs/adapter/ext/ext-base.js"></script>
 	<script type="text/javascript" src="../../docasu/lib/extjs/ext-all.js"></script>
-	<!--<script type="text/javascript" src="../../docasu/lib/extjs/ext-all-debug.js"></script>-->
 	<script type="text/javascript" src="../../docasu/lib/extjs-extensions/statictextfield.js"></script>
 
 	<script type="text/javascript" src="../../docasu/lib/extjs/ux/miframe-min.js"></script>
