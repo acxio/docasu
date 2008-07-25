@@ -81,7 +81,7 @@ function _initFolderDetailsWindow(folder) {
 		items: [name, parent, creator, created, modified],
 		buttons: [new Ext.Button({text: 'Add to favorites', handler: function() {
 			Ext.getCmp('folderDetailsWindow').hide();
-			addFavorite(folder.nodeId);
+			addFavorite(Ext.getCmp('folderDetailsWindow').folderId);
 		}})]
 	});
 
@@ -123,6 +123,8 @@ function showFolderDetailsWindow(folderId) {
 				if (!Ext.getCmp('folderDetailsWindow')) {
 					_initFolderDetailsWindow();
 				}
+				Ext.getCmp('folderDetailsWindow').folderId = folderId;
+				
 				Ext.getCmp('folderpropName').setValue(folder.name);
 				Ext.state.Manager.set('parentFolderId', folder.parentId);
 				Ext.getCmp('folderpropParentPath').setValue(folder.path);
