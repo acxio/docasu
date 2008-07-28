@@ -49,7 +49,7 @@
     
     <bean name="customFileFolderService" class="com.optaros.alfresco.docasu.wcs.CustomFileFolderServiceImpl" init-method="init">     
       <property name="dictionaryService" ref="DictionaryService" />
-      <property name="tenantService" ref="tenantService"/> 
+      <!-- <property name="tenantService" ref="tenantService"/>  -->
       <property name="searchService" ref="admSearchService" />      
       <property name="blacklist">
 	    <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">

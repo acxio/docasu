@@ -37,7 +37,8 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	private static final QName PARAM_QNAME_PARENT = QName.createQName(
 			NamespaceService.CONTENT_MODEL_1_0_URI, "parent");
 
-    private TenantService tenantService;
+	// Class not found in alfresco-entreprise-2.1.1 !
+//    private TenantService tenantService;
 	private DictionaryService dictionaryService;
 	private SearchService searchService;
 	private Properties blacklist;
@@ -74,9 +75,9 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 		return query.toString();
 	}
 
-	public void setTenantService(TenantService tenantService) {
-		this.tenantService = tenantService;
-	}
+//	public void setTenantService(TenantService tenantService) {
+//		this.tenantService = tenantService;
+//	}
 
 	public void setDictionaryService(DictionaryService dictionaryService) {
 		this.dictionaryService = dictionaryService;
@@ -109,7 +110,7 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	private List<NodeRef> luceneSearch(NodeRef contextNodeRef, boolean folders,
 			boolean files) {
 
-		contextNodeRef = tenantService.getName(contextNodeRef);
+//		contextNodeRef = tenantService.getName(contextNodeRef);
 
 		SearchParameters params = new SearchParameters();
 		params.setLanguage(SearchService.LANGUAGE_LUCENE);
