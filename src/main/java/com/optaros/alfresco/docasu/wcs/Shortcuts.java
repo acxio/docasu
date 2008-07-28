@@ -37,7 +37,7 @@ import org.alfresco.web.scripts.WebScriptStatus;
 import org.apache.commons.logging.LogFactory;
 
 public class Shortcuts extends DeclarativeWebScript {
-	@SuppressWarnings("unused")
+
 	private static final org.apache.commons.logging.Log log = LogFactory.getLog(Shortcuts.class);
 	
 	private static final QName TYPE_PREFERENCES = QName.createQName(NamespaceService.APP_MODEL_1_0_URI,

@@ -21,10 +21,7 @@ package com.optaros.alfresco.docasu.wcs;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.context.FacesContext;
-
 import org.alfresco.filesys.CIFSServer;
-import org.alfresco.web.app.servlet.FacesHelper;
 import org.alfresco.web.scripts.DeclarativeWebScript;
 import org.alfresco.web.scripts.WebScriptRequest;
 import org.alfresco.web.scripts.WebScriptStatus;

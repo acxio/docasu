@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.model.filefolder.FileFolderServiceImpl;
 import org.alfresco.repo.search.QueryParameterDefImpl;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
@@ -27,14 +28,36 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * 
- * @author Tom
- * 
+ * @author Thomas Verin
+ * @see org.alfresco.repo.model.filefolder.FileFolderServiceImpl (copied from)
  */
 public class CustomFileFolderServiceImpl implements CustomFileFolderService {
-	
-	private static Log logger = LogFactory
-			.getLog(CustomFileFolderServiceImpl.class);
 
+	private static Log logger = LogFactory.getLog(CustomFileFolderServiceImpl.class);
+
+//	/** Shallow search for all files and folders */
+//	/** @see org.alfresco.repo.model.filefolder.FileFolderServiceImpl*/
+//	private static final String LUCENE_QUERY_SHALLOW_ALL =
+//		"+PARENT:\"${cm:parent}\"" +
+//		"-TYPE:\"" + ContentModel.TYPE_SYSTEM_FOLDER + "\" " +
+//		"+(" +
+//		"TYPE:\"" + ContentModel.TYPE_CONTENT + "\" " +
+//		"TYPE:\"" + ContentModel.TYPE_FOLDER + "\" " +
+//		"TYPE:\"" + ContentModel.TYPE_LINK + "\" " +
+//		")";
+//
+//	/** Shallow search for all files and folders */
+//	/** @see org.alfresco.repo.model.filefolder.FileFolderServiceImpl*/
+//	private static final String LUCENE_QUERY_SHALLOW_FOLDERS =
+//		"+PARENT:\"${cm:parent}\"" +
+//		"-TYPE:\"" + ContentModel.TYPE_SYSTEM_FOLDER + "\" " +
+//		"+TYPE:\"" + ContentModel.TYPE_FOLDER + "\" ";
+
+
+	private static final String LUCENE_QUERY =
+		"+PARENT:\"${cm:parent}\"" +
+		"-TYPE:\"" + ContentModel.TYPE_SYSTEM_FOLDER + "\" ";
+	
 	private static final QName PARAM_QNAME_PARENT = QName.createQName(
 			NamespaceService.CONTENT_MODEL_1_0_URI, "parent");
 
@@ -47,8 +70,7 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	private DataTypeDefinition dataTypeNodeRef;
 
 	public void init() {
-		dataTypeNodeRef = dictionaryService
-				.getDataType(DataTypeDefinition.NODE_REF);
+		dataTypeNodeRef = dictionaryService.getDataType(DataTypeDefinition.NODE_REF);
 	}
 
 	/**
@@ -56,19 +78,17 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	 * @return
 	 */
 	public String constructQuery(boolean folders) {
-		StringBuffer query = new StringBuffer();
-		query.append("+PARENT:\"${cm:parent}\"");
-		query.append("-(");
-		query.append("TYPE:\"" + ContentModel.TYPE_SYSTEM_FOLDER + "\" ");
+		StringBuffer query = new StringBuffer(LUCENE_QUERY);
 		//get all the values in blacklist.properties to build the filtered query
+		// Exclude all from blacklist (AND)
 		for (Iterator iterator = blacklist.values().iterator(); iterator.hasNext();) {
 			String value = (String) iterator.next();
-			query.append("TYPE:\"" + value + "\" ");
+			query.append("-TYPE:\"" + value + "\" ");
 		}
 		if(folders){
-			query.append("TYPE:\"" + ContentModel.TYPE_CONTENT + "\" ");
+			query.append("-TYPE:\"" + ContentModel.TYPE_CONTENT + "\" ");
 		}
-		query.append(")");
+		// Include (at least) one form whitelist (OR)
 		query.append("+(");
 		for (Iterator iterator = whitelist.values().iterator(); iterator.hasNext();) {
 			String value = (String) iterator.next();
@@ -79,38 +99,14 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 		return query.toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.optaros.alfresco.docasu.wcs.CustomFileFolderImpl#setTenantService(org.alfresco.repo.tenant.TenantService)
-	 */
-//	public void setTenantService(TenantService tenantService) {
-//		this.tenantService = tenantService;
-//	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.optaros.alfresco.docasu.wcs.CustomFileFolderImpl#setNodeService(org.alfresco.service.cmr.repository.NodeService)
-	 */
 	public void setNodeService(NodeService nodeService) {
 		this.nodeService = nodeService;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.optaros.alfresco.docasu.wcs.CustomFileFolderImpl#setDictionaryService(org.alfresco.service.cmr.dictionary.DictionaryService)
-	 */
 	public void setDictionaryService(DictionaryService dictionaryService) {
 		this.dictionaryService = dictionaryService;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.optaros.alfresco.docasu.wcs.CustomFileFolderImpl#setSearchService(org.alfresco.service.cmr.search.SearchService)
-	 */
 	public void setSearchService(SearchService searchService) {
 		this.searchService = searchService;
 	}
@@ -118,7 +114,7 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	public void setBlacklist(Properties blacklist) {
 		this.blacklist = blacklist;
 	}
-	
+
 	public void setWhitelist(Properties whitelist) {
 		this.whitelist = whitelist;
 	}
@@ -148,8 +144,7 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	 * @throws InvalidTypeException
 	 *             if the node is not a valid type
 	 */
-	private List<FileInfo> toFileInfo(List<NodeRef> nodeRefs)
-			throws InvalidTypeException {
+	private List<FileInfo> toFileInfo(List<NodeRef> nodeRefs) throws InvalidTypeException {
 		List<FileInfo> results = new ArrayList<FileInfo>(nodeRefs.size());
 		for (NodeRef nodeRef : nodeRefs) {
 			if (nodeService.exists(nodeRef)) {
@@ -163,11 +158,9 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	/**
 	 * Helper method to convert a node reference instance to a file info
 	 */
-	private FileInfo toFileInfo(NodeRef nodeRef, boolean addTranslations)
-			throws InvalidTypeException {
+	private FileInfo toFileInfo(NodeRef nodeRef, boolean addTranslations) throws InvalidTypeException {
 		// Get the file attributes
-		Map<QName, Serializable> properties = nodeService
-				.getProperties(nodeRef);
+		Map<QName, Serializable> properties = nodeService.getProperties(nodeRef);
 		// Is it a folder
 		QName typeQName = nodeService.getType(nodeRef);
 		if (logger.isDebugEnabled()) {
@@ -198,7 +191,7 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 					ContentModel.TYPE_SYSTEM_FOLDER)) {
 				throw new InvalidTypeException(
 						"This service should ignore type "
-								+ ContentModel.TYPE_SYSTEM_FOLDER);
+						+ ContentModel.TYPE_SYSTEM_FOLDER);
 			}
 			return true;
 		} else if (dictionaryService.isSubClass(typeQName,
@@ -244,11 +237,14 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 		params.addStore(contextNodeRef.getStoreRef());
 		// set the parent parameter
 		QueryParameterDefinition parentParamDef = new QueryParameterDefImpl(
-				PARAM_QNAME_PARENT, dataTypeNodeRef, true, contextNodeRef
-						.toString());
+				PARAM_QNAME_PARENT,
+				dataTypeNodeRef,
+				true,
+				contextNodeRef.toString());
 		params.addQueryParameterDefinition(parentParamDef);
 		params.setQuery(constructQuery(folders));
-		
+//		params.addSort(field, ascending);
+
 		ResultSet rs = searchService.query(params);
 		int length = rs.length();
 		List<NodeRef> nodeRefs = new ArrayList<NodeRef>(length);

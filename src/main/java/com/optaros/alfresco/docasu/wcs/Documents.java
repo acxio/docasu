@@ -67,7 +67,6 @@ public class Documents extends DeclarativeWebScript {
 	
 	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
 		String nodeId;
-		log.debug("XXXXX FOLDERS "+isFolders());
 		if (!isFolders()){			
 			nodeId = req.getParameter("nodeId");
 			log.debug("nodeid document: "+nodeId);
@@ -82,6 +81,7 @@ public class Documents extends DeclarativeWebScript {
 		String dir = req.getParameter("dir");
 		
 		if (log.isDebugEnabled()) {
+			log.debug("FOLDER = " + isFolders());
 			log.debug("nodeId = " + nodeId);
 			log.debug("start = " + start);
 			log.debug("limit = " + limit);
