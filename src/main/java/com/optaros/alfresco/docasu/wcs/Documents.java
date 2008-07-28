@@ -233,9 +233,15 @@ public class Documents extends DeclarativeWebScript {
 		}
 	}
 
-	private Serializable getProperty(FileInfo info, QName property, String defaultValue) {
+	private String getProperty(FileInfo info, QName property, String defaultValue) {
 		if (info.getProperties().containsKey(property)) {
-			return info.getProperties().get(property);
+			Serializable serializable = info.getProperties().get(property);
+			if (serializable != null) {
+				return serializable.toString();
+			}
+			else {
+				return defaultValue;
+			}
 		}
 		else {
 			return defaultValue;
