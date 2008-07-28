@@ -72,7 +72,7 @@
 			<fileset dir="${build.dir}" />
 		</copy>
 		<copy todir="${amp.dir}/config/alfresco/extension">
-			<fileset dir="${source.dir}/main/resources" />
+			<fileset dir="${source.dir}/main/extension" />
 		</copy>
 		<copy todir="${amp.dir}/config/alfresco/extension/templates/webscripts" >
 			<fileset dir="${source.dir}/main/webscripts" />

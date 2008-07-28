@@ -38,7 +38,7 @@
 			<fileset dir="${build.dir}" />
 		</copy>
 		<copy todir="${alfresco.deploy.dir}/WEB-INF/classes/alfresco/extension/">
-			<fileset dir="${source.dir}/main/resources" />
+			<fileset dir="${source.dir}/main/extension" />
 		</copy>
 		<copy todir="${webscript.dir}" >
 			<fileset dir="${source.dir}/main/webscripts" />
