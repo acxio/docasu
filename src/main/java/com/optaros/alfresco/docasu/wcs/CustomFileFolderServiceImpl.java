@@ -55,7 +55,7 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 
 
 	private static final String LUCENE_QUERY =
-		"+PARENT:\"${cm:parent}\"" +
+		"+PARENT:\"${cm:parent}\" " +
 		"-TYPE:\"" + ContentModel.TYPE_SYSTEM_FOLDER + "\" ";
 	
 	private static final QName PARAM_QNAME_PARENT = QName.createQName(

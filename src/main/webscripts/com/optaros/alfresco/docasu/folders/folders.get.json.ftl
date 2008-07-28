@@ -14,22 +14,13 @@
 
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-    
 
-[
-<#list folder.children?sort_by("name") as child>
-       <#if child.isContainer>
-       	{"id":"${child.id}", "text":"${child.name}"}
-       	<#if child_has_next>,</#if>
-       </#if>
-</#list>
-]
 -->
 [
-<#list rows as row>
+<#list rows?sort_by("name") as row>
 		{
-			"id"			: "${row.nodeId}",
-			"text"				: "${row.name}"
+			"id"	: "${row.nodeId}",
+			"text"	: "${row.name}"
 		}<#if row_has_next>,</#if>
 </#list>
 ]
