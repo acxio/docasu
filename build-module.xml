@@ -54,6 +54,7 @@
 			classpathref="class.path"
 			srcdir="${source.dir}/main/java"
 			target="1.5"
+			debug="true"
 			fork="true"
 			encoding="UTF-8"
 		/>

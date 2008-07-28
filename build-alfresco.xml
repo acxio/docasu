@@ -19,7 +19,7 @@
 -->
 <project name="alfresco" default="list-modules" basedir=".">
 
-	<import file="build-module.xml"/>
+	<import file="build-deploy.xml"/>
 	
 	<target name="check-running">
 		<available file="${alfresco.root.dir}/alfresco.started" property="alfresco.started"/>
