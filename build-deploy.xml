@@ -51,4 +51,17 @@
 		<echo>Modified web scripts have been uploaded to Data Dictionary. Please refresh.</echo>	
 	</target>
 
+	<target name="full-deploy" depends="check-deployed, no-deploy, docasu-module.prepare-amp" description="(dev) Copy modified web scripts to a running Alfresco instance.">
+		
+		<!-- use debug version of extjs -->
+		<replace file="${amp.dir}/config/alfresco/extension/templates/webscripts/com/optaros/alfresco/docasu/app/docasu.get.html.ftl" token="ext-all.js" value="ext-all-debug.js"/>
+
+		<copy todir="${alfresco.deploy.dir}/docasu">
+			<fileset dir="${amp.dir}/docasu"/>
+		</copy>
+		<copy todir="${alfresco.deploy.dir}/WEB-INF/classes">
+			<fileset dir="${amp.dir}/config" />
+		</copy>
+	</target>
+
 </project>
