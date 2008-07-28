@@ -19,6 +19,7 @@ package com.optaros.alfresco.docasu.wcs;
  */
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.template.TemplateNode;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
@@ -113,9 +115,16 @@ public class Documents extends DeclarativeWebScript {
 
 		FileInfo fileInfo = fileFolderService.getFileInfo(nodeRef);
 		String path = generatePath(nodeService, fileFolderService, nodeRef);
-		//List<FileInfo> children = fileFolderService.list(nodeRef);
-		//filtered children list
-		List<FileInfo> children = customFileFolderService.list(nodeRef,isFolders());
+		
+//		List<FileInfo> children = fileFolderService.list(nodeRef);
+		List<NodeRef> childrenRefs = customFileFolderService.list(nodeRef,isFolders());
+		List<FileInfo> children = new ArrayList<FileInfo>();
+		for (NodeRef nr : childrenRefs) {
+			try {
+				children.add(fileFolderService.getFileInfo(nr));
+			}
+			catch (AccessDeniedException ade) {/* Ignore node. */}
+		}
 		
 		if (log.isDebugEnabled()) {
 			log.debug("node is folder = " + fileInfo.isFolder());
@@ -154,6 +163,7 @@ public class Documents extends DeclarativeWebScript {
 				log.debug("node name = " + info.getName());
 				log.debug("node properties = " + info.getProperties());
 			}
+			
 			TemplateNode templateNode = new TemplateNode(info.getNodeRef(), getServiceRegistry(), imageResolver);
 			Map<String, Object> row = new HashMap<String, Object>();
 			row.put("nodeId", info.getNodeRef().getId());
