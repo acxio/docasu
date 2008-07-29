@@ -597,7 +597,7 @@ function _initCenter() {
 		height: 40,
 		border: false,
 		layout: 'table',
-		layoutConfig: {columns: 4},
+		layoutConfig: {columns: 3},
 		cls: 'center-header-bar',
 	    items: [folderName, folderActionsLabel, folderActions]  
 	});
