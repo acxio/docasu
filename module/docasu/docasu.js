@@ -357,6 +357,10 @@ function _initTopBar(user) {
 		panel.getEl().parent('td').addClass('filler');
 	});
 	
+	searchForm.on('render', function(panel) {
+		panel.getEl().parent('td').child('div').addClass('searchForm');
+	});
+	
 	
 	return topBar;
 }
@@ -581,11 +585,6 @@ function _initCenter() {
 		html: '<div id="folderName"><img src="../../docasu/images/folder.gif"/><div></div></div>'
 	});
 
-	var filler = new Ext.Panel({
-		border: false,
-		html: ''
-	});
-
 	var folderActionsLabel = new Ext.Panel({
 		border: false,
 		cls: 'folderActionsLabel',
@@ -600,12 +599,18 @@ function _initCenter() {
 		layout: 'table',
 		layoutConfig: {columns: 4},
 		cls: 'center-header-bar',
-	    items: [folderName, filler, folderActionsLabel, folderActions]
+	    items: [folderName, folderActionsLabel, folderActions]  
 	});
 	
-	filler.on('render', function(panel) {
-		panel.getEl().parent('td').addClass('filler');
+	folderName.on('render', function(panel) {
+		panel.getEl().parent('td').addClass('folderName');
 	});
+	
+	folderActionsLabel.on('render', function(panel) {
+		panel.getEl().parent('td').child('div').addClass('folderActionsLabel');
+	});
+	
+
 
 	var center = new Ext.Panel({
 	    layout:'border',
