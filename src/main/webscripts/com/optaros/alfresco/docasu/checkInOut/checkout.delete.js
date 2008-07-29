@@ -17,7 +17,7 @@
  */
 
 // Get parameters
-var nodeId = args.nodeId; // assume the 'id' arg contains a node id
+var nodeId = url.extension;
 
 logger.log("Node ID to cancel the check out is: " + nodeId);
 

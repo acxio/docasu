@@ -20,7 +20,7 @@
 <webscript>
 	<shortname>Check out</shortname>
 	<description>Check out a document</description>
-	<url>/docasu/ui/node/checkout?nodeId={nodeId}</url>
+	<url>/docasu/ui/node/checkout/{nodeId}</url>
 	<format default="json">extension</format>
 	<transaction>required</transaction>
 	<authentication>user</authentication>

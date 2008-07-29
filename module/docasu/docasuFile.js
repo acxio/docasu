@@ -286,9 +286,8 @@ function copyLink(icon, name, nodeId) {
 function checkoutFile(nodeId) {
 				
 	Ext.Ajax.request({
-		url: 'ui/node/checkout',
-		params: {nodeId : nodeId},
-		method: 'GET',
+		url: 'ui/node/checkout/'+nodeId,
+		method: 'PUT',
 		success: function(result, request){
 			gridStore.load();
 		},
@@ -303,9 +302,8 @@ function checkoutFile(nodeId) {
 
 function checkinFile(nodeId) {
 	Ext.Ajax.request({
-		url: 'ui/node/checkin',
-		params: {nodeId : nodeId},
-		method: 'GET',
+		url: 'ui/node/checkin/'+nodeId,
+		method: 'PUT',
 		success: function(result, request){
 			updateDocumentInfoPane();
 			gridStore.load();
@@ -318,9 +316,8 @@ function checkinFile(nodeId) {
 
 function undoCheckout(nodeId) {
 	Ext.Ajax.request({
-		url: 'ui/node/undocheckout',
-		params: {nodeId : nodeId},
-		method: 'GET',
+		url: 'ui/node/checkout/'+nodeId,
+		method: 'DELETE',
 		success: function(result, request){
 			updateDocumentInfoPane();
 			gridStore.load();
