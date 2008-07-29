@@ -421,16 +421,7 @@ function _initCenter() {
 		var folderId = gridStore.reader.jsonData.folderId;
 
 		showFolderData(folderId, folderName);
-		updateCurrentFolder(folderId);
-		updateBreadcrumbs(folderName, folderId);
-
-		var name = folderName.substr(0, 21);
-		Ext.get('folderName').child('img').show();
-		Ext.get('folderName').child('div').update(name);
 		
-		/*Show folder actions */
-		Ext.get('folderActions').parent('div').show();
-		Ext.get('folderActionsLabel').show();
 	});
 	
 	gridStore.on('loadexception', function(options, response, e) {
@@ -601,7 +592,7 @@ function _initCenter() {
 		height: 40,
 		border: false,
 		layout: 'table',
-		layoutConfig: {columns: 4},
+		layoutConfig: {columns: 3},
 		cls: 'center-header-bar',
 	    items: [folderName, folderActionsLabel, folderActions]  
 	});
@@ -1243,7 +1234,11 @@ function showFolderData(folderId, folderName) {
 	var name = folderName.substr(0, 21);
 	Ext.get('folderName').child('img').show();
 	Ext.get('folderName').child('div').update(name);
-	
+
+	/*Show folder actions */
+	Ext.get('folderActions').parent('div').show();
+	Ext.get('folderActionsLabel').show();
+
 }
 
 /* search results are shown in main grid */
