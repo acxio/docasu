@@ -29,7 +29,7 @@ if (node != null) {
 	model.success = true;
 	model.msg = "Document checked out";	
 } else {
-	model.success = false;
-	logger.log("Couldn't check it out.");
-	model.msg = "Couldn't check it out.";
+	status.code = 400;
+	status.message = "Invalid node reference " + nodeId;
+	status.redirect = true;
 }

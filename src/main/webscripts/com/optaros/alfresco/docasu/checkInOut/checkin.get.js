@@ -31,7 +31,7 @@ if (node != null) {
 	model.msg = "Document checked in";
 		
 } else {
-	logger.log("Couldn't check it in.");
-	model.success = false;
-	model.msg = "Couldn't check it in.";
+	status.code = 400;
+	status.message = "Invalid node reference " + nodeId;
+	status.redirect = true;
 }

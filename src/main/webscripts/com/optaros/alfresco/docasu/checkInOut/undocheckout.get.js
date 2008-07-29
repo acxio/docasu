@@ -29,7 +29,7 @@ if (node != null) {
 	model.success = true;
 	model.msg = "Undo checked out";	
 } else {
-	logger.log("Couldn't undo the checkout.");
-	model.msg = "Couldn't undo the checkout.";
-	model.success = false;
+	status.code = 400;
+	status.message = "Invalid node reference " + nodeId;
+	status.redirect = true;
 }

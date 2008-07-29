@@ -290,18 +290,16 @@ function checkoutFile(nodeId) {
 		params: {nodeId : nodeId},
 		method: 'GET',
 		success: function(result, request){
-			//Ext.MessageBox.alert(result.responseText);
-			// TODO update all panels !!
-			// TODO (low) select the newly created working copy
-			// file selection has not changed => no need to update other panels
-			// folder contents changed => reload grid
 			gridStore.load();
 		},
-		failure: function(){
-			Ext.MessageBox.alert('Failed', 'Failed to checkout file.');
+		failure: function(result, request){
+			handleErrorMessage('Failed to checkout file', result);
 		}
 	});
 }
+
+
+
 
 function checkinFile(nodeId) {
 	Ext.Ajax.request({
@@ -309,16 +307,11 @@ function checkinFile(nodeId) {
 		params: {nodeId : nodeId},
 		method: 'GET',
 		success: function(result, request){
-			//Ext.MessageBox.alert(result.responseText);
-			// TODO update all panels !!
-			// TODO (low) select the newly updated file
-			// folder contents changed
 			updateDocumentInfoPane();
 			gridStore.load();
 		},
 		failure: function(result, request){
-			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
-			Ext.MessageBox.alert('Failed', 'Failed on checkin file. \n\r\n\r' + result.responseText);
+			handleErrorMessage('Failed to checkin file', result);
 		}
 	});
 }
@@ -329,19 +322,38 @@ function undoCheckout(nodeId) {
 		params: {nodeId : nodeId},
 		method: 'GET',
 		success: function(result, request){
-			//Ext.MessageBox.alert(result.responseText);
-			// TODO update all panels !!
-			// folder contents changed, but document contents did not
-			// ==> only update folder
 			updateDocumentInfoPane();
 			gridStore.load();
 		},
 		failure: function(result, request){
-			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
-			Ext.MessageBox.alert('Failed', 'Failed on undoCheckout file. \n\r\n\r' + result.responseText);
+			handleErrorMessage('Failed to undo checkout file', result);
 		}
 	});
 }
+
+
+function handleErrorMessage(stringMsg, result) {
+		try {
+			var jsonData = Ext.util.JSON.decode(result.responseText);
+			if (!jsonData.success)
+			{
+				var message = '<b>' + stringMsg + '</b> : ' + jsonData.msg;
+				if (jsonData.status.code >= 500) {
+					message = message + '<br/><br/>' + 
+					'<b>Status: </b>' + jsonData.status.code  +' ' + jsonData.status.name + '' + jsonData.status.description + '<br/><br/>' +
+					'<b>Exception: </b>' + jsonData.exception + '<br/><br/>' +
+					'<b>Server:</b> ' + jsonData.server + '<br/><br/>' +
+					jsonData.time;
+				}
+			Ext.MessageBox.alert('Failed', message);
+			return;
+			}
+		}
+		catch (err) {
+			Ext.MessageBox.alert('Failed', err + ' cannot parse error message: ' + result.responseText);
+		}
+	}
+
 
 /**
  * Call method to open a popup window with file informations
