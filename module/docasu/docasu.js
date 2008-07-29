@@ -588,13 +588,13 @@ function _initCenter() {
 	var folderActionsLabel = new Ext.Panel({
 		border: false,
 		cls: 'folderActionsLabel',
-		html: '<div>Folder actions:</div>'
+		html: 'Folder actions:'
 	});
 
-	var centerHeader = new Ext.Panel({
-		id: 'centerHeader',
+	var centerPanelHeader = new Ext.Panel({
+		id: 'centerPanelHeader',
 		region: 'north',
-		height: 40,
+		height: 50,
 		border: false,
 		layout: 'table',
 		layoutConfig: {columns: 3},
@@ -618,7 +618,7 @@ function _initCenter() {
 		margins: '0 0 0 0',
 		id: 'centerPanel',
 		header: true,
-		items: [centerHeader, gridList]
+		items: [centerPanelHeader, gridList]
 	});
 
 	center.on('render', function (panel) {
