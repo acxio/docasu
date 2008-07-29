@@ -284,6 +284,7 @@ function copyLink(icon, name, nodeId) {
 }
 
 function checkoutFile(nodeId) {
+				
 	Ext.Ajax.request({
 		url: 'ui/node/checkout',
 		params: {nodeId : nodeId},
@@ -296,8 +297,8 @@ function checkoutFile(nodeId) {
 			// folder contents changed => reload grid
 			gridStore.load();
 		},
-		failure: function(result, request){
-			Ext.MessageBox.alert('Failed to checkout file.');
+		failure: function(){
+			Ext.MessageBox.alert('Failed', 'Failed to checkout file.');
 		}
 	});
 }

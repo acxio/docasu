@@ -17,7 +17,6 @@
     
 -->
 {
-	"noredirect" : true,
 	"success"    : ${success?string},
 	"msg"	 	 :"${msg}"
 }

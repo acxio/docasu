@@ -17,7 +17,6 @@
     
 -->
 {
-	"noredirect": true,
 	"success": true,
 	"msg"	 : "${msg}"
 }

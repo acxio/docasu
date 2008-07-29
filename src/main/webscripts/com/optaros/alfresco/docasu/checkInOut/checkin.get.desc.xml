@@ -22,5 +22,6 @@
 	<description>Check in a document</description>
 	<url>/docasu/ui/node/checkin?nodeId={nodeId}</url>
 	<transaction>required</transaction>
+	<format default="json">extension</format>
 	<authentication>user</authentication>
 </webscript>

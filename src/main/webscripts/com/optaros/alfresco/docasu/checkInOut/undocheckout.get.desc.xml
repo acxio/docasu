@@ -22,5 +22,6 @@
 	<description>Undo a check out of a document</description>
 	<url>/docasu/ui/node/undocheckout?nodeId={nodeId}</url>
 	<transaction>required</transaction>
+	<format default="json">extension</format>
 	<authentication>user</authentication>
 </webscript>
