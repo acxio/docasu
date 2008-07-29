@@ -33,5 +33,5 @@ if (node != null) {
 } else {
 	logger.log("Couldn't check it in.");
 	model.success = false;
-	model.comment = "Couldn't check it in.";
+	model.msg = "Couldn't check it in.";
 }
