@@ -427,6 +427,10 @@ function _initCenter() {
 		var name = folderName.substr(0, 21);
 		Ext.get('folderName').child('img').show();
 		Ext.get('folderName').child('div').update(name);
+		
+		/*Show folder actions */
+		Ext.get('folderActions').parent('div').show();
+		Ext.get('folderActionsLabel').show();
 	});
 	
 	gridStore.on('loadexception', function(options, response, e) {
@@ -588,16 +592,16 @@ function _initCenter() {
 	var folderActionsLabel = new Ext.Panel({
 		border: false,
 		cls: 'folderActionsLabel',
-		html: 'Folder actions:'
+		html: '<div id="folderActionsLabel">Folder actions:</div>'
 	});
 
-	var centerPanelHeader = new Ext.Panel({
-		id: 'centerPanelHeader',
+	var centerHeader = new Ext.Panel({
+		id: 'centerHeader',
 		region: 'north',
-		height: 50,
+		height: 40,
 		border: false,
 		layout: 'table',
-		layoutConfig: {columns: 3},
+		layoutConfig: {columns: 4},
 		cls: 'center-header-bar',
 	    items: [folderName, folderActionsLabel, folderActions]  
 	});
@@ -618,7 +622,7 @@ function _initCenter() {
 		margins: '0 0 0 0',
 		id: 'centerPanel',
 		header: true,
-		items: [centerPanelHeader, gridList]
+		items: [centerHeader, gridList]
 	});
 
 	center.on('render', function (panel) {
@@ -1258,7 +1262,11 @@ function showSearchResults(data) {
 	Ext.get('folderName').child('img').setVisibilityMode(Ext.Element.DISPLAY);
 	Ext.get('folderName').child('img').hide();
 	Ext.get('folderName').child('div').update('Search Results');
-
+	
+	/*Hide folder actions */
+	Ext.get('folderActions').parent('div').hide();
+	Ext.get('folderActionsLabel').hide();
+	
 }
 
  function checkPermissions(nodeId) {
