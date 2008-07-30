@@ -272,8 +272,8 @@ public class Browse extends DeclarativeWebScript {
 		
 		public int compare(FileInfo f1, FileInfo f2) {
 			if (column.equals("name")) {
-				String name1 = f1.getName();
-				String name2 = f2.getName();
+				String name1 = f1.getName().toLowerCase();
+				String name2 = f2.getName().toLowerCase();
 				return (ascending?name1.compareTo(name2):name2.compareTo(name1));
 			}
 			else if (column.equals("size")) {
@@ -297,8 +297,8 @@ public class Browse extends DeclarativeWebScript {
 				return (ascending?date1.compareTo(date2):date2.compareTo(date1));
 			}
 			else if (column.equals("creator")) {
-				String creator1 = (String)getProperty(f1, ContentModel.PROP_CREATOR, "");
-				String creator2 = (String)getProperty(f2, ContentModel.PROP_CREATOR, "");
+				String creator1 = getProperty(f1, ContentModel.PROP_CREATOR, "").toLowerCase();
+				String creator2 = getProperty(f2, ContentModel.PROP_CREATOR, "").toLowerCase();
 				return (ascending?creator1.compareTo(creator2):creator2.compareTo(creator1));
 			}
 			else {
