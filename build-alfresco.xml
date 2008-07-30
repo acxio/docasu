@@ -59,8 +59,7 @@
     	</java>
 	</target>
 
-	<target name="reset" description="Preform a similar cleanup than the one done in Alfresco's apply_amps.sh">
-		<!-- TODO make sure alfresco is stopped -->
+	<target name="reset" description="Preform a similar cleanup than the one done in Alfresco's apply_amps.sh" depends="check-running, no-start">
 		<delete dir="${alfresco.root.dir}/tomcat/temp/Alfresco"/>
 		<delete dir="${alfresco.root.dir}/tomcat/work/Catalina/localhost/alfresco"/>
 		<delete dir="${alfresco.deploy.dir}"/>
