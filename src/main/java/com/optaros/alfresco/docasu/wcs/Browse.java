@@ -48,26 +48,28 @@ import org.alfresco.web.scripts.WebScriptRequest;
 import org.alfresco.web.scripts.WebScriptStatus;
 import org.apache.commons.logging.LogFactory;
 
-public class Documents extends DeclarativeWebScript {
+public class Browse extends DeclarativeWebScript {
 
-	private static final org.apache.commons.logging.Log log = LogFactory.getLog(Documents.class);
+	private static final org.apache.commons.logging.Log log = LogFactory.getLog(Browse.class);
 
 	private static final String EDITABLE_EXTENSION_REGEX = "txt|html?";
 	
 	private CustomFileFolderService customFileFolderService;
+	
+	private boolean foldersOnly = false;
 
 	public void setCustomFileFolderService(
 			CustomFileFolderService customFileFolderService) {
 		this.customFileFolderService = customFileFolderService;
 	}
 
-	public boolean isFolders() {
-		return false;
+	public void setFoldersOnly(boolean foldersOnly) {
+		this.foldersOnly = foldersOnly;
 	}
 	
 	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
 		String nodeId;
-		if (isFolders()){			
+		if (foldersOnly){			
 			nodeId = req.getParameter("node");
 		}
 		else{
@@ -79,7 +81,7 @@ public class Documents extends DeclarativeWebScript {
 		String dir = req.getParameter("dir");
 		
 		if (log.isDebugEnabled()) {
-			log.debug("FOLDER = " + isFolders());
+			log.debug("FOLDER_ONLY = " + foldersOnly);
 			log.debug("nodeId = " + nodeId);
 			log.debug("start = " + start);
 			log.debug("limit = " + limit);
@@ -117,7 +119,7 @@ public class Documents extends DeclarativeWebScript {
 		String path = generatePath(nodeService, fileFolderService, nodeRef);
 		
 //		List<FileInfo> children = fileFolderService.list(nodeRef);
-		List<NodeRef> childrenRefs = customFileFolderService.list(nodeRef,isFolders());
+		List<NodeRef> childrenRefs = customFileFolderService.list(nodeRef, foldersOnly);
 		List<FileInfo> children = new ArrayList<FileInfo>();
 		for (NodeRef nr : childrenRefs) {
 			try {

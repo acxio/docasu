@@ -30,14 +30,16 @@
     <bean name="webscript.com.optaros.alfresco.docasu.dataModel.datamodel.get" class="com.optaros.alfresco.docasu.wcs.ModelData" parent="webscript">
     </bean>
      
-    <bean name="webscript.com.optaros.alfresco.docasu.content.docs.get" class="com.optaros.alfresco.docasu.wcs.Documents" parent="webscript">
-    	<property name="customFileFolderService" ref="CustomFileFolderService" />
-    </bean>  
-    
-    <bean name="webscript.com.optaros.alfresco.docasu.folders.folders.get" class="com.optaros.alfresco.docasu.wcs.Folders" parent="webscript">
-    	<property name="customFileFolderService" ref="CustomFileFolderService" />
-    </bean>
-    
+	<bean name="webscript.com.optaros.alfresco.docasu.browse.docs.get" class="com.optaros.alfresco.docasu.wcs.Browse" parent="webscript">
+		<property name="customFileFolderService" ref="CustomFileFolderService"/>
+		<property name="foldersOnly" value="false"/>
+	</bean>
+
+	<bean name="webscript.com.optaros.alfresco.docasu.browse.folders.get" class="com.optaros.alfresco.docasu.wcs.Browse" parent="webscript">
+		<property name="customFileFolderService" ref="CustomFileFolderService"/>
+		<property name="foldersOnly" value="true"/>
+	</bean>
+   
     <bean id="CustomFileFolderService" class="org.springframework.aop.framework.ProxyFactoryBean">
         <property name="proxyInterfaces">
             <value>com.optaros.alfresco.docasu.wcs.CustomFileFolderService</value>
