@@ -61,7 +61,7 @@ public class Browse extends AbstractDocumentWebScript {
 
 	@Override
 	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
-
+		log.debug("*** Enter browse request handler ***");
 		initServices();
 
 		Map<String, String> params = readParams(req);
@@ -105,6 +105,7 @@ public class Browse extends AbstractDocumentWebScript {
 		}
 		model.put(KEYWORD_ROWS, rows);
 
+		log.debug("*** Exit browse request handler ***");
 		return model;
 	}
 }

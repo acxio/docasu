@@ -211,7 +211,7 @@ function showAdvancedSearch() {
 		triggerAction: 'all',
 		editable: false
 	});
-	
+		
 	var advSearchForm = new Ext.form.FormPanel({
 		id: 'advSearchForm',
 		width: 600,
@@ -237,7 +237,7 @@ function showAdvancedSearch() {
 			layout: 'form',
 			border: false,
 			style: 'margin:8px 4px 4px 4px',
-			items: [createdFrom, createdTo, modifiedFrom, modifiedTo, currentFolderField]
+			items: [createdFrom, createdTo, modifiedFrom, modifiedTo]
 		})],
 		buttons: [new Ext.Button({
 			text: 'Search',

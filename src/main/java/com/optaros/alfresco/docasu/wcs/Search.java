@@ -18,6 +18,9 @@ package com.optaros.alfresco.docasu.wcs;
  *
  */
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +42,19 @@ public class Search extends AbstractDocumentWebScript {
 
 	private static final Log log = LogFactory.getLog(Search.class);
 
+	// simple search
 	private static final String PARAM_QUERY			= "q";
 	private static final String PARAM_SEARCH_TYPE	= "t";
+
+	// advanced search
+	private static final String PARAM_CREATED_FROM	= "createdFrom";
+	private static final String PARAM_CREATED_TO	= "createdTo";
+	private static final String PARAM_MODIFIED_FROM	= "modFrom";
+	private static final String PARAM_MODIFIED_TO	= "modTo";
+
+	private static final String DATE_FORMAT			= "yyyy/MM/dd";
+
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
 	@Override
 	protected Map<String, String> readParams(WebScriptRequest req) {
@@ -49,26 +63,39 @@ public class Search extends AbstractDocumentWebScript {
 
 		readParam(params, PARAM_QUERY, req.getParameter(PARAM_QUERY));
 		readParam(params, PARAM_SEARCH_TYPE, req.getParameter(PARAM_SEARCH_TYPE));
+		readParam(params, PARAM_CREATED_FROM, req.getParameter(PARAM_CREATED_FROM));
+		readParam(params, PARAM_CREATED_TO, req.getParameter(PARAM_CREATED_TO));
+		readParam(params, PARAM_MODIFIED_FROM, req.getParameter(PARAM_MODIFIED_FROM));
+		readParam(params, PARAM_MODIFIED_TO, req.getParameter(PARAM_MODIFIED_TO));
+
 
 		if (log.isDebugEnabled()) {
 			log.debug("PARAM q = " + params.get(PARAM_QUERY));
 			log.debug("PARAM t = " + params.get(PARAM_SEARCH_TYPE));
+			log.debug("PARAM createdFrom = " + params.get(PARAM_CREATED_FROM));
+			log.debug("PARAM createdTo = " + params.get(PARAM_CREATED_TO));
+			log.debug("PARAM modFrom = " + params.get(PARAM_MODIFIED_FROM));
+			log.debug("PARAM modTo = " + params.get(PARAM_MODIFIED_TO));
 		}
 
 		return params;
 	}
 
 	private boolean validParams(Map<String, String> params) {
-		return params.containsKey(PARAM_QUERY);
+		return params.containsKey(PARAM_QUERY) || isAdvancedSearch(params);
 	}
 
-	private boolean isSimpleSearch(Map<String, String> params) {
-		return true;
+	private boolean isAdvancedSearch(Map<String, String> params) {
+		return (params.containsKey(PARAM_NODE_ID)
+				|| params.containsKey(PARAM_CREATED_FROM)
+				|| params.containsKey(PARAM_CREATED_TO)
+				|| params.containsKey(PARAM_MODIFIED_FROM)
+				|| params.containsKey(PARAM_MODIFIED_TO));
 	}
 
 	@Override
 	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
-
+		log.debug("*** Enter search request handler ***");
 		initServices();
 
 		Map<String, String> params = readParams(req);
@@ -96,11 +123,47 @@ public class Search extends AbstractDocumentWebScript {
 			}
 
 			List<FileInfo> nodes;
-			if (isSimpleSearch(params)) {
+			if (!isAdvancedSearch(params)) {
 				nodes = toFileInfo(customFileFolderService.search(storeRef, params.get(PARAM_QUERY), searchType));
 			}
 			else {
-				nodes = toFileInfo(customFileFolderService.search(storeRef, params.get(PARAM_QUERY), searchType, null, null, null, null, null));
+				NodeRef lookInFolder = null;
+				if (params.containsKey(PARAM_NODE_ID)) {
+					lookInFolder = new NodeRef(storeRef, params.get(PARAM_NODE_ID));
+				}
+				Date createdFrom = null, createdTo = null, modifiedFrom = null, modifiedTo = null;
+				if (params.containsKey(PARAM_CREATED_FROM)) {
+					try {
+						// TODO transform user timezone to server timezone
+						createdFrom = dateFormat.parse(params.get(PARAM_CREATED_FROM));
+					} catch (ParseException e) {/* TODO ignore? */}
+				}
+				if (params.containsKey(PARAM_CREATED_TO)) {
+					try {
+						// TODO transform user timezone to server timezone
+						createdTo = dateFormat.parse(params.get(PARAM_CREATED_TO));
+					} catch (ParseException e) {/* TODO ignore? */}
+				}
+				if (params.containsKey(PARAM_MODIFIED_FROM)) {
+					try {
+						// TODO transform user timezone to server timezone
+						modifiedFrom = dateFormat.parse(params.get(PARAM_MODIFIED_FROM));
+					} catch (ParseException e) {/* TODO ignore? */}
+				}
+				if (params.containsKey(PARAM_MODIFIED_TO)) {
+					try {
+						// TODO transform user timezone to server timezone
+						modifiedTo = dateFormat.parse(params.get(PARAM_MODIFIED_TO));
+					} catch (ParseException e) {/* TODO ignore? */}
+				}
+
+				nodes = toFileInfo(customFileFolderService.search(
+						storeRef,
+						params.get(PARAM_QUERY),
+						searchType,
+						lookInFolder,
+						createdFrom, createdTo,
+						modifiedFrom, modifiedTo));
 			}
 
 			int total = nodes.size();
@@ -127,6 +190,7 @@ public class Search extends AbstractDocumentWebScript {
 			}
 			model.put(KEYWORD_ROWS, rows);
 		}
+		log.debug("*** Exit search request handler ***");
 		return model;
 	}
 }

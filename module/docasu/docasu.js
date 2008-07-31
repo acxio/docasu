@@ -255,8 +255,8 @@ function _initTopBar(user) {
 		items: [{html: '<span class="title">Search:</span>', colspan: 1, bodyStyle: 'margin-right: 4px; border-style:none'},
 				searchCombo,
 				searchField,
-				simpleSearchImg
-			//	{html: '<a href="#" class="header" onclick="showAdvancedSearch(); return false;">Advanced&nbsp;Search</a>', border: false, colspan: 1}
+				simpleSearchImg,
+				{html: '<a href="#" class="header" onclick="showAdvancedSearch(); return false;">Advanced&nbsp;Search</a>', border: false, colspan: 1}
 		],
 		listeners: {
 			beforeaction: searchFormListener

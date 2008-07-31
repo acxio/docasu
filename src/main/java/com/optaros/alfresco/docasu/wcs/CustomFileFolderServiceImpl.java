@@ -1,5 +1,6 @@
 package com.optaros.alfresco.docasu.wcs;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -7,19 +8,15 @@ import java.util.List;
 import java.util.Properties;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.search.QueryParameterDefImpl;
 import org.alfresco.repo.search.impl.lucene.QueryParser;
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
-import org.alfresco.service.cmr.search.QueryParameterDefinition;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.ResultSetRow;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchService;
-import org.alfresco.service.namespace.NamespaceService;
-import org.alfresco.service.namespace.QName;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -31,13 +28,13 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 
 	private static Log logger = LogFactory.getLog(CustomFileFolderServiceImpl.class);
 
-	private static final QName PARAM_QNAME_PARENT = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, "parent");
+	private static final String LUCENE_BASE_QUERY = "-TYPE:\"" + ContentModel.TYPE_SYSTEM_FOLDER + "\"";
 
-	private static final String LUCENE_LIST_QUERY =
-		"+PARENT:\"${cm:parent}\" -TYPE:\"" + ContentModel.TYPE_SYSTEM_FOLDER + "\"";
-	private static final String LUCENE_SEARCH_QUERY =
-		"-TYPE:\"" + ContentModel.TYPE_SYSTEM_FOLDER + "\"";
+	private static final String MIN_DATE 			= "1970\\-01\\-01T00:00:00";
+	private static final String MAX_DATE			= "3000\\-12\\-31T00:00:00";
 
+	private static final String LUCENE_DATE_FORMAT	= "yyyy\\-MM\\-dd'T00:00:00'";
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat(LUCENE_DATE_FORMAT);
 
 	// Class not found in alfresco-enterprise-2.1.1 !
 	// private TenantService tenantService;
@@ -113,14 +110,8 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 		SearchParameters params = new SearchParameters();
 		params.setLanguage(SearchService.LANGUAGE_LUCENE);
 		params.addStore(contextNodeRef.getStoreRef());
-		// set the parent parameter
-		QueryParameterDefinition parentParamDef = new QueryParameterDefImpl(
-				PARAM_QNAME_PARENT,
-				dataTypeNodeRef,
-				true,
-				contextNodeRef.toString());
-		params.addQueryParameterDefinition(parentParamDef);
-		StringBuffer query = prepareQuery(new StringBuffer(LUCENE_LIST_QUERY));
+		StringBuffer query = prepareQuery(new StringBuffer(LUCENE_BASE_QUERY));
+		query.append(" +PARENT:\"" + contextNodeRef.toString() + "\"");
 		if(foldersOnly){
 			query.append(" -TYPE:\"" + ContentModel.TYPE_CONTENT + "\"");
 		}
@@ -128,7 +119,6 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 			logger.debug("List query = '" + query + "'");
 		}
 		params.setQuery(query.toString());
-
 		return toNodeRef(searchService.query(params));
 	}
 
@@ -140,41 +130,55 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 			Date createdFrom, Date createdTo,
 			Date modifiedFrom, Date modifiedTo) {
 
-		SearchParameters params = new SearchParameters();
-		params.addStore(store);
-		params.setLanguage(SearchService.LANGUAGE_LUCENE);
-
-		// Escape Lucene characters.
-		query = QueryParser.escape(query);
-		StringBuffer luceneQuery = prepareQuery(new StringBuffer(LUCENE_SEARCH_QUERY));
-		if (type == SearchType.ALL) {
-			luceneQuery.append(" +(TEXT:\"" + query + "\" @cm\\:name:\"" + query + "\")");
+		if (logger.isDebugEnabled()) {
+			logger.debug("SEARCH PARAM store = " + store);
+			logger.debug("SEARCH PARAM query = " + query);
+			logger.debug("SEARCH PARAM type = " + type);
+			logger.debug("SEARCH PARAM lookInFolder = " + lookInFolder);
+			logger.debug("SEARCH PARAM createdFrom = " + createdFrom);
+			logger.debug("SEARCH PARAM createdTo = " + createdTo);
+			logger.debug("SEARCH PARAM modifiedFrom = " + modifiedFrom);
+			logger.debug("SEARCH PARAM modifiedTo = " + modifiedTo);
 		}
-		else if (type == SearchType.FILE_NAME) {
+
+		SearchParameters params = new SearchParameters();
+		params.setLanguage(SearchService.LANGUAGE_LUCENE);
+		params.addStore(store);
+
+		StringBuffer luceneQuery = prepareQuery(new StringBuffer(LUCENE_BASE_QUERY));
+
+		if (query != null && query.length() > 0) {
+			// Escape Lucene characters.
+			query = QueryParser.escape(query);
+			if (type == SearchType.ALL) {
+				luceneQuery.append(" +(TEXT:\"" + query + "\" @cm\\:name:\"" + query + "\")");
+			}
+			else if (type == SearchType.FILE_NAME || type == SearchType.FOLDER_NAME) {
+				luceneQuery.append(" +@cm\\:name:\"" + query + "\"");
+			}
+			else if (type == SearchType.CONTENT) {
+				luceneQuery.append(" +TEXT:\"" + query + "\"");
+			}
+		}
+		if (type == SearchType.FILE_NAME) {
 			luceneQuery.append(" +TYPE:\"" + ContentModel.TYPE_CONTENT + "\"");
-			luceneQuery.append(" +@cm\\:name:\"" + query + "\"");
 		}
 		else if (type == SearchType.FOLDER_NAME) {
 			luceneQuery.append(" +TYPE:\"" + ContentModel.TYPE_FOLDER + "\"");
-			luceneQuery.append(" +@cm\\:name:\"" + query + "\"");
 		}
 		else if (type == SearchType.CONTENT) {
 			luceneQuery.append(" +TYPE:\"" + ContentModel.TYPE_CONTENT + "\"");
-			luceneQuery.append(" +TEXT:\"" + query + "\"");
-		}
-		else {
-			logger.warn("Unknonw search type");
-			return new ArrayList<NodeRef>();
 		}
 
 		if (lookInFolder != null) {
-			luceneQuery.append(" +PARENT:\"${cm:parent}\"");
-			QueryParameterDefinition parentParamDef = new QueryParameterDefImpl(
-					PARAM_QNAME_PARENT,
-					dataTypeNodeRef,
-					true,
-					lookInFolder.toString());
-			params.addQueryParameterDefinition(parentParamDef);
+			luceneQuery.append(" +PARENT:\"" + lookInFolder.toString() + "\"");
+		}
+
+		if (createdFrom != null || createdTo != null) {
+			writeDateRange(luceneQuery, "created", createdFrom, createdTo);
+		}
+		if (modifiedFrom != null || modifiedTo != null) {
+			writeDateRange(luceneQuery, "modified", modifiedFrom, modifiedTo);
 		}
 
 		if (logger.isDebugEnabled()) {
@@ -182,5 +186,22 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 		}
 		params.setQuery(luceneQuery.toString());
 		return toNodeRef(searchService.query(params));
+	}
+
+	private void writeDateRange(StringBuffer luceneQuery, String field, Date fromDate, Date toDate) {
+		String from, to;
+		if (fromDate != null) {
+			from = dateFormat.format(fromDate);
+		}
+		else {
+			from = MIN_DATE;
+		}
+		if (toDate != null) {
+			to = dateFormat.format(toDate);
+		}
+		else {
+			to = MAX_DATE;
+		}
+		luceneQuery.append(" +@cm\\:" + field + ":[" + from + " TO " + to + "]");
 	}
 }

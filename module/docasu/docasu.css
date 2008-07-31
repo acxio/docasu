@@ -83,7 +83,7 @@ body{font:normal 11px tahoma,arial,helvetica,sans-serif;}
 }
 
 #top-bar div.searchForm {
-	width: 370px;
+	width: 470px;
 }
 
 #top-bar div.searchForm td table {
@@ -190,7 +190,7 @@ div.folderLogo{
 a.header{
 	color:#000000;
 	text-decoration:underline;
-	margin-left:20px;
+	margin-left:10px;
 }
 
 a.breadcrumb, a.breadcrumb:visited,a.breadcrumb:link{
