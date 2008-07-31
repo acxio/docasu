@@ -177,9 +177,9 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 			params.addQueryParameterDefinition(parentParamDef);
 		}
 
-//		if (logger.isDebugEnabled()) {
-			logger.fatal("Search query = '" + luceneQuery + "'");
-//		}
+		if (logger.isDebugEnabled()) {
+			logger.debug("Search query = '" + luceneQuery + "'");
+		}
 		params.setQuery(luceneQuery.toString());
 		return toNodeRef(searchService.query(params));
 	}
