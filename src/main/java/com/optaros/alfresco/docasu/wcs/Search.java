@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.web.scripts.WebScriptRequest;
@@ -113,13 +114,16 @@ public class Search extends AbstractDocumentWebScript {
 
 			int i = 0;
 			for (FileInfo info : nodes) {
-				Map<String, Object> row = toModelRow(info);
-				NodeRef parentRef = nodeService.getPrimaryParent(info.getNodeRef()).getParentRef();
-				if (parentRef != null) {
-					row.put("parentId", parentRef.getId());
-					row.put("parentPath", generatePath(parentRef));
+				try {
+					Map<String, Object> row = toModelRow(info);
+					NodeRef parentRef = nodeService.getPrimaryParent(info.getNodeRef()).getParentRef();
+					if (parentRef != null) {
+						row.put("parentId", parentRef.getId());
+						row.put("parentPath", generatePath(parentRef));
+					}
+					rows[i++] = row;
 				}
-				rows[i++] = row;
+				catch (AccessDeniedException ade) {/* Ignore node. */}
 			}
 			model.put(KEYWORD_ROWS, rows);
 		}

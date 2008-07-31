@@ -215,14 +215,13 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		NodeService nodeService = getServiceRegistry().getNodeService();
 		FileFolderService fileFolderService = getServiceRegistry().getFileFolderService();
 
-		LinkedList<NodeRef> nodes = new LinkedList<NodeRef>();
+		LinkedList<FileInfo> nodes = new LinkedList<FileInfo>();
 		while (nodeRef != null) {
-			nodes.add(0, nodeRef);
+			nodes.add(0, fileFolderService.getFileInfo(nodeRef));
 			nodeRef = nodeService.getPrimaryParent(nodeRef).getParentRef();
 		}
 		StringBuffer path = new StringBuffer();
-		for (NodeRef pathElement : nodes) {
-			FileInfo fileInfo = fileFolderService.getFileInfo(pathElement);
+		for (FileInfo fileInfo : nodes) {
 			// root has no fileInfo == null !
 			if (fileInfo != null) {
 				path.append("/");
