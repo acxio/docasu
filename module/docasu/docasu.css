@@ -83,8 +83,13 @@ body{font:normal 11px tahoma,arial,helvetica,sans-serif;}
 }
 
 #top-bar div.searchForm {
-	width: 450px;
+	width: 370px;
 }
+
+#top-bar div.searchForm td table {
+	margin-left: 5px;
+}
+
 
 #top-bar .title {
 	font-weight: bold;

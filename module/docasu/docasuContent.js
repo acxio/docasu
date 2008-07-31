@@ -142,26 +142,21 @@ function createContent(type, folderId) {
 			method: 'POST',
 			form: createContentForm.getForm().getEl(),
 			success: function(response, options){
-				//Ext.MessageBox.alert('Must have been 2xx http status code');
+			
+				var result = eval('(' + response.responseText + ')');
 
-				if (response.responseText == 'ok') {
+                if (result.success) {
 						// TODO: update all panels !!
 						// folder contents changed
 					gridStore.load();
-				} else if (response.responseText == 'exist') {
-					Ext.Msg.show({
-					   title:'File Creation',
-					   msg: 'This file exists already.',
-					   buttons: Ext.Msg.OK,
-					   icon: Ext.MessageBox.ERROR
-					});
-			    } else if (response.responseText == 'privileges') {
-					Ext.Msg.show({
-					   title:'File Creation',
-					   msg: 'You don\'t have the privileges to create a new content.',
-					   buttons: Ext.Msg.OK,
-					   icon: Ext.MessageBox.ERROR
-					});
+				}
+                else {
+            		Ext.Msg.show({
+            			title:'File Creation',
+            			msg: result.msg,
+            			buttons: Ext.Msg.OK,
+            			icon: Ext.MessageBox.ERROR
+            		});
 				}
 				createContentWindow.close();
 			}, 

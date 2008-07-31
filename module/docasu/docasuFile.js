@@ -158,7 +158,7 @@ function deleteFile(fileName, nodeId) {
 							success: function(response, options){
 								clearDocumentInfoPane();
 								var responseObj = Ext.util.JSON.decode(response.responseText);
-								showSearchResults(responseObj);
+								loadSearchResults(responseObj);
 								
 							},
 							failure: function(){
@@ -175,7 +175,7 @@ function deleteFile(fileName, nodeId) {
 							success: function(response, options){
 								clearDocumentInfoPane();
 								var responseObj = Ext.util.JSON.decode(response.responseText);
-								showSearchResults(responseObj);
+								loadSearchResults(responseObj);
 						    }, 
 		    				failure: function(){	
 								Ext.MessageBox.alert('Failed', 'Failed to display search results of simple search');

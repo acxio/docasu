@@ -36,7 +36,7 @@
 	<script type="text/javascript" src="../../docasu/docasu.js"></script>
 
 	<script type="text/javascript" src="../../docasu/docasuHelp.js"></script>    
-	<script type="text/javascript" src="../../docasu/docasuAdvancedSearch.js"></script>    
+	<script type="text/javascript" src="../../docasu/docasuSearch.js"></script>    
 	<script type="text/javascript" src="../../docasu/docasuClipboard.js"></script>
 	<script type="text/javascript" src="../../docasu/docasuContent.js"></script>
 	<script type="text/javascript" src="../../docasu/docasuFavorite.js"></script>

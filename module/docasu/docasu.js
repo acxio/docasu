@@ -16,7 +16,6 @@
  *    
  */
 
-var SEARCH_FIELD_WIDTH = 150;
 var advSearchWindow;
 
 var gridStore;
@@ -82,24 +81,9 @@ Ext.onReady(function(){
 			Ext.MessageBox.alert('Failed', 'Failed on user login. \n\r\n\r' + result.responseText);
 		}
 	});
-	
-	// TODO delete ?
-//	Ext.Ajax.request({
-//		url: 'ui/datamodel',
-//		method: 'GET',
-//		success: _loadDataModel,
-//		failure: function(result, request){
-//			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
-//			Ext.MessageBox.alert('Failed', 'Failed to load Data Model. \n\r\n\r' + result.responseText);
-//		}
-//	});
+
 		
 });
-
-//function _loadDataModel(result, request) {
-//	var modelData = eval(result.responseText);
-//	Ext.state.Manager.set('cifsHost', modelData.cifsServer);
-//}
 
 function _init(result, request) {
 	
@@ -211,7 +195,8 @@ function _init(result, request) {
 		html: '<a href="http://code.optaros.com/trac/docasu">DoCASU @VERSION@</a> - Powered by <a href="http://www.optaros.com">Optaros</a>'
 	});
 
-	var viewport = new Ext.Viewport({
+	new Ext.Viewport({
+		id: 'viewport',
 		layout: 'border',
 		items: [
 			_initTopBar(user),
@@ -221,30 +206,11 @@ function _init(result, request) {
 			footer
 		]
 	});
-
-	var tooltip = new Ext.ToolTip({
-		target: 'fileGrid',
-		id: 'toolTip',
-		trackMouse: true,
-		showDelay: 500,
-		hideDelay: 0,
-		dismissDelay: 5000
-	});
-	// to prevent strange js errors;
-	tooltip.render(document.body);
-
-	// disable tooltip on empty rows
-	tooltip.on("beforeshow", function(e, t){
-//		console.log('tt no data ' + getToolTip().noData);
-		if (getToolTip().noData) {
-			return false;
-		}
-		return undefined;
-    });
 	
 	updateFavorites();
 	clipboard.update();	
-
+	
+	
 	// TODO understand this.
 	checkPermissions(null);
 
@@ -256,26 +222,7 @@ function _init(result, request) {
 function _initTopBar(user) {
 
 	/* SEARCH */
-	var searchCombo = new Ext.form.ComboBox({
-		colspan: 1,
-		hiddenName: 't',
-		width: 100,
-		store: new Ext.data.SimpleStore({
-			fields: ['code', 'label'],
-			data: [
-				['', 'All items'],
-				['content', 'Documents'],
-				['filename', 'File names'],
-				['space', 'Spaces']
-			]}),
-		displayField: 'label',
-		valueField: 'code',
-		mode: 'local',
-		value: '',
-		triggerAction: 'all',
-		selectOnFocus: true,
-		editable: false
-	});
+	var searchCombo = _createSearchTypeComboBox(100);
 	
 	var searchField = new Ext.form.TextField({
 		colspan: 1,
@@ -308,23 +255,11 @@ function _initTopBar(user) {
 		items: [{html: '<span class="title">Search:</span>', colspan: 1, bodyStyle: 'margin-right: 4px; border-style:none'},
 				searchCombo,
 				searchField,
-				simpleSearchImg,
-				{html: '<a href="#" class="header" style="margin-right:10px;" onclick="showAdvancedSearch();">Advanced&nbsp;Search</a>', border: false, colspan: 1}],
-		url: 'ui/ss',
-		method: 'GET',	
+				simpleSearchImg
+			//	{html: '<a href="#" class="header" onclick="showAdvancedSearch(); return false;">Advanced&nbsp;Search</a>', border: false, colspan: 1}
+		],
 		listeners: {
-			actioncomplete: function(form, action){
-				var responseObj = Ext.util.JSON.decode(action.response.responseText);
-				
-				simpleSearchQuery = searchField.getValue();
-				advancedSearchQuery = "";
-				
-				showSearchResults(responseObj);
-			},
-			actionfailure: function(form, action){
-				//Ext.MessageBox.alert(action.response.responseCode);
-				Ext.MessageBox.alert('An error occurred while searching.');
-			}	
+			beforeaction: searchFormListener
 		}
 	});
 
@@ -420,7 +355,7 @@ function _initCenter() {
 		var folderName = gridStore.reader.jsonData.folderName;
 		var folderId = gridStore.reader.jsonData.folderId;
 
-		showFolderData(folderId, folderName);
+		showFolderView(folderId, folderName);
 		
 	});
 	
@@ -438,10 +373,8 @@ function _initCenter() {
 
 	// GRID	
     var gridList = new Ext.grid.GridPanel({
-        id: 'fileGrid',
-		region: 'center',
+        id: 'folderView',
 		store: gridStore,
-		border: false,
 	    columns: [
 	        {id:'nodeId', header: "Name", width: 110, sortable: true, dataIndex: 'name', renderer: fileNameRenderer},
 	        {header: "Size", width: 20, sortable: true, dataIndex: 'size', renderer: Ext.util.Format.fileSize}, 
@@ -460,10 +393,7 @@ function _initCenter() {
             displayMsg: 'Displaying file(s) {0} - {1} of {2}',
             emptyMsg: "No files to display"
         }),
-	    // sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
-	    sm: fileSelectionModel,
-	    frame:true,
-	    iconCls:'icon-grid'
+	    sm: fileSelectionModel
 	});
     
     gridList.on('rowclick', function (grid, rowIndex) {
@@ -605,21 +535,52 @@ function _initCenter() {
 		panel.getEl().parent('td').child('div').addClass('folderActionsLabel');
 	});
 	
-
+	var centerView = new Ext.Panel({
+		id: 'centerView',
+		region:'center',
+		layout:'card',
+		defaults: {
+			// applied to each contained panel
+			border:false
+		},
+		activeItem: 0,
+		items: [gridList, _initSearchResultsView()]
+	});
 
 	var center = new Ext.Panel({
-	    layout:'border',
-	    region:'center',
-		margins: '0 0 0 0',
 		id: 'centerPanel',
+		layout:'border',
+		region:'center',
+		margins: '0 0 0 0',
 		header: true,
-		items: [centerHeader, gridList]
+		items: [centerHeader, centerView]
 	});
 
 	center.on('render', function (panel) {
-		panel.header.addClass('black-header');		
+		panel.header.addClass('black-header');
 	});
 	
+	gridList.on('render', function (panel) {
+		var tooltip = new Ext.ToolTip({
+			target: 'folderView',
+			id: 'toolTip',
+			trackMouse: true,
+			renderTo: document.body,
+			showDelay: 500,
+			hideDelay: 0,
+			dismissDelay: 5000
+		});
+
+		// disable tooltip on empty rows
+		tooltip.on("beforeshow", function(e, t){
+//			console.log('tt no data ' + getToolTip().noData);
+			if (getToolTip().noData) {
+				return false;
+			}
+			return undefined;
+	    });
+	});
+
 	return center;
 }
 	
@@ -1226,45 +1187,54 @@ function loadParentFolder() {
 	loadFolder(Ext.state.Manager.get('parentFolderId'));
 }
 
-function showFolderData(folderId, folderName) {
+function showFolderView(folderId, folderName) {
+
+	/* Show folder icon */
+	Ext.get('folderName').child('img').show();
+
+	/* Show folder actions */
+	Ext.get('folderActions').parent('div').show();
+	Ext.get('folderActionsLabel').show();
+	
+	/* Show the folder view */
+	Ext.getCmp('centerView').getLayout().setActiveItem('folderView');
 
 	updateCurrentFolder(folderId);
 	updateBreadcrumbs(folderName, folderId);
 
 	var name = folderName.substr(0, 21);
-	Ext.get('folderName').child('img').show();
 	Ext.get('folderName').child('div').update(name);
-
-	/*Show folder actions */
-	Ext.get('folderActions').parent('div').show();
-	Ext.get('folderActionsLabel').show();
 
 }
 
-/* search results are shown in main grid */
-function showSearchResults(data) {
+function showSearchResultsView() {
 	
-	/* clear the document info panel */
+	/* Set the title to "Search results" */
+	Ext.get('folderName').child('div').update('Search Results');
+
+	/* Hide folder icon */
+	Ext.get('folderName').child('img').setVisibilityMode(Ext.Element.DISPLAY);
+	Ext.get('folderName').child('img').hide();
+	
+	/* Hide folder actions */
+	Ext.get('folderActions').parent('div').hide();
+	Ext.get('folderActionsLabel').hide();
+
+	/* Show the search results view */
+	Ext.getCmp('centerView').getLayout().setActiveItem('searchResultsView');
+	
 	clearDocumentInfoPane();
 
 	/* no breadcrumbs displayed */
 	Ext.getCmp('centerPanel').setTitle('');	
 
+	
 	/* load search results into grid */
-	gridStore.loadData(data);
-	
-	/* Set the title to "Search results" */
-	Ext.get('folderName').child('img').setVisibilityMode(Ext.Element.DISPLAY);
-	Ext.get('folderName').child('img').hide();
-	Ext.get('folderName').child('div').update('Search Results');
-	
-	/*Hide folder actions */
-	Ext.get('folderActions').parent('div').hide();
-	Ext.get('folderActionsLabel').hide();
-	
+//	gridStore.loadData(data);
+		
 }
 
- function checkPermissions(nodeId) {
+function checkPermissions(nodeId) {
 	
 	Ext.Ajax.request({
 		url: 'ui/node/getPermission',

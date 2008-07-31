@@ -19,9 +19,6 @@
 {
 	"success"	: true,
 	"total"		: ${total},
-	"path"		: "${path}",
-	"folderName": "${folderName}",
-	"folderId"	: "${folderId}",
 	"rows" 		: [
 <#list rows as row>
 		{
@@ -35,8 +32,8 @@
 			"link"				: "${url.context}${row.url}?${randomNumber?string}",
 			"creator"			: "${row.creator}",
 			"description"		: "${row.description?js_string}",
-			"parentId"			: "${folderId}",
-			"parentPath"		: "${path}",
+			"parentId"			: "${row.parentId}",
+			"parentPath"		: "${row.parentPath}",
 			"modifier"			: "${row.modifier}",
 			"mimetype"			: "${row.mimetype!}",
 			"downloadUrl"		: "${url.context}${row.downloadUrl}",

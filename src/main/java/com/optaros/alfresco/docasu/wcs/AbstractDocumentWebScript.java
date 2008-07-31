@@ -15,7 +15,7 @@ package com.optaros.alfresco.docasu.wcs;
  *
  *    You should have received a copy of the GNU General Public License
  *    along with this program. If not, see <http://www.gnu.org/licenses/>.
- *    
+ *
  */
 
 import java.io.Serializable;
@@ -36,6 +36,7 @@ import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.repository.TemplateImageResolver;
 import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.PermissionService;
@@ -47,25 +48,38 @@ import org.alfresco.web.scripts.WebScriptRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * @author Jean-Luc Geering
+ */
 public class AbstractDocumentWebScript extends DeclarativeWebScript {
 
 	private static final Log log = LogFactory.getLog(AbstractDocumentWebScript.class);
 
 	private static final String EDITABLE_EXTENSION_REGEX = "txt|html?";
-	
+
+	protected static final String PARAM_NODE_ID		= "nodeId";
 	protected static final String PARAM_START		= "start";
 	protected static final String PARAM_LIMIT		= "limit";
 	protected static final String PARAM_SORT		= "sort";
 	protected static final String PARAM_DIR			= "dir";
-	
+
 	protected static final String KEYWORD_ROWS		= "rows";
-	
+
+	protected CustomFileFolderService customFileFolderService;
 	protected FileFolderService fileFolderService;
 	protected NodeService nodeService;
 	protected PermissionService permissionService;
 	protected VersionService versionService;
-	
+
 	protected TemplateImageResolver imageResolver;
+
+	protected StoreRef storeRef = new StoreRef("workspace://SpacesStore");
+
+
+	public void setCustomFileFolderService(
+			CustomFileFolderService customFileFolderService) {
+		this.customFileFolderService = customFileFolderService;
+	}
 
 	protected void initServices() {
 		fileFolderService = getServiceRegistry().getFileFolderService();
@@ -74,25 +88,45 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		versionService = getServiceRegistry().getVersionService();
 		imageResolver = getWebScriptRegistry().getTemplateImageResolver();
 	}
-	
+
+	protected void readParam(Map<String, String> params, String key, String value) {
+		if (value != null && value.length() > 0) {
+			params.put(key, value);
+		}
+	}
+
 	protected Map<String, String> readParams(WebScriptRequest req) {
 		Map<String, String> params = new HashMap<String, String>();
-		
-		params.put(PARAM_START, req.getParameter(PARAM_START));
-		params.put(PARAM_LIMIT, req.getParameter(PARAM_LIMIT));
-		params.put(PARAM_SORT, req.getParameter(PARAM_SORT));
-		params.put(PARAM_DIR, req.getParameter(PARAM_DIR));
-		
+
+		readParam(params, PARAM_NODE_ID, req.getParameter(PARAM_NODE_ID));
+		readParam(params, PARAM_START, req.getParameter(PARAM_START));
+		readParam(params, PARAM_LIMIT, req.getParameter(PARAM_LIMIT));
+		readParam(params, PARAM_SORT, req.getParameter(PARAM_SORT));
+		readParam(params, PARAM_DIR, req.getParameter(PARAM_DIR));
+
 		if (log.isDebugEnabled()) {
+			log.debug("PARAM nodeId = " + params.get(PARAM_NODE_ID));
 			log.debug("PARAM start = " + params.get(PARAM_START));
 			log.debug("PARAM limit = " + params.get(PARAM_LIMIT));
 			log.debug("PARAM sort = " + params.get(PARAM_SORT));
 			log.debug("PARAM dir = " + params.get(PARAM_DIR));
 		}
-		
+
+		// set default paging values.
+		if (!params.containsKey(PARAM_START)) {
+			// TODO
+			log.warn("Setting start to 0 TODO refactor ui");
+			params.put(PARAM_START, "0");
+		}
+		if (!params.containsKey(PARAM_LIMIT)) {
+			// TODO
+			log.warn("Setting limit to 50 TODO refactor ui");
+			params.put(PARAM_LIMIT, "50");
+		}
+
 		return params;
 	}
-	
+
 	protected List<FileInfo> toFileInfo(List<NodeRef> nodes) {
 		List<FileInfo> result = new ArrayList<FileInfo>();
 		for (NodeRef node : nodes) {
@@ -103,15 +137,15 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		}
 		return result;
 	}
-	
+
 	protected List<FileInfo> sort(List<FileInfo> nodes, Map<String, String> params) {
-		if (params.get(PARAM_SORT) != null) {
+		if (params.get(PARAM_SORT) != null && !"".equals(params.get(PARAM_SORT))) {
 			ColumnComparator comparator = new ColumnComparator(params.get(PARAM_SORT), !"DESC".equals(params.get(PARAM_DIR)));
 			Collections.sort(nodes, comparator);
 		}
 		return nodes;
 	}
-	
+
 	protected List<FileInfo> doPaging(List<FileInfo> nodes, Map<String, String> params) {
 		int elementCount = nodes.size();
 		if (params.get(PARAM_START) != null && params.get(PARAM_LIMIT) != null) {
@@ -132,7 +166,7 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		}
 		return nodes;
 	}
-	
+
 	protected Map<String, Object> toModelRow(FileInfo fileInfo) {
 
 		TemplateNode templateNode = new TemplateNode(fileInfo.getNodeRef(), getServiceRegistry(), imageResolver);
@@ -175,9 +209,9 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		}
 		return row;
 	}
-	
+
 	protected String generatePath(NodeRef nodeRef) {
-		
+
 		NodeService nodeService = getServiceRegistry().getNodeService();
 		FileFolderService fileFolderService = getServiceRegistry().getFileFolderService();
 
@@ -227,12 +261,12 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 
 		private final String column;
 		private final boolean ascending;
-		
+
 		public ColumnComparator(String column, boolean ascending) {
 			this.column = column;
 			this.ascending = ascending;
 		}
-		
+
 		public int compare(FileInfo f1, FileInfo f2) {
 			if (column.equals("name")) {
 				String name1 = f1.getName().toLowerCase();

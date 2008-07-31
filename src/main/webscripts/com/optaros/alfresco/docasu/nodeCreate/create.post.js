@@ -66,12 +66,12 @@ if (folderToWriteIn.hasPermission("CreateChildren")) {
 		model.success = true;
 		logger.log("file create");
 	} else {
-	    model.msg = "exist";
+	    model.msg = "This file exists already.";
 	    model.success = false;
 	    logger.log("file already exist");
 	}
 } else {
-	model.msg = "privileges";
+	model.msg = "You don\'t have the privileges to create a new content.";
 	model.success = false;
 	logger.log("user didn't have privileges");
 }
