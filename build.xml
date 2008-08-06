@@ -21,6 +21,9 @@
 	
 	<import file="build-alfresco.xml"/>
 	
+	<!-- Only to ensure configuration are created -->
+	<target name="setup"/>
+
 	<target name="build-module" depends="docasu-module.package-amp"/>
 	
 	<target name="help">
