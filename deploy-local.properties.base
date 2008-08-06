@@ -19,8 +19,9 @@
 # Where you unpacked alfresco-*-tomcat-* bundle
 alfresco.root.dir=/opt/alfresco
 
-# WebDAV / SMB mounted Data Dictionary/Web Scripts Space in Alfresco
 # The "deploy" task copies the modified web scripts here.
-webscript.dir=../smb_mount/Data Dictionary/Web Scripts
-# or copy the into the Alfresco's classpath and restart Alfresco.
-#webscript.dir=/opt/alfresco/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts
+# Note that Alfresco will need to be restarted for changes to be effective
+# (copying files to the "Data Dictionary/Web Scripts" Space in Alfresco,
+#  which can be mounted via CIFS/WebDAV, would note require a restart but 
+#  will not work with DoCASU because of the Java files)
+webscript.dir=/opt/alfresco/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts
