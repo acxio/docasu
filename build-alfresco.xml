@@ -30,14 +30,21 @@
 	</target>
 	
 	<target name="start" description="Start Alfresco (i.e. start tomcat with alfresco.sh script)" depends="check-running, no-start">
-		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.sh">
+		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.sh" osfamily="unix">
 			<arg line="start"/>
 		</exec>
+		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.bat" osfamily="windows" spawn="true">
+			<arg line="start"/>
+		</exec>
+		<sleep seconds="60"/>
 		<touch file="${alfresco.root.dir}/alfresco.started"/>
 	</target>
 
 	<target name="stop" description="Stop Alfresco (i.e. stop tomcat with alfresco.sh script)">
-		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.sh">
+		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.bat" osfamily="windows">
+			<arg line="stop"/>
+		</exec>
+		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.sh" osfamily="unix">
 			<arg line="stop"/>
 		</exec>
 		<sleep seconds="5"/>
