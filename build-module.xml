@@ -49,6 +49,7 @@
 		<copy todir="${source.dir}/main/java" overwrite="true">
 			<fileset dir="${repository.dir}/${alfresco.sdk}">
 				<include name="**/*" />
+				<exclude name="docasu-context.xml"/>
 			</fileset>
 		</copy>
 	</target>
