@@ -18,54 +18,59 @@
     
 -->
 <project name="docasu-module" default="package-amp" basedir=".">
-	
-	<import file="build-common.xml"/>
-	
+
+	<import file="build-common.xml" />
+
 	<!-- include Alfresco jar files -->
 	<!-- TODO: remove dependency on Alfresco SDK and import JARs into ./vendor ! -->
 	<path id="class.path">
-	    <fileset dir="${download.dir}/${alfresco.sdk}/" includes="**/*.jar"/>
+		<fileset dir="${download.dir}/${alfresco.sdk}/" includes="**/*.jar" />
 	</path>
-	
+
 	<target name="init">
-		<mkdir dir="${download.dir}"/>
-		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${download.dir}" />
+		<mkdir dir="${build.dir}" />
 	</target>
-	
+
 	<!-- setup eclipse project -->
-	<target name="download-sdk" depends="init">	
+	<target name="download-sdk" depends="init">
 		<!-- download alfresco.sdk and unzip it -->
-		<get src="http://switch.dl.sourceforge.net/sourceforge/alfresco/${alfresco.sdk}.zip" dest="${download.dir}/${alfresco.sdk}.zip" usetimestamp="true" verbose="true"/> 	
-		<!-- check the version of this file for alfresco v.2 and v.3 -->
-		<get src="http://switch.dl.sourceforge.net/sourceforge/alfresco/alfresco-mmt-2.1.0.jar" dest="${download.dir}/alfresco-mmt.jar" usetimestamp="true" verbose="true"/> 	
-		<unzip src="${download.dir}/${alfresco.sdk}.zip" dest="${download.dir}/${alfresco.sdk}" overwrite="false"/>	
-	</target>	
-	
+		<get src="http://switch.dl.sourceforge.net/sourceforge/alfresco/${alfresco.sdk}.zip" dest="${download.dir}/${alfresco.sdk}.zip" usetimestamp="true" verbose="true" />
+		<!-- this jar works with both alfresco v.2 and v.3 -->
+		<get src="http://switch.dl.sourceforge.net/sourceforge/alfresco/alfresco-mmt-2.1.0.jar" dest="${download.dir}/alfresco-mmt.jar" usetimestamp="true" verbose="true" />
+		<unzip src="${download.dir}/${alfresco.sdk}.zip" dest="${download.dir}/${alfresco.sdk}" overwrite="false" />
+	</target>
+
+	<target name="set-source-files">
+		<!-- copy docasu-context.xml according to alfresco.sdk -->
+		<copy todir="${source.dir}/main/extension" file="${repository.dir}/${alfresco.sdk}/docasu-context.xml" overwrite="true">
+		</copy>
+		<!-- copy java source files according to alfresco.sdk -->
+		<copy todir="${source.dir}/main/java" overwrite="true">
+			<fileset dir="${repository.dir}/${alfresco.sdk}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+	</target>
+
 	<target name="copy-ressources" depends="init">
 		<copy todir="${build.dir}">
 			<fileset dir="${source.dir}/main/java">
-				<include name="**/*"/>
-				<exclude name="**/*.java"/>
+				<include name="**/*" />
+				<exclude name="**/*.java" />
 			</fileset>
 		</copy>
-	</target>	
+	</target>
 
-	<target name="compile" depends="init, download-sdk, copy-ressources">
-		<javac destdir="${build.dir}"
-			classpathref="class.path"
-			srcdir="${source.dir}/main/java"
-			target="1.5"
-			debug="true"
-			fork="true"
-			encoding="UTF-8"
-		/>
+	<target name="compile" depends="init, download-sdk, copy-ressources, set-source-files">
+		<javac destdir="${build.dir}" classpathref="class.path" srcdir="${source.dir}/main/java" target="1.5" debug="true" fork="true" encoding="UTF-8" />
 	</target>
 
 	<target name="prepare-amp" depends="compile" description="Prepares the Alfresco Module Package (AMP) file.">
-	
+
 		<delete dir="${amp.dir}" />
 		<delete file="${amp.file}" />
-	
+
 		<copy todir="${amp.dir}">
 			<fileset dir="module" />
 		</copy>
@@ -75,21 +80,21 @@
 		<copy todir="${amp.dir}/config/alfresco/extension">
 			<fileset dir="${source.dir}/main/extension" />
 		</copy>
-		<copy todir="${amp.dir}/config/alfresco/extension/templates/webscripts" >
+		<copy todir="${amp.dir}/config/alfresco/extension/templates/webscripts">
 			<fileset dir="${source.dir}/main/webscripts" />
 		</copy>
-		
-		<replace file="${amp.dir}/docasu/docasu.js"  token="@VERSION@" value="${docasu.version}"/>
-		<replace file="${amp.dir}/module.properties" token="@VERSION@" value="${docasu.version}"/>
+
+		<replace file="${amp.dir}/docasu/docasu.js" token="@VERSION@" value="${docasu.version}" />
+		<replace file="${amp.dir}/module.properties" token="@VERSION@" value="${docasu.version}" />
 
 	</target>
 
 	<!-- Generate Alfresco Module Package (AMP) file for easy installation -->
 	<target name="package-amp" depends="prepare-amp" description="Bundle DoCASU into an Alfresco Module Package (AMP) file.">
-	
-		<zip basedir="${amp.dir}" destfile="${amp.file}"/>
+
+		<zip basedir="${amp.dir}" destfile="${amp.file}" />
 		<echo>AMP file ${amp.file} has been created.</echo>
 
 	</target>
-			
+
 </project>
