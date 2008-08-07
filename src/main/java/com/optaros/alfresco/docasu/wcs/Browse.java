@@ -25,7 +25,7 @@ import java.util.Map;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.web.scripts.WebScriptRequest;
-import org.alfresco.web.scripts.WebScriptStatus;
+import org.alfresco.web.scripts.Status;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -60,13 +60,13 @@ public class Browse extends AbstractDocumentWebScript {
 	}
 
 	@Override
-	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
+	public Map<String, Object> executeImpl(WebScriptRequest req, Status status) {
 		log.debug("*** Enter browse request handler ***");
 		initServices();
 
 		Map<String, String> params = readParams(req);
 
-		NodeRef companyHome = getRepositoryContext().getCompanyHome();
+		NodeRef companyHome = repository.getCompanyHome();
 		NodeRef baseNode = companyHome;
 
 		if (params.get(PARAM_NODE_ID) != null) {

@@ -29,15 +29,15 @@
 		<fail message="Alfresco is already running. Stop Alfresco first or delete '${alfresco.root.dir}/alfrecso.started' if you know Alfresco isn't running."/>
 	</target>
 	
-	<target name="start" description="Start Alfresco (i.e. start tomcat with alfresco.sh script)" depends="check-running, no-start">
-		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.sh">
+	<target name="start" description="Start Alfresco (i.e. start tomcat with alfresco.bat script)" depends="check-running, no-start">
+		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.bat">
 			<arg line="start"/>
 		</exec>
 		<touch file="${alfresco.root.dir}/alfresco.started"/>
 	</target>
 
-	<target name="stop" description="Stop Alfresco (i.e. stop tomcat with alfresco.sh script)">
-		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.sh">
+	<target name="stop" description="Stop Alfresco (i.e. stop tomcat with alfresco.bat script)">
+		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.bat">
 			<arg line="stop"/>
 		</exec>
 		<sleep seconds="5"/>

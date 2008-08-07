@@ -29,7 +29,7 @@ import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.web.scripts.WebScriptRequest;
-import org.alfresco.web.scripts.WebScriptStatus;
+import org.alfresco.web.scripts.Status;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -94,7 +94,7 @@ public class Search extends AbstractDocumentWebScript {
 	}
 
 	@Override
-	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
+	public Map<String, Object> executeImpl(WebScriptRequest req, Status status) {
 		log.debug("*** Enter search request handler ***");
 		initServices();
 

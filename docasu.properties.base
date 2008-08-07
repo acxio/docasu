@@ -20,4 +20,5 @@
 docasu.version=1.0.5
 
 # The version of the Alfresco SDK you want to use (will be downloaded)
-alfresco.sdk=alfresco-community-sdk-2.1.0
+#alfresco.sdk=alfresco-community-sdk-2.1.0
+alfresco.sdk=alfresco-labs-sdk-3a.1032

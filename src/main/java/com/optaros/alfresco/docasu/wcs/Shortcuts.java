@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.alfresco.model.ApplicationModel;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.model.Repository;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
@@ -33,7 +34,7 @@ import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.web.scripts.DeclarativeWebScript;
 import org.alfresco.web.scripts.WebScriptRequest;
-import org.alfresco.web.scripts.WebScriptStatus;
+import org.alfresco.web.scripts.Status;
 import org.apache.commons.logging.LogFactory;
 
 public class Shortcuts extends DeclarativeWebScript {
@@ -48,10 +49,16 @@ public class Shortcuts extends DeclarativeWebScript {
 	
 	private NodeService nodeService;
 	
+	private Repository repository;
+	
+	public void setRepository(Repository repository) {
+		this.repository = repository;
+	}
+	
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
+	public Map<String, Object> executeImpl(WebScriptRequest req, Status status) {
 
-		NodeRef person = getRepositoryContext().getPerson();
+		NodeRef person = repository.getPerson();
 		
 		List<ChildAssociationRef> configurationList =
 			nodeService.getChildAssocs(person, ApplicationModel.ASSOC_CONFIGURATIONS,
