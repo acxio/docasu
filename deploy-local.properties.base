@@ -17,8 +17,8 @@
 
 ## For development:
 # Where you unpacked alfresco-*-tomcat-* bundle
-#alfresco.root.dir=D:/DoCASU/Alfresco
-alfresco.root.dir=D:/DoCASU/Alfresco 3
+alfresco.root.dir=D:/DoCASU/Alfresco
+#alfresco.root.dir=D:/DoCASU/Alfresco 3
 
 # WebDAV / SMB mounted Data Dictionary/Web Scripts Space in Alfresco
 # The "deploy" task copies the modified web scripts here.

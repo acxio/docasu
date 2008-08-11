@@ -23,7 +23,7 @@
 	
 	<target name="build-module" depends="docasu-module.package-amp"/>
 	
-	<target name="help">
+	<target name="help" depends="docasu-module.set-source-files">
 		<echo>TODO</echo>
 	</target>
 	

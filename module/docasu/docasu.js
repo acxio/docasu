@@ -927,7 +927,7 @@ function getFileContextMenu(record) {
 			}
 		}
 	});
-
+	
 	contextMenu.add(
 	    {
 	    	text: 'View in Browser',
@@ -953,7 +953,7 @@ function getFileContextMenu(record) {
 	return contextMenu;
 }
 
-function getFolderContextMenu(id) {
+function getFolderContextMenu(id){
 	var contextMenu = new Ext.menu.Menu({
 		id: 'folderCtxMenu',
 		items: createActionItemsForFolder(id)[0],
@@ -965,11 +965,34 @@ function getFolderContextMenu(id) {
 	});
 	
 	contextMenu.add(
-		    {
+			{
+		    	text: 'View in Browser',
+				handler: function() {loadFolder(id);}
+		    }, {
 		    	text: 'Add to Favorites',
 		    	handler: function() {addFavorite(id);}
 		    }
 		);
+		
+	/*
+	 * Send record as the second parameter, when accessed from the center panel, to include these three items.
+	 * This will produce inconsistency with the navigation panel(check ticket #100).
+	 */
+	var record = getFolderContextMenu.arguments[1];
+	if(record){
+		contextMenu.add(
+			{
+		    	text: 'Mail Link',
+		    	handler: function() {mailLink(record.get('name'), record.get('link'));}
+		    }, {
+		    	text: 'Copy Folder Path to System Clipboard',
+		    	handler: function() {copyTextToSystemClipboard(record.get('filePath'));}
+		    }, {
+		    	text: 'Copy Folder Url To System Clipboard',
+		    	handler: function() {copyTextToSystemClipboard(location.protocol + '//' + location.host + record.get('link'));}
+		    }
+		);
+	}
 
 	return contextMenu;
 }
@@ -1161,10 +1184,10 @@ function createActionItems(record) {
 	   	result.push({
 			 text: 'Copy',
 			 icon: '../../docasu/images/copy.gif',
-			 handler: function() {copyLink(record.get('copyLink'), record.get('name'), record.get('nodeId'));}
+			 handler: function() {copyLink(record.get('iconUrl'), record.get('name'), record.get('nodeId'));}
 	   	});
 	   	html += 
-			'<a href="#" onclick="copyLink(\''+record.get('copyLink')+'\', \''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
+			'<a href="#" onclick="copyLink(\''+record.get('iconUrl')+'\', \''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
 				'<img title="Copy" class="actionIcon" src="../../docasu/images/copy.gif"/>'+
 			'</a>';
    }
