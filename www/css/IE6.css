@@ -1,0 +1,312 @@
+
+body {
+	font:normal 11px,trebuchet MS,helvetica,sans-serif;
+}
+
+a {
+	text-decoration:none;
+	color: #7A7A7A;
+}
+
+.product-info-4c{
+	float:left;
+	margin:10px;
+	width:200px;
+}
+
+.product-info-2c{
+	float:left;
+	margin:10px;
+	width:400px;
+}
+	
+
+#header1 {
+	position:absolute; 
+	top:38px; 
+	left:56px;
+}
+
+#header2 {
+	position:absolute; 
+	top:38px; 
+	left:69px;
+}
+
+#header3 {
+	position:absolute; 
+	top:38px; 
+	left:198px;
+}
+
+#header4 {
+	position:absolute; 
+	top:38px; 
+	left:1026px;
+}
+
+#header5 li {
+	float: right;
+}
+
+#header5 li div.header-bar {
+	position: relative;
+}
+
+#header5 li img {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+
+#header5 li a {
+	position: relative;
+	font-size: 16px;
+	padding-left: 30px;
+	padding-right: 25px;
+	top: 11px;
+	color: #C8DBF4;
+}
+
+
+#header5 {
+	position:absolute; 
+	background: url('../images/Home_r2_c5.gif'); 
+	background-repeat:repeat-x;
+	top:38px; 
+	left:198px;
+	width:830px;
+	height:43px;
+}
+
+
+#breadcrumb {
+	position:absolute; 
+	left:70px;
+	top:88px;
+	color:#7A7A7A;
+}
+
+#teaser {
+	background: url('../images/Home_r3_c2.gif') no-repeat; 
+	position:absolute; 
+	top:102px; 
+	left:56px;
+	width:980px;
+	height:270px;
+}
+
+#teaser-text1{
+	color:#5987C6;
+	font-size:28px;
+	left:56px;
+	position:absolute;
+	top:15px;
+}
+
+#teaser-text2{
+	left:56px;
+	position:absolute;
+	top:110px;
+}
+
+.teaser-text3{
+	color:#7BA0B2;
+	font-size:20px;
+}
+
+#teaser-text4{
+	left:56px;
+	position:absolute;
+	top:65px;
+	width:500px;
+}
+
+#teaser-image{
+	left:600px;
+	position:absolute;
+}
+
+#content1{
+	background:transparent url(../images/Background_Content.png) no-repeat scroll 0% 50%;
+	height:400px;
+	left:70px;
+	position:absolute;
+	top:330px;
+	width:1000px;
+}
+
+#content2{
+	background:transparent url(../images/MenuBar.png) no-repeat scroll 0% 50%;
+	height:85px;
+	left:5px;
+	position:absolute;
+	top:30px;
+	width:1000px;
+}
+
+#header5 ul {
+	list-style: none;
+	margin:0px;
+}
+
+#content2 ul{
+	list-style: none;
+	position:absolute;
+	top:11px;
+}
+
+.inactive-tab-link {
+	float:left;
+	color:#C8DBF4;
+	font-size:16px;
+	padding-right:40px;
+	padding-top:12px;
+	width: 160px;
+}
+
+.active-tab-link{
+	float:left;
+	color:#5987C6;
+	font-size:16px;
+	padding-right:40px;
+	width: 160px;
+	position:relative;
+	top:-2px;
+}
+
+.extra-large-active {
+	background: transparent url(../images/Tab3.png) no-repeat scroll 0% 50%;
+	height: 40px;
+	width: 160px;
+	padding-left: 10px;
+	float: left;
+	padding-top:21px;
+}
+
+.active{
+	background:transparent url(../images/Tab2.png) no-repeat scroll 0% 50%;
+	height:40px;
+	padding-left:10px;
+	float:left;
+	padding-top:21px;
+	width: 160px;
+}
+
+.inactive{
+	padding-left:10px;
+	float:left;
+	width: 160px;
+}
+
+#content3{
+	left:30px;
+	position:absolute;
+	top:100px;
+	width:890px;
+}
+
+
+#box1{
+	left:56px;
+	position:absolute;
+	top:388px;
+	background:transparent url(../images/BoxMitVerlauf.jpg) no-repeat scroll 0% 50%;
+	height:190px;
+	width:320px;
+}
+
+#box2{
+	left:384px;
+	position:absolute;
+	top:388px;
+	background:transparent url(../images/BoxMitVerlauf.jpg) no-repeat scroll 0% 50%;
+	height:190px;
+	width:320px;
+}
+
+#box3{
+	left:714px;
+	position:absolute;
+	top:388px;
+	background:transparent url(../images/BoxMitVerlauf.jpg) no-repeat scroll 0% 50%;
+	height:190px;
+	width:320px;
+}
+
+.box-title{
+	color:#5987C6;
+	font-size:24px;
+	padding:15px 30px;
+}
+
+.box-text{
+	color:black;
+	padding:0px 30px;
+}
+
+
+.box-button{
+	background:transparent url(../images/Button.png) no-repeat scroll 0% 50%;
+	color:WHITE;
+	height:30px;
+	left:230px;
+	position:absolute;
+	top:150px;
+	width:73px;
+}
+
+.button-text{
+	margin-top:6px;
+	text-align:center;
+}
+
+
+#footer {
+	position:absolute; 
+	top:700px; 
+	left:61px;
+	width:975px;
+	background:transparent url(../images/Home_r16_c20.gif);
+	height:50px;
+}
+
+#footer-copyright {
+	float:right;
+	color: #7A7A7A;
+	padding-top:16px;
+}
+
+#footer-menu{
+	float:left;
+	color: #7A7A7A;
+	padding-left:10px;
+	padding-top:16px;
+}
+
+.item-selected{
+	text-decoration:underline;
+	color:#5987C6;
+}
+
+#architecture-image{
+	float:left;
+	width:170px;
+	margin-right:10px;
+}
+
+.contact-image{
+	width:150px;
+	float:left;
+	margin-right:10px;
+}
+
+.docasu-image{
+	border:none;
+}
+
+.logo-image{
+	border:medium none;
+}
+	
