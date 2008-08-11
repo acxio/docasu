@@ -35,10 +35,24 @@
 	<!-- setup eclipse project -->
 	<target name="download-sdk" depends="init">	
 		<!-- download alfresco.sdk and unzip it -->
-		<get src="http://switch.dl.sourceforge.net/sourceforge/alfresco/${alfresco.sdk}.zip" dest="${download.dir}/${alfresco.sdk}.zip" usetimestamp="true" verbose="true"/> 	
+		<get src="http://switch.dl.sourceforge.net/sourceforge/alfresco/${alfresco.sdk}.zip" dest="${download.dir}/${alfresco.sdk}.zip" usetimestamp="true" verbose="true"/> 
+		<!-- this jar works with both alfresco v.2 and v.3 -->		
 		<get src="http://switch.dl.sourceforge.net/sourceforge/alfresco/alfresco-mmt-2.1.0.jar" dest="${download.dir}/alfresco-mmt.jar" usetimestamp="true" verbose="true"/> 	
 		<unzip src="${download.dir}/${alfresco.sdk}.zip" dest="${download.dir}/${alfresco.sdk}" overwrite="false"/>	
 	</target>	
+	
+	<target name="set-source-files">
+		<!-- copy docasu-context.xml according to alfresco.sdk -->
+		<copy todir="${source.dir}/main/extension" file="${repository.dir}/${alfresco.sdk}/docasu-context.xml" overwrite="true">
+		</copy>
+		<!-- copy java source files according to alfresco.sdk -->
+		<copy todir="${source.dir}/main/java" overwrite="true">
+			<fileset dir="${repository.dir}/${alfresco.sdk}">
+				<include name="**/*" />
+				<exclude name="docasu-context.xml"/>
+			</fileset>
+		</copy>
+	</target>
 	
 	<target name="copy-ressources" depends="init">
 		<copy todir="${build.dir}">
@@ -49,7 +63,7 @@
 		</copy>
 	</target>	
 
-	<target name="compile" depends="init, download-sdk, copy-ressources">
+	<target name="compile" depends="init, download-sdk, copy-ressources, set-source-files">
 		<javac destdir="${build.dir}"
 			classpathref="class.path"
 			srcdir="${source.dir}/main/java"

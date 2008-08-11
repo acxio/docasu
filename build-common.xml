@@ -30,6 +30,7 @@
 
 	<property name="download.dir" value="download"/>
 	<property name="source.dir" value="src"/>
+	<property name="repository.dir" value="repository"/>
 	<property name="target.dir" value="target"/>
 	<property name="build.dir" value="${target.dir}/build"/>
 	<property name="amp.dir" value="${target.dir}/amp"/>

@@ -25,3 +25,5 @@ docasu.version=1.0.5
 # You may specify an older SDK to ensure backward compatibility
 alfresco.sdk=alfresco-community-sdk-2.1.0
 #alfresco.sdk=alfresco-community-sdk-2.9.0dev
+#Note that alfresco-labs-sdk-3a.1032 is missing alfresco-webscript-framework.jar which should be added to the docasu/download/${alfresco.sdk} folder
+#alfresco.sdk=alfresco-labs-sdk-3a.1032
