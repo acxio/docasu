@@ -22,11 +22,11 @@
 	<import file="build-alfresco.xml"/>
 	
 	<!-- Only to ensure configuration are created -->
-	<target name="setup"/>
+	<target name="setup" depends="docasu-module.set-source-files"/>
 
 	<target name="build-module" depends="docasu-module.package-amp"/>
 	
-	<target name="help" depends="docasu-module.set-source-files">
+	<target name="help">
 		<echo>TODO</echo>
 	</target>
 	
