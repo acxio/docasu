@@ -33,10 +33,9 @@
 		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.sh" osfamily="unix">
 			<arg line="start"/>
 		</exec>
-		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.bat" osfamily="windows" spawn="true">
+		<exec dir="${alfresco.root.dir}" executable="${alfresco.root.dir}/alfresco.bat" osfamily="windows">
 			<arg line="start"/>
 		</exec>
-		<sleep seconds="60"/>
 		<touch file="${alfresco.root.dir}/alfresco.started"/>
 	</target>
 
