@@ -48,4 +48,5 @@
 	<title>DoCASU Web Client</title>
 </head>
 <body style="background: none !important"></body>
+	<input type="hidden" id="initialFolderId" value="${initialFolderId}" />
 </html>

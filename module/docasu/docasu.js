@@ -302,6 +302,15 @@ function _initTopBar(user) {
 
 function _initCenter() {
 	
+	// use this to load current folder from url
+	/*alert(document.getElementById('initialFolderId').value);
+	var initialFolderId = document.getElementById('initialFolderId');
+	
+	if(initialFolderId.value != ''){
+		loadFolder(initialFolderId.value);
+		return;
+	}*/
+	
 	/* FILE GRID */
 	// STORAGE
 	/* Data store for the file grid in the main content section */
@@ -420,7 +429,7 @@ function _initCenter() {
         var record = grid.getStore().getAt(rowIndex);
 		
         if (record.get('isFolder')) {
-        	this.contextMenu = getFolderContextMenu(record.get('nodeId'));
+        	this.contextMenu = getFolderContextMenu(record.get('nodeId'), record);
         }
         else {
         	this.contextMenu = getFileContextMenu(record);
@@ -943,7 +952,7 @@ function getFileContextMenu(record) {
 	    	handler: function() {mailLink(record.get('name'), record.get('link'));}
 	    }, {
 	    	text: 'Copy File Path to System Clipboard',
-	    	handler: function() {copyTextToSystemClipboard(record.get('filePath'));}
+	    	handler: function() {copyTextToSystemClipboard(record.get('parentPath')+'/'+record.get('name'));}
 	    }, {
 	    	text: 'Copy File Url To System Clipboard',
 	    	handler: function() {copyTextToSystemClipboard(location.protocol + '//' + location.host + record.get('link'));}
@@ -981,15 +990,15 @@ function getFolderContextMenu(id){
 	var record = getFolderContextMenu.arguments[1];
 	if(record){
 		contextMenu.add(
-			{
+			/*{
 		    	text: 'Mail Link',
 		    	handler: function() {mailLink(record.get('name'), record.get('link'));}
-		    }, {
+		    },*/ {
 		    	text: 'Copy Folder Path to System Clipboard',
-		    	handler: function() {copyTextToSystemClipboard(record.get('filePath'));}
+		    	handler: function() {copyTextToSystemClipboard(record.get('parentPath')+'/'+record.get('name'));}
 		    }, {
 		    	text: 'Copy Folder Url To System Clipboard',
-		    	handler: function() {copyTextToSystemClipboard(location.protocol + '//' + location.host + record.get('link'));}
+		    	handler: function() {copyTextToSystemClipboard(location.protocol + '//' + location.host + record.get('url'));}
 		    }
 		);
 	}

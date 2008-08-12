@@ -39,6 +39,7 @@
 			"parentPath"		: "${path}",
 			"modifier"			: "${row.modifier}",
 			"mimetype"			: "${row.mimetype!}",
+			"url"				: "${url.context}${row.url}",
 			"downloadUrl"		: "${url.context}${row.downloadUrl}",
 			"versionable"		: "${row.versionable?string}",
 			"version"			: "${row.version}",
