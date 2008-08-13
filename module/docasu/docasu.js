@@ -81,8 +81,7 @@ Ext.onReady(function(){
 			Ext.MessageBox.alert('Failed', 'Failed on user login. \n\r\n\r' + result.responseText);
 		}
 	});
-
-		
+	
 });
 
 function _init(result, request) {
@@ -93,7 +92,7 @@ function _init(result, request) {
     Ext.state.Manager.set('companyHomeId', user.companyHome);
     Ext.state.Manager.set('userHomeId', user.userHome);
     Ext.state.Manager.set('userHomeName', user.userHomeName);
-    
+	
     _initBreadcrumbs();
 	
 	var dataview = new Ext.DataView({
@@ -216,6 +215,13 @@ function _init(result, request) {
 
 	// Load data into grid.
 	gridStore.load();
+	
+	// use this to load current folder from url
+	// TODO: replace document.getElementById with something cross browser
+	var initialFolderId = document.getElementById('initialFolderId');
+	if(initialFolderId.value != ''){
+		loadFolder(initialFolderId.value);
+	}
 
 }
 
@@ -302,15 +308,6 @@ function _initTopBar(user) {
 
 function _initCenter() {
 	
-	// use this to load current folder from url
-	/*alert(document.getElementById('initialFolderId').value);
-	var initialFolderId = document.getElementById('initialFolderId');
-	
-	if(initialFolderId.value != ''){
-		loadFolder(initialFolderId.value);
-		return;
-	}*/
-	
 	/* FILE GRID */
 	// STORAGE
 	/* Data store for the file grid in the main content section */
@@ -360,7 +357,7 @@ function _initCenter() {
 	});
 
 	gridStore.on("load", function() {
-
+		
 		var folderName = gridStore.reader.jsonData.folderName;
 		var folderId = gridStore.reader.jsonData.folderId;
 
@@ -592,7 +589,7 @@ function _initCenter() {
 
 	return center;
 }
-	
+
 function _initNavigator() {
 	
 	var companyHomeTree = _initCompanyHome();

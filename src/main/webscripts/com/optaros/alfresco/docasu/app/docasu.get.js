@@ -18,6 +18,7 @@
 if (url.service == url.serviceContext + "/docasu/ui") {
 	// load the DoCASU client app.
 	model.initialFolderId = args.nodeId ? args.nodeId : '';
+	// TODO: remove the parameter from the url
 } else {
 	status.code = 301;
 	status.redirect = true;
