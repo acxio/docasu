@@ -27,3 +27,8 @@ alfresco.sdk=alfresco-community-sdk-2.1.0
 #alfresco.sdk=alfresco-community-sdk-2.9.0dev
 #Note that alfresco-labs-sdk-3a.1032 is missing alfresco-webscript-framework.jar which should be added to the docasu/download/${alfresco.sdk} folder
 #alfresco.sdk=alfresco-labs-sdk-3a.1032
+
+# The version of Alfresco you wish to use (2 or 3). This will use classes corresponding
+# to the particular APIs
+alfresco.version=2
+#alfresco.version=3
