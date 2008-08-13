@@ -987,10 +987,10 @@ function getFolderContextMenu(id){
 	var record = getFolderContextMenu.arguments[1];
 	if(record){
 		contextMenu.add(
-			/*{
+			{
 		    	text: 'Mail Link',
-		    	handler: function() {mailLink(record.get('name'), record.get('link'));}
-		    },*/ {
+		    	handler: function() {mailLink(record.get('name'), record.get('url'));}
+		    }, {
 		    	text: 'Copy Folder Path to System Clipboard',
 		    	handler: function() {copyTextToSystemClipboard(record.get('parentPath')+'/'+record.get('name'));}
 		    }, {

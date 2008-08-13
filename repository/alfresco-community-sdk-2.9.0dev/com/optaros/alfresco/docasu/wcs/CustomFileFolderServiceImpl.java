@@ -42,6 +42,8 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	private SearchService searchService;
 	private Properties blacklist;
 	private Properties whitelist;
+	// FIXME: remove this if no longer used
+	@SuppressWarnings("unused")
 	private DataTypeDefinition dataTypeNodeRef;
 
 	public void init() {
