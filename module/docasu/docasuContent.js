@@ -137,6 +137,9 @@ function createContent(type, folderId) {
 	 * Definition of the two handlers, submit and cancel btn
 	 */
 	function submitHandler() {
+		// add extension to file name
+		fileNameField.setValue(fileNameField.getValue() + '.' +contentType.getValue().toLowerCase());
+		
 		Ext.Ajax.request({
 			url: 'ui/node/create',
 			method: 'POST',
