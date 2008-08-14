@@ -105,8 +105,8 @@ function _initSearchResultsView() {
 	});
 
 	searchProxy.on('loadexception', function(proxy, options, response, error) {
-		// TODO handle errors !
-		console.error('loadexception in search');
+		// TODO handle other errors ?
+		Ext.MessageBox.alert('Timeout', 'The server took too long to respond. Please try a more specific search.');
 	});
 
 	return searchResultsPanel;
