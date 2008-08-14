@@ -70,7 +70,7 @@ function _initSearchResultsView() {
 	
 	var searchResultsPanel = new Ext.grid.GridPanel({
 		id: 'searchResultsView',
-		region: 'center',
+//		region: 'center',
 		store: searchResultsStore,
 		columns: [
 		          {id:'nodeId', header: "Name", width: 100, sortable: true, dataIndex: 'name', renderer: fileNameRenderer},
@@ -101,12 +101,15 @@ function _initSearchResultsView() {
 	});
 	
 	searchResultsStore.on('load', function() {
+		Ext.MessageBox.hide();
 		showSearchResultsView();
 	});
 
 	searchProxy.on('loadexception', function(proxy, options, response, error) {
-		// TODO handle other errors ?
+		// TODO handle errors !
+		Ext.MessageBox.hide();
 		Ext.MessageBox.alert('Timeout', 'The server took too long to respond. Please try a more specific search.');
+//		console.error('loadexception in search:' + error);
 	});
 
 	return searchResultsPanel;
@@ -146,6 +149,17 @@ function _createSearchTypeComboBox(width) {
 }
 
 function searchFormListener(form, action) {
+	// default timeout for ajax calls is 30 sec.
+	// this messagebox is set to load in 25 seconds.
+	Ext.MessageBox.show({
+		msg: 'Search',
+		progressText: 'Processing...',
+		width:200,
+		wait:true,
+		waitConfig: {interval:2500},
+		icon: Ext.MessageBox.INFO
+	});
+	
 	var options = new Object();
 	options.params = form.getValues(false);
 	options.params.start = 0;
@@ -154,6 +168,9 @@ function searchFormListener(form, action) {
 	var store = Ext.getCmp('searchResultsView').getStore();
 	store.params = form.getValues(false);
 	store.load(options);
+	
+	// hide the message box on store.load() call
+	//Ext.MessageBox.hide();
 	
 	return false;
 }
