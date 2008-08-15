@@ -379,7 +379,16 @@ a {
 #sponsored{
 	color:#7A7A7A;
 	float:left;
-	padding-left:160px;
+	padding-left:140px;
 	padding-top:16px;	
+}
+
+#sponsored-text{
+	float:left;
+	padding-right:5px;	
+}
+
+#sponsored-logo{
+	float:left;	
 }
 

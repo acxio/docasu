@@ -306,7 +306,20 @@ a {
 	border:none;
 }
 
-.logo-image{
-	border:medium none;
+
+.related-sites-div{
+	float:left;
+	padding-bottom:10px;
+	padding-right:30px;
+	width:250px;
+	padding-top:15px;
 }
-	
+
+.related-sites-text{
+	float:left;
+	padding-top:15px;
+	position: relative;
+	top:10px;
+	left:0px;
+}	
+
