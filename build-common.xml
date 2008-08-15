@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+    Copyright (C) 2008 Optaros, Inc. All rights reserved.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+    
+-->
+<project name="common" basedir=".">
+
+	<touch file="docasu.properties"/>
+	<touch file="deploy-local.properties"/>
+
+	<echo level="info" message="pulling in property files"/>
+	<property file="docasu.properties"/>
+	<property file="docasu.properties.base"/>
+	<property file="deploy-local.properties"/>
+	<property file="deploy-local.properties.base"/>
+
+	<property name="download.dir" value="download"/>
+	<property name="source.dir" value="src"/>
+	<property name="repository.dir" value="repository"/>
+	<property name="target.dir" value="target"/>
+	<property name="build.dir" value="${target.dir}/build"/>
+	<property name="amp.dir" value="${target.dir}/amp"/>
+
+	<property name="alfresco.mmt.jar.file" value="${download.dir}/alfresco-mmt.jar"/>
+
+	<property name="alfresco.deploy.dir" value="${alfresco.root.dir}/tomcat/webapps/alfresco"/>
+
+	<property name="amp.file" value="${target.dir}/docasu-${docasu.version}.amp"/>
+
+	<target name="clean" description="Remove all created artifacts.">
+		<delete dir="${target.dir}" />
+	</target>
+
+</project>

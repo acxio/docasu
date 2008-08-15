@@ -1,0 +1,34 @@
+#
+#    Copyright (C) 2008 Optaros, Inc. All rights reserved.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program. If not, see <http://www.gnu.org/licenses/>. 
+#
+
+
+# DoCASU version number
+# This number is used to display the version number and for the amp module
+# number when deploying DoCASU
+docasu.version=1.3.0
+
+# The version of the Alfresco SDK you want to use (will be downloaded)
+# You may specify an older SDK to ensure backward compatibility
+alfresco.sdk=alfresco-community-sdk-2.1.0
+#alfresco.sdk=alfresco-community-sdk-2.9.0dev
+#Note that alfresco-labs-sdk-3a.1032 is missing alfresco-webscript-framework.jar which should be added to the docasu/download/${alfresco.sdk} folder
+#alfresco.sdk=alfresco-labs-sdk-3a.1032
+
+# The version of Alfresco you wish to use (2 or 3). This will use classes corresponding
+# to the particular APIs
+alfresco.version=2
+#alfresco.version=3
