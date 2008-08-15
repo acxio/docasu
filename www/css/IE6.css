@@ -207,34 +207,6 @@ a {
 	width:890px;
 }
 
-
-#box1{
-	left:56px;
-	position:absolute;
-	top:388px;
-	background:transparent url(../images/BoxMitVerlauf.jpg) no-repeat scroll 0% 50%;
-	height:190px;
-	width:320px;
-}
-
-#box2{
-	left:384px;
-	position:absolute;
-	top:388px;
-	background:transparent url(../images/BoxMitVerlauf.jpg) no-repeat scroll 0% 50%;
-	height:190px;
-	width:320px;
-}
-
-#box3{
-	left:714px;
-	position:absolute;
-	top:388px;
-	background:transparent url(../images/BoxMitVerlauf.jpg) no-repeat scroll 0% 50%;
-	height:190px;
-	width:320px;
-}
-
 .box-title{
 	color:#5987C6;
 	font-size:24px;

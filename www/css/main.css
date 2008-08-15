@@ -207,7 +207,7 @@ a {
 }
 
 #box1 {
-	left: 56px;
+	left: 60px;
 	position: absolute;
 	top: 388px;
 	background: transparent url(../images/BoxMitVerlauf.jpg) no-repeat
@@ -217,7 +217,7 @@ a {
 }
 
 #box2 {
-	left: 384px;
+	left: 388px;
 	position: absolute;
 	top: 388px;
 	background: transparent url(../images/BoxMitVerlauf.jpg) no-repeat
@@ -227,7 +227,7 @@ a {
 }
 
 #box3 {
-	left: 714px;
+	left: 718px;
 	position: absolute;
 	top: 388px;
 	background: transparent url(../images/BoxMitVerlauf.jpg) no-repeat
