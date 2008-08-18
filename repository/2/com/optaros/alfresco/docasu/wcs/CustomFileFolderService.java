@@ -9,17 +9,16 @@ import org.alfresco.service.cmr.repository.StoreRef;
 public interface CustomFileFolderService {
 
 	public enum SearchType {
-		ALL,
-		FILE_NAME,
-		FOLDER_NAME,
-		CONTENT;
+		ALL, FILE_NAME, FOLDER_NAME, CONTENT;
 	}
 
-	public abstract List<NodeRef> list(NodeRef contextNodeRef, boolean folders);
+	public abstract List<NodeRef> list(NodeRef contextNodeRef, boolean folders, String sortParameter, boolean sortAscending);
 
 	// Simple Search
-	public abstract List<NodeRef> search(StoreRef store, String query, SearchType type);
+	public abstract List<NodeRef> search(StoreRef store, String query, SearchType type, String sortParameter, boolean sortAscending);
+
 	// Advanced Search
-	public abstract List<NodeRef> search(StoreRef store, String query, SearchType type, NodeRef lookInFolder, Date createdFrom, Date createdTo, Date modifiedFrom, Date modifiedTo);
+	public abstract List<NodeRef> search(StoreRef store, String query, SearchType type, String sortParameter, boolean sortAscending, NodeRef lookInFolder,
+			Date createdFrom, Date createdTo, Date modifiedFrom, Date modifiedTo);
 
 }

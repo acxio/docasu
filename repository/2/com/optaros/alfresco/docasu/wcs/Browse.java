@@ -47,7 +47,7 @@ public class Browse extends AbstractDocumentWebScript {
 
 		Map<String, String> params = super.readParams(req);
 
-		if (foldersOnly){
+		if (foldersOnly) {
 			readParam(params, PARAM_NODE_ID, req.getParameter("node"));
 		} // else already read by superclass
 
@@ -76,20 +76,27 @@ public class Browse extends AbstractDocumentWebScript {
 		FileInfo fileInfo = fileFolderService.getFileInfo(baseNode);
 		String path = generatePath(baseNode);
 
-		List<FileInfo> nodes = toFileInfo(customFileFolderService.list(baseNode, foldersOnly));
+		// list result set
+		List<NodeRef> listResult = customFileFolderService.list(baseNode, foldersOnly, getSortParameter(params), isSortDirectionAscending(params));
+
+		// store the size of the search result
+		int total = listResult.size();
 
 		if (log.isDebugEnabled()) {
 			log.debug("node is folder = " + fileInfo.isFolder());
 			log.debug("node name = " + fileInfo.getName());
 			log.debug("node path = " + path);
-			log.debug("node children count = " + nodes.size());
+			log.debug("node children count = " + listResult.size());
 		}
 
-		int total = nodes.size();
-		nodes = sort(nodes, params);
 		if (!foldersOnly) {
-			nodes = doPaging(nodes, params);
+			listResult = doPaging(listResult, params);
 		}
+
+		List<FileInfo> nodes = toFileInfo(listResult);
+
+		// sort results; now done by Lucene in the search
+		// nodes = sort(nodes, params);
 
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("total", total);
@@ -97,15 +104,18 @@ public class Browse extends AbstractDocumentWebScript {
 		model.put("randomNumber", Math.random());
 		model.put("folderName", fileInfo.getName());
 		model.put("folderId", baseNode.getId());
-
-		Object[] rows = new Object[nodes.size()];
-		int i = 0;
-		for (FileInfo info : nodes) {
-			rows[i++] = toModelRow(info);
-		}
-		model.put(KEYWORD_ROWS, rows);
+		model.put(KEYWORD_ROWS, getResultRows(nodes));
 
 		log.debug("*** Exit browse request handler ***");
 		return model;
+	}
+
+	private Object[] getResultRows(List<FileInfo> nodes) {
+		int i = 0;
+		Object[] rows = new Object[nodes.size()];
+		for (FileInfo info : nodes) {
+			rows[i++] = toModelRow(info);
+		}
+		return rows;
 	}
 }

@@ -57,13 +57,13 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 
 	private static final String EDITABLE_EXTENSION_REGEX = "txt|html?";
 
-	protected static final String PARAM_NODE_ID		= "nodeId";
-	protected static final String PARAM_START		= "start";
-	protected static final String PARAM_LIMIT		= "limit";
-	protected static final String PARAM_SORT		= "sort";
-	protected static final String PARAM_DIR			= "dir";
+	protected static final String PARAM_NODE_ID = "nodeId";
+	protected static final String PARAM_START = "start";
+	protected static final String PARAM_LIMIT = "limit";
+	protected static final String PARAM_SORT = "sort";
+	protected static final String PARAM_DIR = "dir";
 
-	protected static final String KEYWORD_ROWS		= "rows";
+	protected static final String KEYWORD_ROWS = "rows";
 
 	protected CustomFileFolderService customFileFolderService;
 	protected FileFolderService fileFolderService;
@@ -75,9 +75,7 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 
 	protected StoreRef storeRef = new StoreRef("workspace://SpacesStore");
 
-
-	public void setCustomFileFolderService(
-			CustomFileFolderService customFileFolderService) {
+	public void setCustomFileFolderService(CustomFileFolderService customFileFolderService) {
 		this.customFileFolderService = customFileFolderService;
 	}
 
@@ -132,12 +130,16 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		for (NodeRef node : nodes) {
 			try {
 				result.add(fileFolderService.getFileInfo(node));
+			} catch (AccessDeniedException ade) {/* Ignore node. */
 			}
-			catch (AccessDeniedException ade) {/* Ignore node. */}
 		}
 		return result;
 	}
 
+	/**
+	 * Lucene ordering is now used. See getSortParameter().
+	 */
+	@Deprecated
 	protected List<FileInfo> sort(List<FileInfo> nodes, Map<String, String> params) {
 		if (params.get(PARAM_SORT) != null && !"".equals(params.get(PARAM_SORT))) {
 			ColumnComparator comparator = new ColumnComparator(params.get(PARAM_SORT), !"DESC".equals(params.get(PARAM_DIR)));
@@ -146,21 +148,59 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		return nodes;
 	}
 
-	protected List<FileInfo> doPaging(List<FileInfo> nodes, Map<String, String> params) {
+	/**
+	 * Returns a string representing the PARAM_SORT parameter compatible with
+	 * ContentModel.class. Defaults to ContentModel.PROP_NAME.localName.
+	 * 
+	 * @param params
+	 * @return
+	 */
+	protected String getSortParameter(Map<String, String> params) {
+		String sortParam = params.get(PARAM_SORT);
+		if (sortParam != null && !"".equals(sortParam)) {
+
+			if (sortParam.equals("name")) {
+				return ContentModel.PROP_NAME.getLocalName();
+			} else if (sortParam.equals("modified")) {
+				return ContentModel.PROP_MODIFIED.getLocalName();
+			} else if (sortParam.equals("created")) {
+				return ContentModel.PROP_CREATED.getLocalName();
+			} else if (sortParam.equals("creator")) {
+				return ContentModel.PROP_CREATOR.getLocalName();
+			}
+
+		}
+		// default sorting
+		return ContentModel.PROP_NAME.getLocalName();
+	}
+
+	/**
+	 * Returns false if PARAM_DIR parameter equals to "DESC".
+	 * 
+	 * @param params
+	 * @return
+	 */
+	protected boolean isSortDirectionAscending(Map<String, String> params) {
+		return !"DESC".equals(params.get(PARAM_DIR));
+	}
+
+	protected List<NodeRef> doPaging(List<NodeRef> nodes, Map<String, String> params) {
 		int elementCount = nodes.size();
 		if (params.get(PARAM_START) != null && params.get(PARAM_LIMIT) != null) {
 			try {
 				// Read and adapt fromIndex and toIndex
 				int fromIndex = Integer.parseInt(params.get(PARAM_START));
-				if (fromIndex < 0) fromIndex = 0;
+				if (fromIndex < 0)
+					fromIndex = 0;
 				int count = Integer.parseInt(params.get(PARAM_LIMIT));
 				int toIndex = fromIndex + count;
-				if (toIndex > elementCount) toIndex = elementCount;
-				if (fromIndex > toIndex) fromIndex = toIndex;
+				if (toIndex > elementCount)
+					toIndex = elementCount;
+				if (fromIndex > toIndex)
+					fromIndex = toIndex;
 				// Apply
 				nodes = nodes.subList(fromIndex, toIndex);
-			}
-			catch (NumberFormatException nfe) {
+			} catch (NumberFormatException nfe) {
 				log.info("invalid start or limit param");
 			}
 		}
@@ -184,8 +224,7 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		if (currentVersion != null) {
 			row.put("versionable", true);
 			row.put("version", currentVersion.getVersionLabel());
-		}
-		else {
+		} else {
 			row.put("versionable", false);
 			row.put("version", "Versioning not enabled");
 		}
@@ -202,18 +241,17 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		row.put("editable", isEditable(fileInfo));
 		if (fileInfo.isFolder()) {
 			row.put("isFolder", true);
-		}
-		else {
+		} else {
 			row.put("size", fileInfo.getContentData().getSize());
 			row.put("mimetype", fileInfo.getContentData().getMimetype());
 		}
 		return row;
 	}
-	
-	private String getUrl(TemplateNode templateNode){
+
+	private String getUrl(TemplateNode templateNode) {
 		if (templateNode.getIsDocument()) {
 			return templateNode.getUrl();
-		} else if (templateNode.getIsContainer()){
+		} else if (templateNode.getIsContainer()) {
 			// if folder, then return proper URL to load DoCASU interface
 			// TODO: move this outside source code
 			return "/wcs/docasu/ui?nodeId=" + templateNode.getId();
@@ -244,7 +282,7 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 
 	private boolean isEditable(FileInfo info) {
 		String fileName = info.getName();
-		String extension = fileName.substring(fileName.lastIndexOf('.')+1, fileName.length()).toLowerCase();
+		String extension = fileName.substring(fileName.lastIndexOf('.') + 1, fileName.length()).toLowerCase();
 		if (extension.matches(EDITABLE_EXTENSION_REGEX)) {
 			return true;
 		} else {
@@ -257,17 +295,19 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 			Serializable serializable = info.getProperties().get(property);
 			if (serializable != null) {
 				return serializable.toString();
-			}
-			else {
+			} else {
 				return defaultValue;
 			}
-		}
-		else {
+		} else {
 			return defaultValue;
 		}
 	}
 
-	private class ColumnComparator implements Comparator<FileInfo>{
+	/**
+	 * Lucene ordering is now used. See getSortParameter().
+	 */
+	@Deprecated
+	private class ColumnComparator implements Comparator<FileInfo> {
 
 		private final String column;
 		private final boolean ascending;
@@ -281,34 +321,32 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 			if (column.equals("name")) {
 				String name1 = f1.getName().toLowerCase();
 				String name2 = f2.getName().toLowerCase();
-				return (ascending?name1.compareTo(name2):name2.compareTo(name1));
-			}
-			else if (column.equals("size")) {
+				return (ascending ? name1.compareTo(name2) : name2.compareTo(name1));
+			} else if (column.equals("size")) {
 				ContentData data1 = f1.getContentData();
-				long size1 = (data1!=null?data1.getSize():0);
+				long size1 = (data1 != null ? data1.getSize() : 0);
 				ContentData data2 = f2.getContentData();
-				long size2 = (data2!=null?data2.getSize():0);
-				long diff = (ascending?size1-size2:size2-size1);
-				if (diff > 0) return 1;
-				else if (diff < 0) return -1;
-				else return 0;
-			}
-			else if (column.equals("modified")) {
+				long size2 = (data2 != null ? data2.getSize() : 0);
+				long diff = (ascending ? size1 - size2 : size2 - size1);
+				if (diff > 0)
+					return 1;
+				else if (diff < 0)
+					return -1;
+				else
+					return 0;
+			} else if (column.equals("modified")) {
 				Date date1 = f1.getModifiedDate();
 				Date date2 = f2.getModifiedDate();
-				return (ascending?date1.compareTo(date2):date2.compareTo(date1));
-			}
-			else if (column.equals("created")) {
+				return (ascending ? date1.compareTo(date2) : date2.compareTo(date1));
+			} else if (column.equals("created")) {
 				Date date1 = f1.getCreatedDate();
 				Date date2 = f2.getCreatedDate();
-				return (ascending?date1.compareTo(date2):date2.compareTo(date1));
-			}
-			else if (column.equals("creator")) {
+				return (ascending ? date1.compareTo(date2) : date2.compareTo(date1));
+			} else if (column.equals("creator")) {
 				String creator1 = getProperty(f1, ContentModel.PROP_CREATOR, "").toLowerCase();
 				String creator2 = getProperty(f2, ContentModel.PROP_CREATOR, "").toLowerCase();
-				return (ascending?creator1.compareTo(creator2):creator2.compareTo(creator1));
-			}
-			else {
+				return (ascending ? creator1.compareTo(creator2) : creator2.compareTo(creator1));
+			} else {
 				log.error("Sorting not implemented for column = " + column);
 				return 0;
 			}
