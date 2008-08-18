@@ -383,7 +383,7 @@ function _initCenter() {
 		store: gridStore,
 	    columns: [
 	        {id:'nodeId', header: "Name", width: 110, sortable: true, dataIndex: 'name', renderer: fileNameRenderer},
-	        {header: "Size", width: 20, sortable: true, dataIndex: 'size', renderer: Ext.util.Format.fileSize}, 
+	        {header: "Size", width: 20, sortable: false, dataIndex: 'size', renderer: Ext.util.Format.fileSize}, 
 	        {header: "Changed", width: 60, sortable: true, dataIndex: 'modified', renderer: timeZoneAwareRenderer},
 	        {header: "Created", width: 60, sortable: true, dataIndex: 'created', renderer: timeZoneAwareRenderer},
 			{header: "Creator", width: 60, sortable: true, dataIndex: 'creator'},

@@ -75,7 +75,7 @@ function _initSearchResultsView() {
 		columns: [
 		          {id:'nodeId', header: "Name", width: 100, sortable: true, dataIndex: 'name', renderer: fileNameRenderer},
 		          {header: "Path",  width: 180, sortable: false, renderer: parentPathRenderer},
-		          {header: "Size", width: 20, sortable: true, dataIndex: 'size', renderer: Ext.util.Format.fileSize}, 
+		          {header: "Size", width: 20, sortable: false, dataIndex: 'size', renderer: Ext.util.Format.fileSize}, 
 		          {header: "Changed", width: 60, sortable: true, dataIndex: 'modified', renderer: timeZoneAwareRenderer},
 		          {header: "Created", width: 60, sortable: true, dataIndex: 'created', renderer: timeZoneAwareRenderer},
 		          {header: "Creator", width: 50, sortable: true, dataIndex: 'creator'},
@@ -108,8 +108,8 @@ function _initSearchResultsView() {
 	searchProxy.on('loadexception', function(proxy, options, response, error) {
 		// TODO handle errors !
 		Ext.MessageBox.hide();
-		Ext.MessageBox.alert('Timeout', 'The server took too long to respond. Please try a more specific search.');
-//		console.error('loadexception in search:' + error);
+		Ext.MessageBox.alert('Communication Error', 'Please try again!');
+		// console.error('loadexception in search:' + error);
 	});
 
 	return searchResultsPanel;
@@ -150,13 +150,13 @@ function _createSearchTypeComboBox(width) {
 
 function searchFormListener(form, action) {
 	// default timeout for ajax calls is 30 sec.
-	// this messagebox is set to load in 25 seconds.
+	// this messagebox is set to load in 35 seconds.
 	Ext.MessageBox.show({
 		msg: 'Search',
 		progressText: 'Processing...',
 		width:200,
 		wait:true,
-		waitConfig: {interval:2500},
+		waitConfig: {interval:3500},
 		icon: Ext.MessageBox.INFO
 	});
 	
