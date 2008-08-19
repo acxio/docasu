@@ -20,6 +20,7 @@ package com.optaros.alfresco.docasu.wcs;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -43,16 +44,16 @@ public class Search extends AbstractDocumentWebScript {
 	private static final Log log = LogFactory.getLog(Search.class);
 
 	// simple search
-	private static final String PARAM_QUERY			= "q";
-	private static final String PARAM_SEARCH_TYPE	= "t";
+	private static final String PARAM_QUERY = "q";
+	private static final String PARAM_SEARCH_TYPE = "t";
 
 	// advanced search
-	private static final String PARAM_CREATED_FROM	= "createdFrom";
-	private static final String PARAM_CREATED_TO	= "createdTo";
-	private static final String PARAM_MODIFIED_FROM	= "modFrom";
-	private static final String PARAM_MODIFIED_TO	= "modTo";
+	private static final String PARAM_CREATED_FROM = "createdFrom";
+	private static final String PARAM_CREATED_TO = "createdTo";
+	private static final String PARAM_MODIFIED_FROM = "modFrom";
+	private static final String PARAM_MODIFIED_TO = "modTo";
 
-	private static final String DATE_FORMAT			= "yyyy/MM/dd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
@@ -67,7 +68,6 @@ public class Search extends AbstractDocumentWebScript {
 		readParam(params, PARAM_CREATED_TO, req.getParameter(PARAM_CREATED_TO));
 		readParam(params, PARAM_MODIFIED_FROM, req.getParameter(PARAM_MODIFIED_FROM));
 		readParam(params, PARAM_MODIFIED_TO, req.getParameter(PARAM_MODIFIED_TO));
-
 
 		if (log.isDebugEnabled()) {
 			log.debug("PARAM q = " + params.get(PARAM_QUERY));
@@ -86,11 +86,8 @@ public class Search extends AbstractDocumentWebScript {
 	}
 
 	private boolean isAdvancedSearch(Map<String, String> params) {
-		return (params.containsKey(PARAM_NODE_ID)
-				|| params.containsKey(PARAM_CREATED_FROM)
-				|| params.containsKey(PARAM_CREATED_TO)
-				|| params.containsKey(PARAM_MODIFIED_FROM)
-				|| params.containsKey(PARAM_MODIFIED_TO));
+		return (params.containsKey(PARAM_NODE_ID) || params.containsKey(PARAM_CREATED_FROM) || params.containsKey(PARAM_CREATED_TO)
+				|| params.containsKey(PARAM_MODIFIED_FROM) || params.containsKey(PARAM_MODIFIED_TO));
 	}
 
 	@Override
@@ -105,92 +102,123 @@ public class Search extends AbstractDocumentWebScript {
 			status.setCode(400);
 			status.setMessage("Search term has not been provided.");
 			status.setRedirect(true);
-		}
-		else {
+		} else {
 			String searchTypeParam = params.get(PARAM_SEARCH_TYPE);
-			SearchType searchType;
-			if ("file".equals(searchTypeParam)) {
-				searchType = SearchType.FILE_NAME;
-			}
-			else if ("folder".equals(searchTypeParam)) {
-				searchType = SearchType.FOLDER_NAME;
-			}
-			else if ("content".equals(searchTypeParam)) {
-				searchType = SearchType.CONTENT;
-			}
-			else {
-				searchType = SearchType.ALL;
-			}
+			SearchType searchType = getSearchType(searchTypeParam);
 
-			List<FileInfo> nodes;
-			if (!isAdvancedSearch(params)) {
-				nodes = toFileInfo(customFileFolderService.search(storeRef, params.get(PARAM_QUERY), searchType));
-			}
-			else {
-				NodeRef lookInFolder = null;
-				if (params.containsKey(PARAM_NODE_ID)) {
-					lookInFolder = new NodeRef(storeRef, params.get(PARAM_NODE_ID));
-				}
-				Date createdFrom = null, createdTo = null, modifiedFrom = null, modifiedTo = null;
-				if (params.containsKey(PARAM_CREATED_FROM)) {
-					try {
-						// TODO transform user timezone to server timezone
-						createdFrom = dateFormat.parse(params.get(PARAM_CREATED_FROM));
-					} catch (ParseException e) {/* TODO ignore? */}
-				}
-				if (params.containsKey(PARAM_CREATED_TO)) {
-					try {
-						// TODO transform user timezone to server timezone
-						createdTo = dateFormat.parse(params.get(PARAM_CREATED_TO));
-					} catch (ParseException e) {/* TODO ignore? */}
-				}
-				if (params.containsKey(PARAM_MODIFIED_FROM)) {
-					try {
-						// TODO transform user timezone to server timezone
-						modifiedFrom = dateFormat.parse(params.get(PARAM_MODIFIED_FROM));
-					} catch (ParseException e) {/* TODO ignore? */}
-				}
-				if (params.containsKey(PARAM_MODIFIED_TO)) {
-					try {
-						// TODO transform user timezone to server timezone
-						modifiedTo = dateFormat.parse(params.get(PARAM_MODIFIED_TO));
-					} catch (ParseException e) {/* TODO ignore? */}
-				}
+			// search result set
+			List<NodeRef> searchResult = getSearchResult(params, searchType);
 
-				nodes = toFileInfo(customFileFolderService.search(
-						storeRef,
-						params.get(PARAM_QUERY),
-						searchType,
-						lookInFolder,
-						createdFrom, createdTo,
-						modifiedFrom, modifiedTo));
-			}
+			// store the size of the search result
+			int total = searchResult.size();
 
-			int total = nodes.size();
-			nodes = sort(nodes, params);
-			nodes = doPaging(nodes, params);
+			// restrict result set to page set
+			searchResult = doPaging(searchResult, params);
 
-			model.put("total", total);
+			// transform results
+			List<FileInfo> nodes = toFileInfo(searchResult);
 
-			Object[] rows = new Object[nodes.size()];
+			// sort results; now done by Lucene in the search
+			// nodes = sort(nodes, params);
+
 			model.put("randomNumber", Math.random());
-
-			int i = 0;
-			for (FileInfo info : nodes) {
-				try {
-					Map<String, Object> row = toModelRow(info);
-					NodeRef parentRef = nodeService.getPrimaryParent(info.getNodeRef()).getParentRef();
-					if (parentRef != null) {
-						row.put("parentId", parentRef.getId());
-						row.put("parentPath", generatePath(parentRef));
-					}
-					rows[i++] = row;
-				}
-				catch (AccessDeniedException ade) {/* Ignore node. */}
-			}
-			model.put(KEYWORD_ROWS, rows);
+			model.put("total", total);
+			model.put(KEYWORD_ROWS, getResultRows(nodes));
 		}
+
 		log.debug("*** Exit search request handler ***");
 		return model;
 	}
+
+	private Object[] getResultRows(List<FileInfo> nodes) {
+		int i = 0;
+		Object[] rows = new Object[nodes.size()];
+		for (FileInfo info : nodes) {
+			try {
+				Map<String, Object> row = toModelRow(info);
+				NodeRef parentRef = nodeService.getPrimaryParent(info.getNodeRef()).getParentRef();
+				if (parentRef != null) {
+					row.put("parentId", parentRef.getId());
+					row.put("parentPath", generatePath(parentRef));
+				}
+				rows[i++] = row;
+			} catch (AccessDeniedException ade) {/* Ignore node. */
+			}
+		}
+		return rows;
+	}
+
+	private List<NodeRef> getSearchResult(Map<String, String> params, SearchType searchType) {
+		List<NodeRef> searchResult = new ArrayList<NodeRef>();
+		if (!isAdvancedSearch(params)) {
+			// simple search
+			searchResult = customFileFolderService.search(storeRef, params.get(PARAM_QUERY), searchType, getSortParameter(params),
+					isSortDirectionAscending(params));
+		} else {
+			// advanced search
+			NodeRef lookInFolder = null;
+			if (params.containsKey(PARAM_NODE_ID)) {
+				lookInFolder = new NodeRef(storeRef, params.get(PARAM_NODE_ID));
+			}
+
+			// advanced search parameters
+			Map<String, Date> advancedSearchParams = getAdvancedSearchParams(params);
+			Date createdFrom = advancedSearchParams.get("createdFrom");
+			Date createdTo = advancedSearchParams.get("createdTo");
+			Date modifiedFrom = advancedSearchParams.get("modifiedFrom");
+			Date modifiedTo = advancedSearchParams.get("modifiedTo");
+
+			searchResult = customFileFolderService.search(storeRef, params.get(PARAM_QUERY), searchType, getSortParameter(params),
+					isSortDirectionAscending(params), lookInFolder, createdFrom, createdTo, modifiedFrom, modifiedTo);
+		}
+		return searchResult;
+	}
+
+	private Map<String, Date> getAdvancedSearchParams(Map<String, String> params) {
+		Map<String, Date> result = new HashMap<String, Date>();
+
+		if (params.containsKey(PARAM_CREATED_FROM)) {
+			try {
+				// TODO transform user timezone to server timezone
+				result.put("createdFrom", dateFormat.parse(params.get(PARAM_CREATED_FROM)));
+			} catch (ParseException e) {/* TODO ignore? */
+			}
+		}
+		if (params.containsKey(PARAM_CREATED_TO)) {
+			try {
+				// TODO transform user timezone to server timezone
+				result.put("createdTo", dateFormat.parse(params.get(PARAM_CREATED_TO)));
+			} catch (ParseException e) {/* TODO ignore? */
+			}
+		}
+		if (params.containsKey(PARAM_MODIFIED_FROM)) {
+			try {
+				// TODO transform user timezone to server timezone
+				result.put("modifiedFrom", dateFormat.parse(params.get(PARAM_MODIFIED_FROM)));
+			} catch (ParseException e) {/* TODO ignore? */
+			}
+		}
+		if (params.containsKey(PARAM_MODIFIED_TO)) {
+			try {
+				// TODO transform user timezone to server timezone
+				result.put("modifiedTo", dateFormat.parse(params.get(PARAM_MODIFIED_TO)));
+			} catch (ParseException e) {/* TODO ignore? */
+			}
+		}
+
+		return result;
+	}
+
+	private SearchType getSearchType(String searchTypeParam) {
+		if ("file".equals(searchTypeParam)) {
+			return SearchType.FILE_NAME;
+		} else if ("folder".equals(searchTypeParam)) {
+			return SearchType.FOLDER_NAME;
+		} else if ("content".equals(searchTypeParam)) {
+			return SearchType.CONTENT;
+		} else {
+			return SearchType.ALL;
+		}
+	}
+
 }
