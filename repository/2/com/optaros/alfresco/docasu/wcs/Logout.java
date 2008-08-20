@@ -31,26 +31,25 @@ import org.apache.commons.logging.LogFactory;
 
 public class Logout extends DeclarativeWebScript {
 	private static final org.apache.commons.logging.Log log = LogFactory.getLog(Logout.class);
-	
+
 	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
-		
+
 		// Only works for the Webscript Servlet Runtime
 
 		if (!(req instanceof WebScriptServletRequest)) {
 			throw new RuntimeException("Unexpected request type. Logout only works for Webclient authentication");
 		}
-		WebScriptServletRequest r = (WebScriptServletRequest)req;
-		
+		WebScriptServletRequest r = (WebScriptServletRequest) req;
+
 		// invalidate the session
 		r.getHttpServletRequest().getSession().invalidate();
-		
-		log.debug("Invalidating HTTP Session.");		
+
+		log.debug("Invalidating HTTP Session.");
 		status.setRedirect(false);
 		status.setCode(HttpServletResponse.SC_OK);
-		
+
 		return new HashMap<String, Object>();
-		
-		
+
 	}
 
 }

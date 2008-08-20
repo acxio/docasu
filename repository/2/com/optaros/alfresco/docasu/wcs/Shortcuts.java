@@ -39,57 +39,53 @@ import org.apache.commons.logging.LogFactory;
 public class Shortcuts extends DeclarativeWebScript {
 
 	private static final org.apache.commons.logging.Log log = LogFactory.getLog(Shortcuts.class);
-	
-	private static final QName TYPE_PREFERENCES = QName.createQName(NamespaceService.APP_MODEL_1_0_URI,
-			"preferences");
-	
-	private static final QName PROP_SHORTCUTS = QName.createQName(NamespaceService.APP_MODEL_1_0_URI,
-	"shortcuts");
-	
+
+	private static final QName TYPE_PREFERENCES = QName.createQName(NamespaceService.APP_MODEL_1_0_URI, "preferences");
+
+	private static final QName PROP_SHORTCUTS = QName.createQName(NamespaceService.APP_MODEL_1_0_URI, "shortcuts");
+
 	private NodeService nodeService;
-	
+
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
 
 		NodeRef person = getRepositoryContext().getPerson();
-		
-		List<ChildAssociationRef> configurationList =
-			nodeService.getChildAssocs(person, ApplicationModel.ASSOC_CONFIGURATIONS,
-					ApplicationModel.ASSOC_CONFIGURATIONS);
-		
+
+		List<ChildAssociationRef> configurationList = nodeService.getChildAssocs(person, ApplicationModel.ASSOC_CONFIGURATIONS,
+				ApplicationModel.ASSOC_CONFIGURATIONS);
+
 		NodeRef configurations = null;
-		
+
 		if (configurationList.isEmpty()) {
 			log.debug("Creating configurations");
-			configurations = nodeService.createNode(person, ApplicationModel.ASSOC_CONFIGURATIONS,
-					ApplicationModel.ASSOC_CONFIGURATIONS, ApplicationModel.TYPE_CONFIGURATIONS,
-					null).getChildRef(); // no props
+			configurations = nodeService.createNode(person, ApplicationModel.ASSOC_CONFIGURATIONS, ApplicationModel.ASSOC_CONFIGURATIONS,
+					ApplicationModel.TYPE_CONFIGURATIONS, null).getChildRef(); // no
+																				// props
 		} else {
 			configurations = configurationList.get(0).getChildRef();
 		}
-		
-		List<ChildAssociationRef> preferencesList =
-			nodeService.getChildAssocs(configurations, ContentModel.ASSOC_CONTAINS, TYPE_PREFERENCES);
-		
+
+		List<ChildAssociationRef> preferencesList = nodeService.getChildAssocs(configurations, ContentModel.ASSOC_CONTAINS, TYPE_PREFERENCES);
+
 		NodeRef preferences = null;
-		
+
 		if (preferencesList.isEmpty()) {
 			log.debug("Creating preferences");
 			Map<QName, Serializable> properties = new HashMap<QName, Serializable>();
-			
+
 			properties.put(PROP_SHORTCUTS, new ArrayList<String>());
-			preferences = nodeService.createNode(configurations, ContentModel.ASSOC_CONTAINS,
-					TYPE_PREFERENCES, ContentModel.TYPE_CMOBJECT, properties).getChildRef(); 
+			preferences = nodeService.createNode(configurations, ContentModel.ASSOC_CONTAINS, TYPE_PREFERENCES, ContentModel.TYPE_CMOBJECT, properties)
+					.getChildRef();
 		} else {
 			preferences = preferencesList.get(0).getChildRef();
 		}
-		
-		List<String> shortcuts = (List<String>)nodeService.getProperty(preferences, PROP_SHORTCUTS);
-		
+
+		List<String> shortcuts = (List<String>) nodeService.getProperty(preferences, PROP_SHORTCUTS);
+
 		List<NodeRef> shortcutRefs = new ArrayList<NodeRef>();
-		
+
 		if (null != shortcuts) {
-			for (String n: shortcuts) {
+			for (String n : shortcuts) {
 				shortcutRefs.add(new NodeRef("workspace://SpacesStore/" + n));
 			}
 		} else {
@@ -97,9 +93,9 @@ public class Shortcuts extends DeclarativeWebScript {
 		}
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("shortcuts", shortcutRefs);
-				
+
 		return model;
-		
+
 	}
 
 	public void setNodeService(NodeService nodeService) {
