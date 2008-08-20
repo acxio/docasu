@@ -12,13 +12,13 @@ public interface CustomFileFolderService {
 		ALL, FILE_NAME, FOLDER_NAME, CONTENT;
 	}
 
-	public abstract List<NodeRef> list(NodeRef contextNodeRef, boolean folders, String sortParameter, boolean sortAscending);
+	public abstract List<NodeRef> list(NodeRef contextNodeRef, boolean folders);
 
 	// Simple Search
-	public abstract List<NodeRef> search(StoreRef store, String query, SearchType type, String sortParameter, boolean sortAscending);
+	public abstract List<NodeRef> search(StoreRef store, String query, SearchType type);
 
 	// Advanced Search
-	public abstract List<NodeRef> search(StoreRef store, String query, SearchType type, String sortParameter, boolean sortAscending, NodeRef lookInFolder,
-			Date createdFrom, Date createdTo, Date modifiedFrom, Date modifiedTo);
+	public abstract List<NodeRef> search(StoreRef store, String query, SearchType type, NodeRef lookInFolder, Date createdFrom, Date createdTo,
+			Date modifiedFrom, Date modifiedTo);
 
 }

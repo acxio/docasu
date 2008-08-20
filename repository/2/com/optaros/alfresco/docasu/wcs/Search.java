@@ -43,6 +43,9 @@ public class Search extends AbstractDocumentWebScript {
 
 	private static final Log log = LogFactory.getLog(Search.class);
 
+	// maximum size for a search result set
+	private static final int RESULT_SET_MAX_SIZE = 500;
+
 	// simple search
 	private static final String PARAM_QUERY = "q";
 	private static final String PARAM_SEARCH_TYPE = "t";
@@ -110,6 +113,14 @@ public class Search extends AbstractDocumentWebScript {
 			// search result set
 			List<NodeRef> searchResult = getSearchResult(params, searchType);
 
+			// cut result set size
+			if (searchResult.size() > RESULT_SET_MAX_SIZE) {
+				searchResult = searchResult.subList(0, RESULT_SET_MAX_SIZE);
+			}
+
+			// sort results
+			searchResult = sort(searchResult, params);
+
 			// store the size of the search result
 			int total = searchResult.size();
 
@@ -118,9 +129,6 @@ public class Search extends AbstractDocumentWebScript {
 
 			// transform results
 			List<FileInfo> nodes = toFileInfo(searchResult);
-
-			// sort results; now done by Lucene in the search
-			// nodes = sort(nodes, params);
 
 			model.put("randomNumber", Math.random());
 			model.put("total", total);
@@ -153,8 +161,7 @@ public class Search extends AbstractDocumentWebScript {
 		List<NodeRef> searchResult = new ArrayList<NodeRef>();
 		if (!isAdvancedSearch(params)) {
 			// simple search
-			searchResult = customFileFolderService.search(storeRef, params.get(PARAM_QUERY), searchType, getSortParameter(params),
-					isSortDirectionAscending(params));
+			searchResult = customFileFolderService.search(storeRef, params.get(PARAM_QUERY), searchType);
 		} else {
 			// advanced search
 			NodeRef lookInFolder = null;
@@ -169,8 +176,8 @@ public class Search extends AbstractDocumentWebScript {
 			Date modifiedFrom = advancedSearchParams.get("modifiedFrom");
 			Date modifiedTo = advancedSearchParams.get("modifiedTo");
 
-			searchResult = customFileFolderService.search(storeRef, params.get(PARAM_QUERY), searchType, getSortParameter(params),
-					isSortDirectionAscending(params), lookInFolder, createdFrom, createdTo, modifiedFrom, modifiedTo);
+			searchResult = customFileFolderService.search(storeRef, params.get(PARAM_QUERY), searchType, lookInFolder, createdFrom, createdTo, modifiedFrom,
+					modifiedTo);
 		}
 		return searchResult;
 	}

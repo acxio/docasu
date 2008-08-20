@@ -112,39 +112,44 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 		return nodeRefs;
 	}
 
-	public List<NodeRef> list(NodeRef contextNodeRef, boolean foldersOnly, String sortParameter, boolean sortAscending) {
+	public List<NodeRef> list(NodeRef contextNodeRef, boolean foldersOnly) {
 
 		// contextNodeRef = tenantService.getName(contextNodeRef);
 
 		SearchParameters params = new SearchParameters();
 		params.setLanguage(SearchService.LANGUAGE_LUCENE);
 		params.addStore(contextNodeRef.getStoreRef());
-		StringBuffer query = prepareQuery(new StringBuffer(LUCENE_BASE_QUERY));
-		query.append(" +PARENT:\"" + contextNodeRef.toString() + "\"");
-		if (foldersOnly) {
-			query.append(" -TYPE:\"" + ContentModel.TYPE_CONTENT + "\"");
-		}
+
+		// add query
+		String query = createListQuery(contextNodeRef, foldersOnly);
+		params.setQuery(query);
+
+		// log4j.logger.org.alfresco.repo.search.impl.lucene.LuceneQueryParser=debug
 		if (logger.isDebugEnabled()) {
 			logger.debug("List query = '" + query + "'");
 		}
-		params.setQuery(query.toString());
-		
-		// add sorting
-		params.addSort(sortParameter, sortAscending);
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Sort parameters:field=" + sortParameter + ";ASC=" + sortAscending);
-		}
-		
 		return searchLucene(params);
 	}
 
-	public List<NodeRef> search(StoreRef store, String query, SearchType type, String sortParameter, boolean sortAscending) {
-		return search(store, query, type, sortParameter, sortAscending, null, null, null, null, null);
+	private String createListQuery(NodeRef contextNodeRef, boolean foldersOnly) {
+		StringBuffer query = prepareQuery(new StringBuffer(LUCENE_BASE_QUERY));
+
+		query.append(" +PARENT:\"" + contextNodeRef.toString() + "\"");
+
+		if (foldersOnly) {
+			query.append(" -TYPE:\"" + ContentModel.TYPE_CONTENT + "\"");
+		}
+
+		return query.toString();
 	}
 
-	public List<NodeRef> search(StoreRef store, String query, SearchType type, String sortParameter, boolean sortAscending, NodeRef lookInFolder,
-			Date createdFrom, Date createdTo, Date modifiedFrom, Date modifiedTo) {
+	public List<NodeRef> search(StoreRef store, String query, SearchType type) {
+		return search(store, query, type, null, null, null, null, null);
+	}
+
+	public List<NodeRef> search(StoreRef store, String query, SearchType type, NodeRef lookInFolder, Date createdFrom, Date createdTo, Date modifiedFrom,
+			Date modifiedTo) {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("SEARCH PARAM store = " + store);
@@ -161,11 +166,25 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 		params.setLanguage(SearchService.LANGUAGE_LUCENE);
 		params.addStore(store);
 
+		// add query
+		String luceneQuery = createSearchQuery(query, type, lookInFolder, createdFrom, createdTo, modifiedFrom, modifiedTo);
+		params.setQuery(luceneQuery);
+
+		// log4j.logger.org.alfresco.repo.search.impl.lucene.LuceneQueryParser=debug
+		if (logger.isDebugEnabled()) {
+			logger.debug("Search query = '" + luceneQuery + "'");
+		}
+
+		return searchLucene(params);
+	}
+
+	private String createSearchQuery(String query, SearchType type, NodeRef lookInFolder, Date createdFrom, Date createdTo, Date modifiedFrom, Date modifiedTo) {
 		StringBuffer luceneQuery = prepareQuery(new StringBuffer(LUCENE_BASE_QUERY));
 
 		if (query != null && query.length() > 0) {
 			// Escape Lucene characters.
 			query = QueryParser.escape(query);
+
 			if (type == SearchType.ALL) {
 				luceneQuery.append(" +(TEXT:\"" + query + "\" @cm\\:name:\"" + query + "\")");
 			} else if (type == SearchType.FILE_NAME || type == SearchType.FOLDER_NAME) {
@@ -174,6 +193,7 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 				luceneQuery.append(" +TEXT:\"" + query + "\"");
 			}
 		}
+
 		if (type == SearchType.FILE_NAME) {
 			luceneQuery.append(" +TYPE:\"" + ContentModel.TYPE_CONTENT + "\"");
 		} else if (type == SearchType.FOLDER_NAME) {
@@ -193,20 +213,7 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 			writeDateRange(luceneQuery, "modified", modifiedFrom, modifiedTo);
 		}
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Search query = '" + luceneQuery + "'");
-		}
-
-		params.setQuery(luceneQuery.toString());
-
-		// add sorting
-		params.addSort(sortParameter, sortAscending);
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("Sort parameters:field=" + sortParameter + ";ASC=" + sortAscending);
-		}
-
-		return searchLucene(params);
+		return luceneQuery.toString();
 	}
 
 	/**

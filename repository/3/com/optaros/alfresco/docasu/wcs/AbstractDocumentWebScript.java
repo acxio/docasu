@@ -21,22 +21,16 @@ package com.optaros.alfresco.docasu.wcs;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.template.TemplateNode;
-import org.alfresco.repo.web.scripts.RepositoryImageResolver;
-import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
-import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
@@ -50,6 +44,9 @@ import org.alfresco.web.scripts.DeclarativeWebScript;
 import org.alfresco.web.scripts.WebScriptRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.optaros.alfresco.docasu.wcs.helper.NodeRefWrapper;
+import com.optaros.alfresco.docasu.wcs.helper.NodeRefWrapperComparator;
 
 /**
  * @author Jean-Luc Geering
@@ -74,11 +71,6 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 	protected PermissionService permissionService;
 	protected VersionService versionService;
 
-	// the new beans for Alfresco 3
-	protected ServiceRegistry serviceRegistry;
-	protected RepositoryImageResolver repositoryImageResolver;
-	protected Repository repository;
-
 	protected TemplateImageResolver imageResolver;
 
 	protected StoreRef storeRef = new StoreRef("workspace://SpacesStore");
@@ -87,24 +79,12 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		this.customFileFolderService = customFileFolderService;
 	}
 
-	public void setServiceRegistry(ServiceRegistry serviceRegistry) {
-		this.serviceRegistry = serviceRegistry;
-	}
-
-	public void setRepositoryImageResolver(RepositoryImageResolver repositoryImageResolver) {
-		this.repositoryImageResolver = repositoryImageResolver;
-	}
-
-	public void setRepository(Repository repository) {
-		this.repository = repository;
-	}
-
 	protected void initServices() {
-		fileFolderService = serviceRegistry.getFileFolderService();
-		nodeService = serviceRegistry.getNodeService();
-		permissionService = serviceRegistry.getPermissionService();
-		versionService = serviceRegistry.getVersionService();
-		imageResolver = repositoryImageResolver.getImageResolver();
+		fileFolderService = getServiceRegistry().getFileFolderService();
+		nodeService = getServiceRegistry().getNodeService();
+		permissionService = getServiceRegistry().getPermissionService();
+		versionService = getServiceRegistry().getVersionService();
+		imageResolver = getWebScriptRegistry().getTemplateImageResolver();
 	}
 
 	protected void readParam(Map<String, String> params, String key, String value) {
@@ -131,6 +111,12 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		}
 
 		// set default paging values.
+		setPagingValues(params);
+
+		return params;
+	}
+
+	private void setPagingValues(Map<String, String> params) {
 		if (!params.containsKey(PARAM_START)) {
 			// TODO
 			log.warn("Setting start to 0 TODO refactor ui");
@@ -141,8 +127,6 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 			log.warn("Setting limit to 50 TODO refactor ui");
 			params.put(PARAM_LIMIT, "50");
 		}
-
-		return params;
 	}
 
 	protected List<FileInfo> toFileInfo(List<NodeRef> nodes) {
@@ -156,52 +140,39 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		return result;
 	}
 
-	/**
-	 * Lucene ordering is now used. See getSortParameter().
-	 */
-	@Deprecated
-	protected List<FileInfo> sort(List<FileInfo> nodes, Map<String, String> params) {
-		if (params.get(PARAM_SORT) != null && !"".equals(params.get(PARAM_SORT))) {
-			ColumnComparator comparator = new ColumnComparator(params.get(PARAM_SORT), !"DESC".equals(params.get(PARAM_DIR)));
-			Collections.sort(nodes, comparator);
-		}
+	private List<NodeRefWrapper> sort(List<NodeRefWrapper> nodes, QName property, boolean ascending) {
+		NodeRefWrapperComparator comparator = new NodeRefWrapperComparator(property, ascending);
+		Collections.sort(nodes, comparator);
 		return nodes;
 	}
 
-	/**
-	 * Returns a string representing the PARAM_SORT parameter compatible with
-	 * ContentModel.class. Defaults to ContentModel.PROP_NAME.localName.
-	 * 
-	 * @param params
-	 * @return
-	 */
-	protected String getSortParameter(Map<String, String> params) {
-		String sortParam = params.get(PARAM_SORT);
-		if (sortParam != null && !"".equals(sortParam)) {
-
-			if (sortParam.equals("name")) {
-				return ContentModel.PROP_NAME.getLocalName();
-			} else if (sortParam.equals("modified")) {
-				return ContentModel.PROP_MODIFIED.getLocalName();
-			} else if (sortParam.equals("created")) {
-				return ContentModel.PROP_CREATED.getLocalName();
-			} else if (sortParam.equals("creator")) {
-				return ContentModel.PROP_CREATOR.getLocalName();
-			}
-
+	protected List<NodeRef> sort(List<NodeRef> nodeRefList, Map<String, String> params) {
+		if (params.get(PARAM_SORT) != null && !"".equals(params.get(PARAM_SORT))) {
+			QName property = getSortProperty(params);
+			boolean ascending = !"DESC".equals(params.get(PARAM_DIR));
+			List<NodeRefWrapper> nodeRefWrapperList = NodeRefWrapper.createNodeRefWrappers(nodeRefList, nodeService, property);
+			nodeRefWrapperList = sort(nodeRefWrapperList, property, ascending);
+			return NodeRefWrapper.getNodeRefList(nodeRefWrapperList);
 		}
-		// default sorting
-		return ContentModel.PROP_NAME.getLocalName();
+		return nodeRefList;
 	}
 
-	/**
-	 * Returns false if PARAM_DIR parameter equals to "DESC".
-	 * 
-	 * @param params
-	 * @return
-	 */
-	protected boolean isSortDirectionAscending(Map<String, String> params) {
-		return !"DESC".equals(params.get(PARAM_DIR));
+	protected QName getSortProperty(Map<String, String> params) {
+		String sortParam = params.get(PARAM_SORT);
+		if (sortParam != null && !"".equals(sortParam)) {
+			if (sortParam.equals("name")) {
+				return ContentModel.PROP_NAME;
+			} else if (sortParam.equals("size")) {
+				return ContentModel.PROP_CONTENT;
+			} else if (sortParam.equals("modified")) {
+				return ContentModel.PROP_MODIFIED;
+			} else if (sortParam.equals("created")) {
+				return ContentModel.PROP_CREATED;
+			} else if (sortParam.equals("creator")) {
+				return ContentModel.PROP_CREATOR;
+			}
+		}
+		return null;
 	}
 
 	protected List<NodeRef> doPaging(List<NodeRef> nodes, Map<String, String> params) {
@@ -229,7 +200,7 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 
 	protected Map<String, Object> toModelRow(FileInfo fileInfo) {
 
-		TemplateNode templateNode = new TemplateNode(fileInfo.getNodeRef(), serviceRegistry, imageResolver);
+		TemplateNode templateNode = new TemplateNode(fileInfo.getNodeRef(), getServiceRegistry(), imageResolver);
 		Map<String, Object> row = new HashMap<String, Object>();
 		row.put("nodeId", fileInfo.getNodeRef().getId());
 		row.put("name", fileInfo.getName());
@@ -281,8 +252,8 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 
 	protected String generatePath(NodeRef nodeRef) {
 
-		NodeService nodeService = serviceRegistry.getNodeService();
-		FileFolderService fileFolderService = serviceRegistry.getFileFolderService();
+		NodeService nodeService = getServiceRegistry().getNodeService();
+		FileFolderService fileFolderService = getServiceRegistry().getFileFolderService();
 
 		LinkedList<FileInfo> nodes = new LinkedList<FileInfo>();
 		while (nodeRef != null) {
@@ -323,53 +294,4 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		}
 	}
 
-	/**
-	 * Lucene ordering is now used. See getSortParameter().
-	 */
-	@Deprecated
-	private class ColumnComparator implements Comparator<FileInfo> {
-
-		private final String column;
-		private final boolean ascending;
-
-		public ColumnComparator(String column, boolean ascending) {
-			this.column = column;
-			this.ascending = ascending;
-		}
-
-		public int compare(FileInfo f1, FileInfo f2) {
-			if (column.equals("name")) {
-				String name1 = f1.getName().toLowerCase();
-				String name2 = f2.getName().toLowerCase();
-				return (ascending ? name1.compareTo(name2) : name2.compareTo(name1));
-			} else if (column.equals("size")) {
-				ContentData data1 = f1.getContentData();
-				long size1 = (data1 != null ? data1.getSize() : 0);
-				ContentData data2 = f2.getContentData();
-				long size2 = (data2 != null ? data2.getSize() : 0);
-				long diff = (ascending ? size1 - size2 : size2 - size1);
-				if (diff > 0)
-					return 1;
-				else if (diff < 0)
-					return -1;
-				else
-					return 0;
-			} else if (column.equals("modified")) {
-				Date date1 = f1.getModifiedDate();
-				Date date2 = f2.getModifiedDate();
-				return (ascending ? date1.compareTo(date2) : date2.compareTo(date1));
-			} else if (column.equals("created")) {
-				Date date1 = f1.getCreatedDate();
-				Date date2 = f2.getCreatedDate();
-				return (ascending ? date1.compareTo(date2) : date2.compareTo(date1));
-			} else if (column.equals("creator")) {
-				String creator1 = getProperty(f1, ContentModel.PROP_CREATOR, "").toLowerCase();
-				String creator2 = getProperty(f2, ContentModel.PROP_CREATOR, "").toLowerCase();
-				return (ascending ? creator1.compareTo(creator2) : creator2.compareTo(creator1));
-			} else {
-				log.error("Sorting not implemented for column = " + column);
-				return 0;
-			}
-		}
-	}
 }

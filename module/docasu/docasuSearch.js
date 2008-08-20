@@ -70,12 +70,12 @@ function _initSearchResultsView() {
 	
 	var searchResultsPanel = new Ext.grid.GridPanel({
 		id: 'searchResultsView',
-//		region: 'center',
+		region: 'center',
 		store: searchResultsStore,
 		columns: [
 		          {id:'nodeId', header: "Name", width: 100, sortable: true, dataIndex: 'name', renderer: fileNameRenderer},
 		          {header: "Path",  width: 180, sortable: false, renderer: parentPathRenderer},
-		          {header: "Size", width: 20, sortable: false, dataIndex: 'size', renderer: Ext.util.Format.fileSize}, 
+		          {header: "Size", width: 20, sortable: true, dataIndex: 'size', renderer: Ext.util.Format.fileSize}, 
 		          {header: "Changed", width: 60, sortable: true, dataIndex: 'modified', renderer: timeZoneAwareRenderer},
 		          {header: "Created", width: 60, sortable: true, dataIndex: 'created', renderer: timeZoneAwareRenderer},
 		          {header: "Creator", width: 50, sortable: true, dataIndex: 'creator'},

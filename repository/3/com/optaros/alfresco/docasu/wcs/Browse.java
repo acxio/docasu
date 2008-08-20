@@ -25,7 +25,7 @@ import java.util.Map;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.web.scripts.WebScriptRequest;
-import org.alfresco.web.scripts.Status;
+import org.alfresco.web.scripts.WebScriptStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -47,7 +47,7 @@ public class Browse extends AbstractDocumentWebScript {
 
 		Map<String, String> params = super.readParams(req);
 
-		if (foldersOnly){
+		if (foldersOnly) {
 			readParam(params, PARAM_NODE_ID, req.getParameter("node"));
 		} // else already read by superclass
 
@@ -60,13 +60,13 @@ public class Browse extends AbstractDocumentWebScript {
 	}
 
 	@Override
-	public Map<String, Object> executeImpl(WebScriptRequest req, Status status) {
+	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
 		log.debug("*** Enter browse request handler ***");
 		initServices();
 
 		Map<String, String> params = readParams(req);
 
-		NodeRef companyHome = repository.getCompanyHome();
+		NodeRef companyHome = getRepositoryContext().getCompanyHome();
 		NodeRef baseNode = companyHome;
 
 		if (params.get(PARAM_NODE_ID) != null) {
@@ -77,7 +77,10 @@ public class Browse extends AbstractDocumentWebScript {
 		String path = generatePath(baseNode);
 
 		// list result set
-		List<NodeRef> listResult = customFileFolderService.list(baseNode, foldersOnly, getSortParameter(params), isSortDirectionAscending(params));
+		List<NodeRef> listResult = customFileFolderService.list(baseNode, foldersOnly);
+
+		// sort results
+		listResult = sort(listResult, params);
 
 		// store the size of the search result
 		int total = listResult.size();
@@ -95,9 +98,6 @@ public class Browse extends AbstractDocumentWebScript {
 
 		List<FileInfo> nodes = toFileInfo(listResult);
 
-		// sort results; now done by Lucene in the search
-		// nodes = sort(nodes, params);
-
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("total", total);
 		model.put("path", path);
@@ -109,7 +109,7 @@ public class Browse extends AbstractDocumentWebScript {
 		log.debug("*** Exit browse request handler ***");
 		return model;
 	}
-	
+
 	private Object[] getResultRows(List<FileInfo> nodes) {
 		int i = 0;
 		Object[] rows = new Object[nodes.size()];
@@ -118,5 +118,4 @@ public class Browse extends AbstractDocumentWebScript {
 		}
 		return rows;
 	}
-	
 }

@@ -25,14 +25,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.web.scripts.DeclarativeWebScript;
 import org.alfresco.web.scripts.WebScriptRequest;
-import org.alfresco.web.scripts.Status;
-import org.alfresco.web.scripts.servlet.WebScriptServletRequest;
+import org.alfresco.web.scripts.WebScriptStatus;
+import org.alfresco.web.scripts.WebScriptServletRequest;
 import org.apache.commons.logging.LogFactory;
 
 public class Logout extends DeclarativeWebScript {
 	private static final org.apache.commons.logging.Log log = LogFactory.getLog(Logout.class);
 	
-	public Map<String, Object> executeImpl(WebScriptRequest req, Status status) {
+	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
 		
 		// Only works for the Webscript Servlet Runtime
 

@@ -77,7 +77,10 @@ public class Browse extends AbstractDocumentWebScript {
 		String path = generatePath(baseNode);
 
 		// list result set
-		List<NodeRef> listResult = customFileFolderService.list(baseNode, foldersOnly, getSortParameter(params), isSortDirectionAscending(params));
+		List<NodeRef> listResult = customFileFolderService.list(baseNode, foldersOnly);
+
+		// sort results
+		listResult = sort(listResult, params);
 
 		// store the size of the search result
 		int total = listResult.size();
@@ -94,9 +97,6 @@ public class Browse extends AbstractDocumentWebScript {
 		}
 
 		List<FileInfo> nodes = toFileInfo(listResult);
-
-		// sort results; now done by Lucene in the search
-		// nodes = sort(nodes, params);
 
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("total", total);
