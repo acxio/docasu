@@ -145,12 +145,22 @@ a {
 	width: 1000px;
 }
 
+#content-demo {
+	background: transparent url(../images/MenuBar.png) no-repeat scroll 0%
+		50%;
+	height: 85px;
+	left: 5px;
+	position: absolute;
+	top: -15px;
+	width: 1000px;
+}
+
 #header5 ul {
 	list-style: none;
 	margin: 0px;
 }
 
-#content2 ul {
+#content2 ul, #content-demo ul {
 	list-style: none;
 	position: absolute;
 	top: 11px;
@@ -287,6 +297,15 @@ a {
 	height: 50px;
 }
 
+#footer-demo {
+	position: absolute;
+	top: 920px;
+	left: 61px;
+	width: 975px;
+	background: transparent url(../images/Home_r16_c20.gif);
+	height: 50px;
+}
+
 #footer-copyright {
 	float: right;
 	color: #7A7A7A;
@@ -393,16 +412,32 @@ a {
 }
 
 .image-screenshot-small{
-	width:200px
+	width:250px
 }
 
 .screenshots{
 	float:left;
-	margin-left:10px;
-	margin-top:110px;
-	margin-right: 10px;
+	margin-left:20px;
+	margin-top:10px;
+	margin-right: 20px;
 }
 
-.screenshot-text{
-	
+.screenshot-div{
+	float: left;
+}
+
+#content-bottom{
+	left:49px;
+	position:relative;
+	top:870px;
+}
+
+#content-middle{
+	background: transparent url(../images/background_content_middle.png) repeat-y
+		scroll 0% 50%;
+	height: 500px;
+	left: 57px;
+	position: absolute;
+	top: 380px;
+	width: 1000px;
 }
