@@ -19,6 +19,12 @@
 	
 -->
 <beans>
+	
+	<!-- expose the service registry proxy to javascript -->
+	<bean id="javascriptServiceRegistry" parent="baseJavaScriptExtension" class="com.optaros.alfresco.docasu.wcs.ServiceRegistryProxy">
+	  <property name="serviceRegistry" ref="ServiceRegistry" />
+	  <property name="extensionName"   value="serviceRegistry" />
+	</bean>
 
 	<bean id="CustomFileFolderService"
 		class="org.springframework.aop.framework.ProxyFactoryBean">

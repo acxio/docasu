@@ -55,8 +55,15 @@ if (folder == null || !folder.isContainer)
 	
 	try {
 		var upload = folder.createFile(filename);
+		upload.properties.title = filename;
 		upload.properties.content.write(filecontent);
+		/* serviceRegistry is exposed as a JavaScript extension - @see docasu-context.xml */
+		upload.mimetype = serviceRegistry.getMimetypeService().guessMimetype(filename);
 		upload.save();
+		
+		/* manually execute metadata extractor */
+		var metadataExtracter = actions.create("extract-metadata");
+		metadataExtracter.execute(upload);
 		
 		/* manually add titled aspect in order to fix issue with working-copy */
 		var scAspectQName = "{http://www.alfresco.org/model/content/1.0}titled";
