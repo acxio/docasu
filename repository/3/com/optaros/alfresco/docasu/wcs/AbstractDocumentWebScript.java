@@ -27,8 +27,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.template.TemplateNode;
+import org.alfresco.repo.web.scripts.RepositoryImageResolver;
+import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -71,6 +74,11 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 	protected PermissionService permissionService;
 	protected VersionService versionService;
 
+	// the new beans for Alfresco 3
+	protected ServiceRegistry serviceRegistry;
+	protected RepositoryImageResolver repositoryImageResolver;
+	protected Repository repository;
+
 	protected TemplateImageResolver imageResolver;
 
 	protected StoreRef storeRef = new StoreRef("workspace://SpacesStore");
@@ -79,12 +87,24 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		this.customFileFolderService = customFileFolderService;
 	}
 
+	public void setServiceRegistry(ServiceRegistry serviceRegistry) {
+		this.serviceRegistry = serviceRegistry;
+	}
+
+	public void setRepositoryImageResolver(RepositoryImageResolver repositoryImageResolver) {
+		this.repositoryImageResolver = repositoryImageResolver;
+	}
+
+	public void setRepository(Repository repository) {
+		this.repository = repository;
+	}
+
 	protected void initServices() {
-		fileFolderService = getServiceRegistry().getFileFolderService();
-		nodeService = getServiceRegistry().getNodeService();
-		permissionService = getServiceRegistry().getPermissionService();
-		versionService = getServiceRegistry().getVersionService();
-		imageResolver = getWebScriptRegistry().getTemplateImageResolver();
+		fileFolderService = serviceRegistry.getFileFolderService();
+		nodeService = serviceRegistry.getNodeService();
+		permissionService = serviceRegistry.getPermissionService();
+		versionService = serviceRegistry.getVersionService();
+		imageResolver = repositoryImageResolver.getImageResolver();
 	}
 
 	protected void readParam(Map<String, String> params, String key, String value) {
@@ -200,7 +220,7 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 
 	protected Map<String, Object> toModelRow(FileInfo fileInfo) {
 
-		TemplateNode templateNode = new TemplateNode(fileInfo.getNodeRef(), getServiceRegistry(), imageResolver);
+		TemplateNode templateNode = new TemplateNode(fileInfo.getNodeRef(), serviceRegistry, imageResolver);
 		Map<String, Object> row = new HashMap<String, Object>();
 		row.put("nodeId", fileInfo.getNodeRef().getId());
 		row.put("name", fileInfo.getName());
@@ -252,8 +272,8 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 
 	protected String generatePath(NodeRef nodeRef) {
 
-		NodeService nodeService = getServiceRegistry().getNodeService();
-		FileFolderService fileFolderService = getServiceRegistry().getFileFolderService();
+		NodeService nodeService = serviceRegistry.getNodeService();
+		FileFolderService fileFolderService = serviceRegistry.getFileFolderService();
 
 		LinkedList<FileInfo> nodes = new LinkedList<FileInfo>();
 		while (nodeRef != null) {

@@ -122,6 +122,7 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 		// add query
 		String luceneQuery = new QueryManager().createSearchQuery(query, type, lookInFolder, createdFrom, createdTo, modifiedFrom, modifiedTo, whitelist,
 				blacklist);
+		params.setQuery(luceneQuery);
 
 		// log4j.logger.org.alfresco.repo.search.impl.lucene.LuceneQueryParser=debug
 		if (logger.isDebugEnabled()) {
