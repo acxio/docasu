@@ -1,5 +1,6 @@
 body {
-	font: normal 11px, trebuchet MS, helvetica, sans-serif;
+	font-family: trebuchet MS, helvetica, sans-serif;
+	font-size: 11px;
 }
 
 a {
