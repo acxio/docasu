@@ -1,5 +1,8 @@
+
+
 jQuery(document).ready(function($) {
  
+  /* tab navigation */	
   $("a[rel*=tabs-menu]").each(function () {
   	  $(this).click(function(){
   	  	$("#tabs-content").html($("#load").html())
@@ -21,6 +24,16 @@ jQuery(document).ready(function($) {
   $.get("productInfo.html", function(data) { 
 	 $("#tabs-content").html(data)
   })
+  
+  
+  /* demo screenshot using lightbox */
+  $('a[rel*=lightbox]').lightbox(); 
+  
+  
+  /* demo video */
+  $('a[rel*=facebox]').facebox();
 
-})
  
+})
+
+  

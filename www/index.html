@@ -38,7 +38,7 @@
 			</li>
 			<li>
 			<div class="header-bar"><img src="images/Home_r2_c10.gif" alt=""/>
-			<a href="http://code.optaros.com/trac/docasu/">Community</a>
+			<a href="http://code.optaros.com/trac/docasu/" target="_blank">Community</a>
 			</div>
 			</li>
 			<li>
@@ -90,7 +90,14 @@
 			</tr>	
 		</table>		
 	</div>
-	<div id="teaser-image"><img src="images/Screenshot_T.png" alt=""/></div>
+	
+	<div id="teaser-image">
+		<!-- alpha transparency to make the background of the image transparent in IE6 -->
+		<span style="width:312px;height:263px;display:inline-block;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/Screenshot_T.png');/">
+			<img style="filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" src="images/Screenshot_T.png" width="312" height="263" border="0" alt="">
+		</span>
+	</div>
+
 </div>
 
 <div id="box1">

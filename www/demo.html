@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf8">
 	<title>DoCASU</title>
 	<link rel="stylesheet" type="text/css" href="css/main.css" />
 	<!--[if IE 6]>   
@@ -10,7 +10,13 @@
     <!--[if IE 7]>   
 		<link rel="stylesheet" type="text/css" href="css/IE7.css" />
     <![endif]--> 
+    
+    <link rel="stylesheet" href="css/lightbox.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/facebox.css" type="text/css" media="screen" />
+    
 	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.lightbox.js"></script>
+	<script type="text/javascript" src="js/facebox.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 </head>
 
@@ -35,7 +41,7 @@
 			</li>
 			<li>
 			<div class="header-bar"><img src="images/Home_r2_c10.gif" alt=""/>
-			<a href="http://code.optaros.com/trac/docasu/">Community</a> 
+			<a href="http://code.optaros.com/trac/docasu/" target="_blank">Community</a> 
 			</div>
 			</li>
 			<li>
@@ -63,65 +69,88 @@
 	<a href="demo.html" class="item-selected">Demo</a>
 </div>
 
-<div id="teaser">
-	<div id="teaser-text1">Demo</div>
-	<div id="teaser-text4">
-	Have a look at our demo and at the screenshots!
-	</div>
-	<div id="teaser-image"><img src="images/Content_r5_c28.gif"/></div>
+<div id="demo-title">
+		<table>
+			<tr>
+				<td>
+					<img src="images/Arrow_AlphaMatteW.gif" />
+				</td>
+				<td>
+					<a href="productInfo.html" class="teaser-text3">Demo Video</a>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<img src="images/Arrow_AlphaMatteW.gif" alt=""/>
+				</td>
+				<td>
+					<a href="productInfo.html" class="teaser-text3">Screenshots</a>
+				</td>
+			</tr>
+		</table>
 </div>
-
-
-
-
-<div id="content-middle">
-
-	<div id="content-top"><img src="images/background_content_top.png"/></div>
-
-	<div id="content-demo">
-		<ul>
-			<li id="features" class="active">
-					<a href="demoScreenshots.html" rel="tabs-menu" class="active-tab-link">Screenshots</a>
-			</li>
-			<li id="features" class="inactive">
-					<a href="videoDemo.html" rel="tabs-menu" class="inactive-tab-link">Demo</a>
-			</li>
-		</ul>
-	</div>
-
-	<div id="content3">
-
-		<div class="screenshot-div">
-			<div class="screenshots"> 
-				<a href="images/printScreen1.png" target="_blank"><img src="images/printScreen1.png" class="image-screenshot-small"/></a>	
-				<div class="screenshot-text">Main Panels</div>
-			</div>
-			
-			<div class="screenshots"> 
-				<a href="images/printScreen3.png" target="_blank"><img src="images/printScreen3.png" class="image-screenshot-small"/></a>
-				<div class="screenshot-text">Folder Actions</div>
-			</div>
-			
-			<div class="screenshots"> 
-				<a href="images/printScreen4.png" target="_blank"><img src="images/printScreen4.png" class="image-screenshot-small"/></a>
-				<div class="screenshot-text">File Actions </div>
-			</div>
-		</div>
-			
-		<div class="screenshot-div">
-			<div class="screenshots"> 
-				<a href="images/printScreen5.png" target="_blank"><img src="images/printScreen5.png" class="image-screenshot-small"/></a>
-				<div class="screenshot-text">Simple Search</div>
-			</div>
-		</div>	
-		
+	
+	<div id="screenshots">
+		<table cellspacing="0px">
+			<tr class="screenshot-title">
+				<td>
+					Main Screen
+				</td>
+				<td>
+				   File Actions
+				</td>
+				<td>
+				   Folder Actions
+				</td>
+			</tr>
+			<tr class="screenshot-image">
+				<td>
+				<a href="images/Content_r5_c28.gif" class="lightbox" rel="lightbox[screenshots]"><img src="images/Bild 27.png"/></a>
+				</td>
+				<td>
+				<a href="images/Content_r5_c28.gif" class="lightbox" rel="lightbox[screenshots]"><img src="images/Bild 27.png"/></a>
+				</td>
+				<td>
+				<a href="images/Content_r5_c28.gif" class="lightbox" rel="lightbox[screenshots]"><img src="images/Bild 27.png"/></a>
+				</td>
+			</tr>
+			<tr class="screenshot-title">
+				<td>
+				  Simple Search
+				</td>
+				<td>
+				  Advanced Search
+				</td>
+				<td>
+				</td>
+			</tr>
+			<tr class="screenshot-image">
+				<td>
+				<a href="images/Content_r5_c28.gif" class="lightbox" rel="lightbox[screenshots]"><img src="images/Bild 27.png"/></a>
+				</td>
+				<td>
+				<a href="images/Content_r5_c28.gif" class="lightbox" rel="lightbox[screenshots]"><img src="images/Bild 27.png"/></a>
+				</td>
+				<td>
+				<a href="images/Content_r5_c28.gif" class="lightbox" rel="lightbox[screenshots]"><img src="images/Bild 27.png"/></a>
+				</td>
+			</tr>
+		</table>
 	</div>
 	
 
+	<div id="demo-video">
+		<a href="demoVideo.html" rel="facebox">
+			<!-- alpha transparency to make the background of the image transparent in IE6 -->
+			<span style="width:312px;height:263px;display:inline-block;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/Film.png');/">
+				<img style="filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" src="images/Film.png" width="312" height="263" border="0" alt="">
+			</span>
+		</a>
+	</div>
 	
-</div>
+<div id="demo-content"></div>
 
-	<div id="content-bottom"><img src="images/background_content_bottom.png"/></div>
+	
 
 <div id="footer-demo">
 	<div id="footer-menu">
