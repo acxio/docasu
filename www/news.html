@@ -77,7 +77,12 @@
 		<a href="">more</a>
 	 	
 	</div>
-	<div id="teaser-image"><img src="images/Content_r5_c28.gif"/></div>
+	<div id="teaser-image">
+		<!-- alpha transparency to make the background of the image transparent in IE6 -->
+		<span style="width:380px;height:395px;display:inline-block;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/headers/News.png');/">
+			<img style="filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" src="images/headers/News.png" width="380" height="395" border="0" alt="">
+		</span>
+	</div>
 </div>
 
 <div id="content1">
