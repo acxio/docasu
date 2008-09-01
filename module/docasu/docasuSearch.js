@@ -153,16 +153,16 @@ function validateSearchParameters(params) {
 	var createdTo = null;
 	var modifiedFrom = null;
 	var modifiedTo = null;
-	if (params.createdFrom.length > 0) {
+	if (params.createdFrom != undefined && params.createdFrom.length > 0) {
 		createdFrom = Date.parse(params.createdFrom);
 	}
-	if (params.createdTo.length > 0) {
+	if (params.createdTo != undefined && params.createdTo.length > 0) {
 		createdTo = Date.parse(params.createdTo);
 	}
-	if (params.modFrom.length > 0) {
+	if (params.modFrom != undefined && params.modFrom.length > 0) {
 		modifiedFrom = Date.parse(params.modFrom);
 	}
-	if (params.modTo.length > 0) {
+	if (params.modTo != undefined && params.modTo.length > 0) {
 		modifiedTo = Date.parse(params.modTo);
 	}
 	//alert("dates:"+createdFrom+","+createdTo+","+modifiedFrom+","+modifiedTo+";");
