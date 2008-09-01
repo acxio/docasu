@@ -148,7 +148,54 @@ function _createSearchTypeComboBox(width) {
 	});
 }
 
+function validateSearchParameters(params) {
+	var createdFrom = null;
+	var createdTo = null;
+	var modifiedFrom = null;
+	var modifiedTo = null;
+	if (params.createdFrom.length > 0) {
+		createdFrom = Date.parse(params.createdFrom);
+	}
+	if (params.createdTo.length > 0) {
+		createdTo = Date.parse(params.createdTo);
+	}
+	if (params.modFrom.length > 0) {
+		modifiedFrom = Date.parse(params.modFrom);
+	}
+	if (params.modTo.length > 0) {
+		modifiedTo = Date.parse(params.modTo);
+	}
+	//alert("dates:"+createdFrom+","+createdTo+","+modifiedFrom+","+modifiedTo+";");
+	if(createdFrom != null &&  createdTo != null && createdTo < createdFrom) {
+		// if createdTo is before createdFrom 
+		return "'Created Before' date cannot be set before 'Created After' date!";
+	}
+	if(modifiedFrom != null &&  modifiedTo != null && modifiedTo < modifiedFrom) {
+		// if modifiedTo is before modifiedFrom 
+		return "'Modified Before' date cannot be set before 'Modified After' date!";
+	}
+	if(createdFrom != null &&  modifiedTo != null && modifiedTo < createdFrom) {
+		// if modifiedTo is before createdFrom 
+		return "'Modified Before' date cannot be set before 'Created After' date!";
+	}
+
+	return "";
+}
+
 function searchFormListener(form, action) {
+	// validate search parameters	
+	var message = validateSearchParameters(form.getValues(false));
+	if(message.length > 0) {
+		// invalid search parameters
+		Ext.MessageBox.show({
+			title: 'Invalid search parameters',
+			msg: message,
+			buttons: Ext.MessageBox.OK,
+			icon: Ext.MessageBox.ERROR
+		});
+		return false;
+	}
+
 	// default timeout for ajax calls is 30 sec.
 	// this messagebox is set to load in 35 seconds.
 	Ext.MessageBox.show({
