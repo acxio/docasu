@@ -33,6 +33,8 @@ jQuery(document).ready(function($) {
   /* demo video */
   $('a[rel*=facebox]').facebox();
 
+  /* FŸr Version mit Lightbox */
+  /* $('.modal').lightbox(); */
  
 })
 
