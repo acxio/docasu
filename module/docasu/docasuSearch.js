@@ -149,6 +149,17 @@ function _createSearchTypeComboBox(width) {
 }
 
 function validateSearchParameters(params) {
+	// validate query
+	var query = null;
+	if (params.q != undefined && params.q.length > 0) {
+		query = params.q;
+	}
+	//alert("query:"+query+";");
+	if (query == null || query == "") {
+		// if search for empty string 
+		return "Cannot search for an empty string!";
+	}
+	// validate dates
 	var createdFrom = null;
 	var createdTo = null;
 	var modifiedFrom = null;
