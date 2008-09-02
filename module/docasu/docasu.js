@@ -15,7 +15,7 @@
  *    along with this program. If not, see <http://www.gnu.org/licenses/>.
  *    
  */
-
+ 
 var advSearchWindow;
 
 var gridStore;
@@ -82,7 +82,39 @@ Ext.onReady(function(){
 		}
 	});
 	
+	// start checking for session timed out
+	checkSessionTimedOut();
+	
 });
+
+/**
+* Retrieves the timeout interval for the session and 
+* schedules next request one second after timeout to make sure session is expired.
+*/
+function checkSessionTimedOut() {
+	// get session timeout and schedule next request
+	var sessionTimeout = "";
+	Ext.Ajax.request({
+		url: 'ui/sessiontimeout',
+		method: 'GET',
+		success: function(result, request){
+			//Ext.MessageBox.alert('Success', 'Success on retrieving session timeout. \n\r\n\r' + result.responseText);
+			sessionTimeout = eval(result.responseText).timeout;
+		},
+		failure: function(result, request){
+			Ext.MessageBox.alert('Failed', 'Failed on retrieving session timeout. \n\r\n\r' + result.responseText);
+		}
+	});
+	// convert to number
+	sessionTimeout = parseInt(sessionTimeout);
+	if (!sessionTimeout) {
+		// session expired - redirect to login page
+		checkStatusAndReload(200);
+	} else {
+		sessionTimeout += 1; // increase timeout by one second to make sure session is expired
+	}
+	setTimeout("checkSessionTimedOut();", sessionTimeout * 1000);
+}
 
 function _init(result, request) {
 	
