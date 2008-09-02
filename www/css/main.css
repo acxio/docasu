@@ -458,22 +458,21 @@ a {
 
 
 #demo-title{
-	left:100px;
+	left:120px;
 	position:absolute;
 	top:140px	
 }
 
 #demo-video{
-	left:590px;
+	left:640px;
 	position:absolute;
 	top:160px;
 	z-index:2;
 }
 
 #screenshots{
-	/*border:1px solid red;*/
 	height:300px;
-	left:90px;
+	left:125px;
 	position:absolute;
 	top:230px;
 	width:470px;

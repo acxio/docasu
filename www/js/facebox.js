@@ -50,7 +50,7 @@
     close_image   : 'images/closelabel.gif',
     image_types   : [ 'png', 'jpg', 'jpeg', 'gif' ],
     facebox_html  : '\
-  <div id="facebox" style="display:none;"> \
+  <div id="overlay" style="display:none;"/><div id="facebox" style="display:none;"> \
     <div class="popup"> \
       <table> \
         <tbody> \
@@ -91,6 +91,8 @@
       top:	pageScroll[1] + ($.facebox.getPageHeight() / 10),
       left:	pageScroll[0]
     }).show()
+    
+    $('#overlay').show();
 
     $(document).bind('keydown.facebox', function(e) {
       if (e.keyCode == 27) $.facebox.close()
@@ -114,6 +116,7 @@
     $('#facebox').fadeOut(function() {
       $('#facebox .content').removeClass().addClass('content')
     })
+    $('#overlay').fadeOut();
   })
 
   $.fn.facebox = function(settings) {
