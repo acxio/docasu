@@ -93,27 +93,36 @@ Ext.onReady(function(){
 */
 function checkSessionTimedOut() {
 	// get session timeout and schedule next request
-	var sessionTimeout = "";
 	Ext.Ajax.request({
 		url: 'ui/sessiontimeout',
 		method: 'GET',
-		success: function(result, request){
-			//Ext.MessageBox.alert('Success', 'Success on retrieving session timeout. \n\r\n\r' + result.responseText);
-			sessionTimeout = eval(result.responseText).timeout;
+		success: function(result, request) {
+			var response = "";
+			try {
+				response = eval(result.responseText);
+			} catch(err) {
+				// there's a syntax error when session is expired
+				// don't allow this error to break the application
+			}
+			if(response.timeout) {
+				// convert to number
+				var sessionTimeout = parseInt(response.timeout);
+				if (!sessionTimeout || sessionTimeout == 0) {
+					sessionTimeout = 3601; // default Alfresco session timeout is one hour
+				} else {
+					sessionTimeout += 1; // increase timeout by one second to make sure session is expired
+				}
+				setTimeout("checkSessionTimedOut();", sessionTimeout * 1000);
+			} else {
+				// any answer other than a timeout
+				// session expired - redirect to login page
+				checkStatusAndReload(200);
+			}
 		},
-		failure: function(result, request){
+		failure: function(result, request) {
 			Ext.MessageBox.alert('Failed', 'Failed on retrieving session timeout. \n\r\n\r' + result.responseText);
 		}
 	});
-	// convert to number
-	sessionTimeout = parseInt(sessionTimeout);
-	if (!sessionTimeout) {
-		// session expired - redirect to login page
-		checkStatusAndReload(200);
-	} else {
-		sessionTimeout += 1; // increase timeout by one second to make sure session is expired
-	}
-	setTimeout("checkSessionTimedOut();", sessionTimeout * 1000);
 }
 
 function _init(result, request) {
@@ -1479,7 +1488,12 @@ function doLogout() {
 			success: function(response, options) {
 			// Decodes (parses) a JSON string to an object. If the JSON is invalid,
 			// this function throws a SyntaxError.
-			var responseObj = Ext.util.JSON.decode(response.responseText);
+			try {
+				var responseObj = Ext.util.JSON.decode(response.responseText);
+			} catch(err) {
+				// there's a syntax error when session is expired
+				// don't allow this error to break the application
+			}
 			//Must have been 2xx http status code
 			Ext.MessageBox.hide();
 			checkStatusAndReload(response.status);
