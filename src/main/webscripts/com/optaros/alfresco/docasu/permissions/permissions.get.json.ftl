@@ -16,11 +16,17 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-{ "noredirect": true, "success": true, "total" : "${total}", "permissions" : "${comment}", "rows" : [
+{ 
+  "noredirect": true, 
+  "success": true, 
+  "total" : "${total}", 
+  "permissions" : "${comment}", 
+  "rows" : [
 	<#list entries as item>
 		{
 			"code": "${item[0]}",
 			"label": "${item[1]}"
 		}<#if item_has_next>,</#if>
 	</#list>
-]}
+  ]
+}

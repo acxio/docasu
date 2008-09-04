@@ -108,7 +108,7 @@ function _initSearchResultsView() {
 	searchProxy.on('loadexception', function(proxy, options, response, error) {
 		// TODO handle errors !
 		Ext.MessageBox.hide();
-		Ext.MessageBox.alert('Communication Error', 'Please try again!');
+		Ext.MessageBox.alert('Error', 'An internal error occured or you may not have permission to perform the search!', 200);
 		// console.error('loadexception in search:' + error);
 	});
 

@@ -249,13 +249,9 @@ function _init(result, request) {
 	
 	updateFavorites();
 	clipboard.update();	
-	
-	
-	// TODO understand this.
-	checkPermissions(null);
 
 	// Load data into grid.
-	gridStore.load();
+	gridStore.load({callback: onGridStoreLoad});
 	
 	// use this to load current folder from url
 	// TODO: replace document.getElementById with something cross browser
@@ -264,6 +260,20 @@ function _init(result, request) {
 		loadFolder(initialFolderId.value);
 	}
 
+}
+
+/**
+ * onload event listener
+ * TODO: find out why the default listener is not called
+ */
+function onGridStoreLoad(r, options, success) {
+	if(success) {
+		var folderName = gridStore.reader.jsonData.folderName;
+		var folderId = gridStore.reader.jsonData.folderId;
+		showFolderView(folderId, folderName);
+	} else {
+		Ext.MessageBox.alert('Error', 'The resource does not exist or you may not have permission to access it!', 200);
+	}
 }
 
 function _initTopBar(user) {
@@ -397,14 +407,13 @@ function _initCenter() {
 		})
 	});
 
+/* see onGridStoreLoad()
 	gridStore.on("load", function() {
-		
 		var folderName = gridStore.reader.jsonData.folderName;
 		var folderId = gridStore.reader.jsonData.folderId;
-
 		showFolderView(folderId, folderName);
-		
 	});
+*/
 	
 	gridStore.on('loadexception', function(options, response, e) {
 		checkStatusAndReload(e.status);
@@ -653,6 +662,7 @@ function _initNavigator() {
 	companyHomeTree.on('beforeexpand', function (panel) {
 //		console.log('before expand company home');
 		getNavigator().activeTab = 'companyHomeTree';
+		loadFolder(Ext.state.Manager.get('companyHomeId'));
 	});
 	companyHomeTree.on('beforecollapse', function (panel) {
 //		console.log('before collapse company home');
@@ -666,6 +676,7 @@ function _initNavigator() {
 	myHomeTree.on('beforeexpand', function (panel) {
 //		console.log('before expand my home');
 		getNavigator().activeTab = 'myHomeTree';
+		loadFolder(Ext.state.Manager.get('userHomeId'));
 	});
 	myHomeTree.on('beforecollapse', function (panel) {
 //		console.log('before collapse my home');
@@ -821,26 +832,32 @@ function _initCompanyHome() {
 
 function _initMyHome() {
 
-	// Tree loader for global directory tree
+	// Tree loader for my home directory tree
 	var myHomeTreeLoader = new Ext.tree.TreeLoader({
 		dataUrl: 'ui/folders',
 		requestMethod: 'GET'
 	});
 
+    // TODO understant why this forces IE6 to throw exceptions all the time
+//	myHomeTreeLoader.on("loadexception", function(loader, node, response) {
+//		checkStatusAndReload(response.status);
+//	});
+
 	var myHomeTree = new Ext.tree.TreePanel({
 		id: 'myHomeTree',
 		title: '<b>My Home</b> ',
+		split: true,
+		width: 200,
 		minSize: 175,
 		maxSize: 400,
-		collapsible: false,
 		margins: '35 0 5 5',
 		cmargins: '35 5 5 5',
-		border: false,
 		frame: false,
+		border: false,
 		// these are the config options for the tree itself				
 		autoScroll: true,
 		animate: true,
-		enableDD: false,
+		enableDD: false, // Allow tree nodes to be moved (dragged and dropped)
 		containerScroll: true,
 		loader: myHomeTreeLoader,
 		// this adds a root node to the tree and tells it to expand when it is rendered
@@ -849,10 +866,15 @@ function _initMyHome() {
 			text: Ext.state.Manager.get('userHomeName'),
 			draggable: false,
 			expanded: true,
-			iconCls: "folder"
 		}),
 		rootVisible: false
 	});
+	
+	// in case the tree is modfied via the standard Alfresco GUI, 
+	// it needs to be reloaded
+	myHomeTree.on('beforecollapsenode', function (node, deep, anim){	
+		node.loaded = false;
+	});	
 
 	// Tree event handlers 	
     myHomeTree.addListener('click', function (node, event) {
@@ -865,11 +887,6 @@ function _initMyHome() {
 		return false;
 	});
 	
-    // TODO understant why this forces IE6 to throw exceptions all the time
-//	myHomeTreeLoader.on("loadexception", function(loader, node, response) {
-//		checkStatusAndReload(response.status);
-//	});
-
 	// Custom context menu.
     myHomeTree.on('contextmenu', function(node, e){
 		e.preventDefault();
@@ -1247,9 +1264,7 @@ function createActionItems(record) {
 function loadFolder(folderId) {
 	gridStore.baseParams.nodeId = folderId;
 	clearDocumentInfoPane();
-	// TODO understand what this is.
-	checkPermissions(folderId);
-	gridStore.load();
+	gridStore.load({callback: onGridStoreLoad});
 	// TODO update all panels !! (search box ?)
 }
 
@@ -1263,6 +1278,7 @@ function showFolderView(folderId, folderName) {
 	Ext.get('folderName').child('img').show();
 
 	/* Show folder actions */
+	loadPermissions(folderId); // load permissions and action dropdown
 	Ext.get('folderActions').parent('div').show();
 	Ext.get('folderActionsLabel').show();
 	
@@ -1304,32 +1320,27 @@ function showSearchResultsView() {
 		
 }
 
-function checkPermissions(nodeId) {
+/**
+ * Load permissions on current folder and populate the action dropdown
+ */
+function loadPermissions(nodeId) {
 	
 	Ext.Ajax.request({
 		url: 'ui/node/getPermission',
 		method: 'GET',
 		params: {nodeId : nodeId},
 		fileUpload: true,
-		//form: Ext.getCmp('filePropertiesForm').getForm().getEl(),
 		success: function(response, options){	
 			try {
-				var jsonData = eval("(" + response.responseText + ")" );
-				if (!jsonData.noredirect) {
-					// TODO understand this!
-					// was doRedirectToUrl('ui');
-					checkStatusAndReload(200);
-				}	
+				var jsonData = eval("(" + response.responseText + ")" );	
 				_addActionItems(jsonData);
 			} catch (e) {
-				// TODO understand this!
-				// was doRedirectToUrl('ui');
-				console.error('Exception in checkPermissions(): ' + e)
+				console.error('Exception in loadPermissions(): ' + e)
 				checkStatusAndReload(200);
 			}
 	    }, 
 		failure: function(){
-			Ext.MessageBox.alert('Failed to check permissions.');
+			Ext.MessageBox.alert('Failed to load permissions.');
 		}
 	});
 }
@@ -1441,6 +1452,7 @@ function convertTimezone(value) {
  * @param {Boolean} autoExpand
  */
 function reloadView(autoExpandTrees) {
+	// NOT USED !!!
     getCompanyHomeTree().root.reload();
     getMyHomeTree().root.reload();
     loadFolder(Ext.state.Manager.get('currentFolder'));

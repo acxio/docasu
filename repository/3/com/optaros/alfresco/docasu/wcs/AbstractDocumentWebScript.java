@@ -270,15 +270,23 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		return "";
 	}
 
+	/**
+	 * Returns the absolute repository path for nodeRef.
+	 * 
+	 * @param nodeRef
+	 * @return
+	 */
 	protected String generatePath(NodeRef nodeRef) {
-
-		NodeService nodeService = serviceRegistry.getNodeService();
-		FileFolderService fileFolderService = serviceRegistry.getFileFolderService();
-
 		LinkedList<FileInfo> nodes = new LinkedList<FileInfo>();
 		while (nodeRef != null) {
-			nodes.add(0, fileFolderService.getFileInfo(nodeRef));
-			nodeRef = nodeService.getPrimaryParent(nodeRef).getParentRef();
+			// only nodes that are accessible get in Path
+			if (permissionService.hasPermission(nodeRef, PermissionService.READ) == AccessStatus.ALLOWED) {
+				nodes.add(0, fileFolderService.getFileInfo(nodeRef));
+				nodeRef = nodeService.getPrimaryParent(nodeRef).getParentRef();
+			} else {
+				log.error("user cannot access all parent nodes; path is incomplete");
+				nodeRef = null;
+			}
 		}
 		StringBuffer path = new StringBuffer();
 		for (FileInfo fileInfo : nodes) {
