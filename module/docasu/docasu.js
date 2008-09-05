@@ -662,7 +662,6 @@ function _initNavigator() {
 	companyHomeTree.on('beforeexpand', function (panel) {
 //		console.log('before expand company home');
 		getNavigator().activeTab = 'companyHomeTree';
-		loadFolder(Ext.state.Manager.get('companyHomeId'));
 	});
 	companyHomeTree.on('beforecollapse', function (panel) {
 //		console.log('before collapse company home');
@@ -676,7 +675,6 @@ function _initNavigator() {
 	myHomeTree.on('beforeexpand', function (panel) {
 //		console.log('before expand my home');
 		getNavigator().activeTab = 'myHomeTree';
-		loadFolder(Ext.state.Manager.get('userHomeId'));
 	});
 	myHomeTree.on('beforecollapse', function (panel) {
 //		console.log('before collapse my home');
