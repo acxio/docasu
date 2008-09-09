@@ -70,6 +70,7 @@ Ext.onReady(function(){
 	// Use Ext.state.Manager.set("key", 'value'); to store values
 	// Initialize values
 	Ext.state.Manager.set("currentFolder", 'null');
+	Ext.state.Manager.set("currentFolderProperties", 'null');
 	
 	// current user
 	Ext.Ajax.request({
@@ -463,7 +464,7 @@ function _initCenter() {
         e.preventDefault();
         
 		if (advancedSearchQuery === '' && simpleSearchQuery === '') {
-			this.contextMenu = getFolderContextMenu(Ext.state.Manager.get('currentFolder'));
+			this.contextMenu = getFolderContextMenu(Ext.state.Manager.get('currentFolder'), Ext.state.Manager.get('currentFolderProperties'));
         
 			var xy = e.getXY();
 			this.contextMenu.showAt(xy);
@@ -476,7 +477,15 @@ function _initCenter() {
         var record = grid.getStore().getAt(rowIndex);
 		
         if (record.get('isFolder')) {
-        	this.contextMenu = getFolderContextMenu(record.get('nodeId'), record);
+        
+        	var myRecord = new Object('Node '+record.get('nodeId'));
+        	myRecord.id = record.get('nodeId');
+        	myRecord.text = record.get('name');
+			myRecord.name = record.get('name');
+			myRecord.parentPath = record.get('parentPath');
+			myRecord.url = record.get('url');
+			
+        	this.contextMenu = getFolderContextMenu(record.get('nodeId'), myRecord);
         }
         else {
         	this.contextMenu = getFileContextMenu(record);
@@ -818,8 +827,15 @@ function _initCompanyHome() {
 	// Custom context menu.
 	companyHomeTree.on('contextmenu', function(node, e){
 		e.preventDefault();
+		
+		var myRecord = new Object('Node '+node.id);
+       	myRecord.id = node.id;
+       	myRecord.text = node.text;
+		myRecord.name = node.attributes.text;
+		myRecord.parentPath = node.attributes.parentPath;
+		myRecord.url = node.attributes.url;
 
-		this.contextMenu = getFolderContextMenu(node.id);
+		this.contextMenu = getFolderContextMenu(node.id, myRecord);
 
 		var xy = e.getXY();
 		this.contextMenu.showAt(xy);
@@ -888,8 +904,15 @@ function _initMyHome() {
 	// Custom context menu.
     myHomeTree.on('contextmenu', function(node, e){
 		e.preventDefault();
+		
+		var myRecord = new Object('Node '+node.id);
+       	myRecord.id = node.id;
+       	myRecord.text = node.text;
+		myRecord.name = node.attributes.text;
+		myRecord.parentPath = node.attributes.parentPath;
+		myRecord.url = node.attributes.url;
         
-		this.contextMenu = getFolderContextMenu(node.id);
+		this.contextMenu = getFolderContextMenu(node.id, myRecord);
 	
 		var xy = e.getXY();
 		this.contextMenu.showAt(xy);
@@ -946,6 +969,28 @@ function _initBreadcrumbs() {
 
 function updateCurrentFolder(folderId){
 	Ext.state.Manager.set("currentFolder", folderId);
+	Ext.Ajax.request({ url: 'ui/folderproperties',
+		method: 'GET',
+		params: {folderId : folderId},
+		success: function (response, options) {
+			try {
+				var folder = eval(response.responseText);
+				
+				var myRecord = new Object('Node '+folder.nodeId);
+		       	myRecord.id = folder.nodeId;
+		       	myRecord.text = folder.name;
+				myRecord.name = folder.name;
+				myRecord.parentPath = folder.path;
+				myRecord.url = folder.url;
+				Ext.state.Manager.set("currentFolderProperties", myRecord);
+			} catch (e) {
+				Ext.MessageBox.alert('Failed', 'An error occurred while loading current folder properties');
+			}
+		}, 
+		failure: function(response, options){
+			Ext.MessageBox.alert('Failed', 'An error occurred while loading current folder properties');
+		}
+	});
 }
 
 function updateBreadcrumbs(folderName, folderId) {
@@ -1015,7 +1060,13 @@ function getFileContextMenu(record) {
 	return contextMenu;
 }
 
-function getFolderContextMenu(id){
+/**
+ * Builds the context menu for folders.
+ * @param id the node id
+ * @param record an object containing at least the properties in folders.get.json.ftl
+ */
+function getFolderContextMenu(id, record){
+
 	var contextMenu = new Ext.menu.Menu({
 		id: 'folderCtxMenu',
 		items: createActionItemsForFolder(id)[0],
@@ -1035,23 +1086,19 @@ function getFolderContextMenu(id){
 		    	handler: function() {addFavorite(id);}
 		    }
 		);
-		
-	/*
-	 * Send record as the second parameter, when accessed from the center panel, to include these three items.
-	 * This will produce inconsistency with the navigation panel(check ticket #100).
-	 */
-	var record = getFolderContextMenu.arguments[1];
-	if(record){
+
+	// record can be null if ui/folderproperties request did not succed	
+	if(record && record != null){
 		contextMenu.add(
 			{
 		    	text: 'Mail Link',
-		    	handler: function() {mailLink(record.get('name'), record.get('url'));}
+		    	handler: function() {mailLink(record.name, record.url);}
 		    }, {
 		    	text: 'Copy Folder Path to System Clipboard',
-		    	handler: function() {copyTextToSystemClipboard(record.get('parentPath')+'/'+record.get('name'));}
+		    	handler: function() {copyTextToSystemClipboard(record.parentPath+'/'+record.name);}
 		    }, {
 		    	text: 'Copy Folder Url To System Clipboard',
-		    	handler: function() {copyTextToSystemClipboard(location.protocol + '//' + location.host + record.get('url'));}
+		    	handler: function() {copyTextToSystemClipboard(location.protocol + '//' + location.host + record.url);}
 		    }
 		);
 	}

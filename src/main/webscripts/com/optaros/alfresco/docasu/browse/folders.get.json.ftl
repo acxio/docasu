@@ -20,7 +20,10 @@
 <#list rows?sort_by("name") as row>
 		{
 			"id"	: "${row.nodeId}",
-			"text"	: "${row.name}"
+			"text"	: "${row.name}",
+			"name"	: "${row.name}",
+			"parentPath"	: "${path}",
+			"url"	: "${url.context}${row.url}"
 		}<#if row_has_next>,</#if>
 </#list>
 ]
