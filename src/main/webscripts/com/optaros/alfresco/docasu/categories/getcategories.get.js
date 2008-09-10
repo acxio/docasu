@@ -16,4 +16,12 @@
  *    
  */
 
-model.categories = classification.getRootCategories("cm:generalclassifiable");
+logger.log('node parameter:'+args['node']);
+
+if (args['node']=='cm:generalclassifiable') {
+	model.categories = classification.getRootCategories("cm:generalclassifiable");
+} else {
+	var nodeRef = "workspace://SpacesStore/" + args['node'];
+	categoryNode = search.findNode(nodeRef);
+	model.categories = categoryNode.children;
+}

@@ -36,6 +36,10 @@ function getMyHomeTree() {
 	return Ext.getCmp('myHomeTree');
 }
 
+function getCategoriesTree() {
+	return Ext.getCmp('categoriesTree');
+}
+
 function getToolTip() {
 	return Ext.getCmp('toolTip');
 }
@@ -130,8 +134,9 @@ function _init(result, request) {
 	
 	var user = eval(result.responseText);
 	
-    // Set the companyHome folder
+    // Set initial parameters
     Ext.state.Manager.set('companyHomeId', user.companyHome);
+    Ext.state.Manager.set('categoryId', 'cm:generalclassifiable');
     Ext.state.Manager.set('userHomeId', user.userHome);
     Ext.state.Manager.set('userHomeName', user.userHomeName);
 	
@@ -259,8 +264,9 @@ function _init(result, request) {
 	var initialFolderId = document.getElementById('initialFolderId');
 	if(initialFolderId.value != ''){
 		loadFolder(initialFolderId.value);
+	} else {
+		loadFolder(Ext.state.Manager.get('companyHomeId'));
 	}
-
 }
 
 /**
@@ -271,7 +277,11 @@ function onGridStoreLoad(r, options, success) {
 	if(success) {
 		var folderName = gridStore.reader.jsonData.folderName;
 		var folderId = gridStore.reader.jsonData.folderId;
-		showFolderView(folderId, folderName);
+		if(gridStore.baseParams.nodeId != null) {
+			showFolderView(folderId, folderName);
+		} else {
+			showCategoryView(folderName);
+		}
 	} else {
 		Ext.MessageBox.alert('Error', 'The resource does not exist or you may not have permission to access it!', 200);
 	}
@@ -463,7 +473,8 @@ function _initCenter() {
 	gridList.on('contextmenu', function(e){
         e.preventDefault();
         
-		if (advancedSearchQuery === '' && simpleSearchQuery === '') {
+        // if no search is performed and not on category
+		if (advancedSearchQuery === '' && simpleSearchQuery === '' && gridStore.baseParams.categoryId == null) {
 			this.contextMenu = getFolderContextMenu(Ext.state.Manager.get('currentFolder'), Ext.state.Manager.get('currentFolderProperties'));
         
 			var xy = e.getXY();
@@ -653,6 +664,7 @@ function _initNavigator() {
 	
 	var companyHomeTree = _initCompanyHome();
 	var myHomeTree = _initMyHome();
+	var categoriesTree = _initCategories();
 	var recentDocs = _initRencentDocs();
 	var favorites = new Ext.Panel({
  		id: 'favoritesPanel',
@@ -689,6 +701,18 @@ function _initNavigator() {
 //		console.log('before collapse my home');
 		if (getNavigator().activeTab == 'myHomeTree') {
 			loadFolder(Ext.state.Manager.get('userHomeId'));
+			return false;
+		}
+		return undefined;
+	});
+	
+	categoriesTree.on('beforeexpand', function (panel) {
+//		console.log('before expand categories');
+		getNavigator().activeTab = 'categoriesTree';
+	});
+	categoriesTree.on('beforecollapse', function (panel) {
+//		console.log('before collapse categories');
+		if (getNavigator().activeTab == 'categoriesTree') {
 			return false;
 		}
 		return undefined;
@@ -747,7 +771,7 @@ function _initNavigator() {
 			titleCollapse: true,
 			animate: false
 		},
-		items: [companyHomeTree, recentDocs, favorites, clipboard, myHomeTree]
+		items: [companyHomeTree, recentDocs, favorites, clipboard, myHomeTree, categoriesTree]
 	});
 
 	navigator.on('render', function (panel) {
@@ -919,6 +943,76 @@ function _initMyHome() {
 	});
 
     return myHomeTree;
+}
+
+function _initCategories() {
+
+	// Tree loader for global category tree
+	var categoriesTreeLoader = new Ext.tree.TreeLoader({
+		dataUrl: 'ui/cat',
+		requestMethod: 'GET'
+	});
+	
+	 // TODO understant why this forces IE6 to throw exceptions all the time
+//	companyHomeTreeLoader.on("loadexception", function(loader, node, response) {
+//		checkStatusAndReload(response.status);
+//	});
+
+	var categoriesTree = new Ext.tree.TreePanel({
+		id: 'categoriesTree',
+		title: '<b>Categories</b>',
+		split: true,
+		width: 200,
+		minSize: 175,
+		maxSize: 400,
+		margins: '35 0 5 5',
+		cmargins: '35 5 5 5',
+		frame: false,
+	    border: false,
+		// these are the config options for the tree itself				
+		autoScroll: true,
+		enableDD: false, // Allow tree nodes to be moved (dragged and dropped)
+		containerScroll: true,
+		loader: categoriesTreeLoader,
+		// this adds a root node to the tree and tells it to expand when it is rendered
+		root: new Ext.tree.AsyncTreeNode({
+			id: Ext.state.Manager.get('categoryId'),
+			text: 'Categories',
+			draggable: false,
+			expanded: true
+		}),
+		rootVisible: false
+	});
+
+	// in case the tree is modfied via the standard Alfresco GUI, 
+	// it needs to be reloaded
+	categoriesTree.on('beforecollapsenode', function (node, deep, anim){	
+		node.loaded = false;
+	});	
+
+	// Tree event handlers 	
+	categoriesTree.addListener('click', function (node, event){
+
+		// TODO is this used?
+		simpleSearchQuery = "";
+		advancedSearchQuery = "";
+
+		loadCategory(node.id);
+		
+		return false;
+	});
+
+	// Custom context menu.
+	categoriesTree.on('contextmenu', function(node, e){
+		e.preventDefault();
+		
+		// TODO: check if required
+
+		//var xy = e.getXY();
+		//this.contextMenu.showAt(xy);
+	});
+
+	return categoriesTree;
 }
 
 function _initRencentDocs() {
@@ -1308,6 +1402,7 @@ function createActionItems(record) {
 /* ACTIONS */
 function loadFolder(folderId) {
 	gridStore.baseParams.nodeId = folderId;
+	gridStore.baseParams.categoryId = null;
 	clearDocumentInfoPane();
 	gridStore.load({callback: onGridStoreLoad});
 	// TODO update all panels !! (search box ?)
@@ -1333,9 +1428,32 @@ function showFolderView(folderId, folderName) {
 	updateCurrentFolder(folderId);
 	updateBreadcrumbs(folderName, folderId);
 
-	var name = folderName.substr(0, 21);
-	Ext.get('folderName').child('div').update(name);
+	Ext.get('folderName').child('div').update(folderName);
 
+}
+
+function loadCategory(categoryId) {
+	gridStore.baseParams.categoryId = categoryId;
+	gridStore.baseParams.nodeId = null;
+	clearDocumentInfoPane();
+	gridStore.load({callback: onGridStoreLoad});
+	// TODO update all panels !! (search box ?)
+}
+
+function showCategoryView(categoryName) {
+
+	/* Show folder icon */
+	Ext.get('folderName').child('img').show();
+
+	/* Hide folder actions */
+	Ext.get('folderActions').parent('div').hide();
+	Ext.get('folderActionsLabel').hide();
+	
+	/* Show the folder view */
+	Ext.getCmp('centerView').getLayout().setActiveItem('folderView');
+
+	/* Show category name */
+	Ext.get('folderName').child('div').update(categoryName);
 }
 
 function showSearchResultsView() {
@@ -1497,7 +1615,6 @@ function convertTimezone(value) {
  * @param {Boolean} autoExpand
  */
 function reloadView(autoExpandTrees) {
-	// NOT USED !!!
     getCompanyHomeTree().root.reload();
     getMyHomeTree().root.reload();
     loadFolder(Ext.state.Manager.get('currentFolder'));

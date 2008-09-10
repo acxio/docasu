@@ -78,6 +78,14 @@ public class QueryManager {
 		return query.toString();
 	}
 
+	public String createCategoryQuery(String categoryName, Properties whitelist, Properties blacklist) {
+		StringBuffer query = new StringBuffer();
+
+		query.append("PATH:\"/cm:generalclassifiable//cm:" + categoryName + "//member\"");
+
+		return query.toString();
+	}
+
 	public String createSearchQuery(String query, SearchType type, NodeRef lookInFolder, Date createdFrom, Date createdTo, Date modifiedFrom, Date modifiedTo,
 			Properties whitelist, Properties blacklist) {
 		StringBuffer luceneQuery = prepareQuery(new StringBuffer(LUCENE_BASE_QUERY), whitelist, blacklist);

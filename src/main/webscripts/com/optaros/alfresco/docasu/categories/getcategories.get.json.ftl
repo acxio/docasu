@@ -16,13 +16,11 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-{ "noredirect": true, "success": true,
-  "categories": [
+[
 <#list categories as cat>
    	 {
-       	 "nodeId"	:"${cat.id}",
-       	 "name"	:"${cat.name}",
+       	 "id"	:"${cat.id}",
+       	 "text"	:"${cat.name}"
 	 }<#if cat_has_next>,</#if>
 </#list>
-   ]
-}
+]
