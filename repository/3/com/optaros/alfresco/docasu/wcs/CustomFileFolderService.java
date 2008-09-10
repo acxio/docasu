@@ -30,7 +30,11 @@ public interface CustomFileFolderService {
 		ALL, FILE_NAME, FOLDER_NAME, CONTENT;
 	}
 
-	public abstract List<NodeRef> list(NodeRef contextNodeRef, boolean folders);
+	// list category content
+	public List<NodeRef> listCategory(NodeRef contextNodeRef, String categoryName);
+
+	// list folder content
+	public abstract List<NodeRef> list(NodeRef contextNodeRef, boolean foldersOnly);
 
 	// Simple Search
 	public abstract List<NodeRef> search(StoreRef store, String query, SearchType type);

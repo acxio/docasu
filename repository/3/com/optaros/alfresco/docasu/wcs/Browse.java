@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.namespace.QName;
 import org.alfresco.web.scripts.WebScriptRequest;
 import org.alfresco.web.scripts.Status;
 import org.apache.commons.logging.Log;
@@ -35,6 +36,10 @@ import org.apache.commons.logging.LogFactory;
 public class Browse extends AbstractDocumentWebScript {
 
 	private static final Log log = LogFactory.getLog(Browse.class);
+
+	private static final String CATEGORY_NAME_QNAME = "{http://www.alfresco.org/model/content/1.0}name";
+
+	private boolean listCategory = false;
 
 	private boolean foldersOnly = false;
 
@@ -48,12 +53,22 @@ public class Browse extends AbstractDocumentWebScript {
 		Map<String, String> params = super.readParams(req);
 
 		if (foldersOnly) {
+			// when the query is done by companyHomeTree and myHomeTree
 			readParam(params, PARAM_NODE_ID, req.getParameter("node"));
 		} // else already read by superclass
 
 		if (log.isDebugEnabled()) {
 			log.debug("FOLDERS_ONLY = " + foldersOnly);
 			log.debug("PARAM nodeId = " + params.get(PARAM_NODE_ID));
+			log.debug("PARAM categoryId = " + params.get(PARAM_CATEGORY_ID));
+			log.debug("this = " + this.toString());
+		}
+
+		if (params.get(PARAM_NODE_ID) == null && params.get(PARAM_CATEGORY_ID) != null) {
+			// list the content of a category
+			listCategory = true;
+		} else {
+			listCategory = false;
 		}
 
 		return params;
@@ -65,13 +80,53 @@ public class Browse extends AbstractDocumentWebScript {
 		initServices();
 
 		Map<String, String> params = readParams(req);
+		Map<String, Object> model = listCategory ? listCategory(params) : listFolder(params);
+		log.debug("*** Exit browse request handler ***");
 
-		NodeRef companyHome = repository.getCompanyHome();
-		NodeRef baseNode = companyHome;
+		return model;
+	}
 
-		if (params.get(PARAM_NODE_ID) != null) {
-			baseNode = new NodeRef(storeRef, params.get(PARAM_NODE_ID));
+	private Map<String, Object> listCategory(Map<String, String> params) {
+		NodeRef baseNode = new NodeRef(storeRef, params.get(PARAM_CATEGORY_ID));
+
+		String categoryName = (String) nodeService.getProperty(baseNode, QName.createQName(CATEGORY_NAME_QNAME));
+
+		if (log.isDebugEnabled()) {
+			log.debug("category = " + categoryName);
 		}
+
+		// list result set
+		List<NodeRef> listResult = customFileFolderService.listCategory(baseNode, categoryName);
+
+		// sort results
+		listResult = sort(listResult, params);
+
+		// store the size of the search result
+		int total = listResult.size();
+
+		if (log.isDebugEnabled()) {
+			log.debug("result size = " + listResult.size());
+		}
+
+		// do paging
+		listResult = doPaging(listResult, params);
+
+		List<FileInfo> nodes = toFileInfo(listResult);
+
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("total", total);
+		model.put("path", "");
+		model.put("randomNumber", Math.random());
+		model.put("folderName", categoryName);
+		model.put("folderId", baseNode.getId());
+		model.put(KEYWORD_ROWS, getResultRows(nodes));
+
+		return model;
+	}
+
+	private Map<String, Object> listFolder(Map<String, String> params) {
+		// default to companyHome
+		NodeRef baseNode = params.get(PARAM_NODE_ID) != null ? new NodeRef(storeRef, params.get(PARAM_NODE_ID)) : repository.getCompanyHome();
 
 		FileInfo fileInfo = fileFolderService.getFileInfo(baseNode);
 		String path = generatePath(baseNode);
@@ -106,7 +161,6 @@ public class Browse extends AbstractDocumentWebScript {
 		model.put("folderId", baseNode.getId());
 		model.put(KEYWORD_ROWS, getResultRows(nodes));
 
-		log.debug("*** Exit browse request handler ***");
 		return model;
 	}
 

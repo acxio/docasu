@@ -95,6 +95,22 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 		return nodeRefs;
 	}
 
+	public List<NodeRef> listCategory(NodeRef contextNodeRef, String categoryName) {
+		SearchParameters params = new SearchParameters();
+		params.setLanguage(SearchService.LANGUAGE_LUCENE);
+		params.addStore(contextNodeRef.getStoreRef());
+
+		// add query
+		String query = new QueryManager().createCategoryQuery(categoryName, whitelist, blacklist);
+		params.setQuery(query);
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("List query = '" + query + "'");
+		}
+
+		return searchLucene(params);
+	}
+
 	public List<NodeRef> list(NodeRef contextNodeRef, boolean foldersOnly) {
 
 		// contextNodeRef = tenantService.getName(contextNodeRef);

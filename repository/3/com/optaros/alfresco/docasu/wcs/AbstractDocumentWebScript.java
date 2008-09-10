@@ -61,6 +61,7 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 	private static final String EDITABLE_EXTENSION_REGEX = "txt|html?";
 
 	protected static final String PARAM_NODE_ID = "nodeId";
+	protected static final String PARAM_CATEGORY_ID = "categoryId";
 	protected static final String PARAM_START = "start";
 	protected static final String PARAM_LIMIT = "limit";
 	protected static final String PARAM_SORT = "sort";
@@ -117,6 +118,7 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		Map<String, String> params = new HashMap<String, String>();
 
 		readParam(params, PARAM_NODE_ID, req.getParameter(PARAM_NODE_ID));
+		readParam(params, PARAM_CATEGORY_ID, req.getParameter(PARAM_CATEGORY_ID));
 		readParam(params, PARAM_START, req.getParameter(PARAM_START));
 		readParam(params, PARAM_LIMIT, req.getParameter(PARAM_LIMIT));
 		readParam(params, PARAM_SORT, req.getParameter(PARAM_SORT));
@@ -124,6 +126,7 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 
 		if (log.isDebugEnabled()) {
 			log.debug("PARAM nodeId = " + params.get(PARAM_NODE_ID));
+			log.debug("PARAM categoryId = " + params.get(PARAM_CATEGORY_ID));
 			log.debug("PARAM start = " + params.get(PARAM_START));
 			log.debug("PARAM limit = " + params.get(PARAM_LIMIT));
 			log.debug("PARAM sort = " + params.get(PARAM_SORT));
