@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.namespace.QName;
 import org.alfresco.web.scripts.WebScriptRequest;
 import org.alfresco.web.scripts.WebScriptStatus;
 import org.apache.commons.logging.Log;
@@ -36,8 +36,6 @@ import org.apache.commons.logging.LogFactory;
 public class Browse extends AbstractDocumentWebScript {
 
 	private static final Log log = LogFactory.getLog(Browse.class);
-
-	private static final String CATEGORY_NAME_QNAME = "{http://www.alfresco.org/model/content/1.0}name";
 
 	private boolean listCategory = false;
 
@@ -90,7 +88,7 @@ public class Browse extends AbstractDocumentWebScript {
 	private Map<String, Object> listCategory(Map<String, String> params) {
 		NodeRef baseNode = new NodeRef(storeRef, params.get(PARAM_CATEGORY_ID));
 
-		String categoryName = (String) nodeService.getProperty(baseNode, QName.createQName(CATEGORY_NAME_QNAME));
+		String categoryName = (String) nodeService.getProperty(baseNode, ContentModel.PROP_NAME);
 
 		if (log.isDebugEnabled()) {
 			log.debug("category = " + categoryName);

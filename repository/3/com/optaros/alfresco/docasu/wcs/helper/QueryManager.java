@@ -80,9 +80,9 @@ public class QueryManager {
 
 	public String createCategoryQuery(String categoryName, Properties whitelist, Properties blacklist) {
 		StringBuffer query = new StringBuffer();
-
-		query.append("PATH:\"/cm:generalclassifiable//cm:" + categoryName + "//member\"");
-
+		/* we need // as wild-card to avoid writing full path */
+		/* all spaces should be replaced with _x0020_ */
+		query.append("+PATH:\"/cm:generalclassifiable//cm:" + categoryName.replaceAll(" ", "_x0020_") + "//member\"");
 		return query.toString();
 	}
 
