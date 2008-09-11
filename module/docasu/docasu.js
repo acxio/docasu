@@ -909,7 +909,7 @@ function _initMyHome() {
 			id: Ext.state.Manager.get('userHomeId'),
 			text: Ext.state.Manager.get('userHomeName'),
 			draggable: false,
-			expanded: true,
+			expanded: true
 		}),
 		rootVisible: false
 	});
