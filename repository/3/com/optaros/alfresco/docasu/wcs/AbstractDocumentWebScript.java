@@ -28,7 +28,6 @@ import java.util.Map;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.model.Repository;
-import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.repo.template.TemplateNode;
 import org.alfresco.repo.web.scripts.RepositoryImageResolver;
 import org.alfresco.service.ServiceRegistry;
@@ -155,9 +154,11 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 	protected List<FileInfo> toFileInfo(List<NodeRef> nodes) {
 		List<FileInfo> result = new ArrayList<FileInfo>();
 		for (NodeRef node : nodes) {
-			try {
+			if (permissionService.hasPermission(node, PermissionService.READ) == AccessStatus.ALLOWED) {
 				result.add(fileFolderService.getFileInfo(node));
-			} catch (AccessDeniedException ade) {/* Ignore node. */
+			} else {
+				// ignore node
+				log.debug("User does not have permission to access node: " + node.getId() + ". Will be removed from result set!");
 			}
 		}
 		return result;
@@ -287,7 +288,7 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 				nodes.add(0, fileFolderService.getFileInfo(nodeRef));
 				nodeRef = nodeService.getPrimaryParent(nodeRef).getParentRef();
 			} else {
-				log.error("user cannot access all parent nodes; path is incomplete");
+				log.warn("User does not have permission to access node: " + nodeRef.getId() + ". Repository path will be incomplete!");
 				nodeRef = null;
 			}
 		}
