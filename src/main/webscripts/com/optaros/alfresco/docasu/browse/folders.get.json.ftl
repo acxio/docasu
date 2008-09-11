@@ -23,7 +23,10 @@
 			"text"	: "${row.name}",
 			"name"	: "${row.name}",
 			"parentPath"	: "${path}",
-			"url"	: "${url.context}${row.url}"
+			"url"	: "${url.context}${row.url}",
+			"writePermission"	: "${row.writePermission?string}",
+			"createPermission"	: "${row.createPermission?string}",
+			"deletePermission"	: "${row.deletePermission?string}"
 		}<#if row_has_next>,</#if>
 </#list>
 ]

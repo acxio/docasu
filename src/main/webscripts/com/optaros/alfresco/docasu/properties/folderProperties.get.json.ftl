@@ -27,5 +27,8 @@
    	 "path"     :"${folder.displayPath}",
    	 "url"      :"${url.context}/wcs/docasu/ui?nodeId=${folder.id}",
    	 "creator"  :"${folder.properties.creator}",
-   	 "icon"		:"${url.context}${folder.icon16}"
+   	 "icon"		:"${url.context}${folder.icon16}",
+   	 "writePermission"	: "${writePermission?string}",
+	 "createPermission"	: "${createPermission?string}",
+	 "deletePermission"	: "${deletePermission?string}"
 })

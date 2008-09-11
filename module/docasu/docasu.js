@@ -495,6 +495,9 @@ function _initCenter() {
 			myRecord.name = record.get('name');
 			myRecord.parentPath = record.get('parentPath');
 			myRecord.url = record.get('url');
+			myRecord.writePermission = record.get('writePermission');
+			myRecord.createPermission = record.get('createPermission');
+			myRecord.deletePermission = record.get('deletePermission');
 			
         	this.contextMenu = getFolderContextMenu(record.get('nodeId'), myRecord);
         }
@@ -858,6 +861,9 @@ function _initCompanyHome() {
 		myRecord.name = node.attributes.text;
 		myRecord.parentPath = node.attributes.parentPath;
 		myRecord.url = node.attributes.url;
+		myRecord.writePermission = eval(node.attributes.writePermission);
+		myRecord.createPermission = eval(node.attributes.createPermission);
+		myRecord.deletePermission = eval(node.attributes.deletePermission);
 
 		this.contextMenu = getFolderContextMenu(node.id, myRecord);
 
@@ -935,7 +941,10 @@ function _initMyHome() {
 		myRecord.name = node.attributes.text;
 		myRecord.parentPath = node.attributes.parentPath;
 		myRecord.url = node.attributes.url;
-        
+		myRecord.writePermission = eval(node.attributes.writePermission);
+		myRecord.createPermission = eval(node.attributes.createPermission);
+		myRecord.deletePermission = eval(node.attributes.deletePermission);
+
 		this.contextMenu = getFolderContextMenu(node.id, myRecord);
 	
 		var xy = e.getXY();
@@ -1076,6 +1085,9 @@ function updateCurrentFolder(folderId){
 				myRecord.name = folder.name;
 				myRecord.parentPath = folder.path;
 				myRecord.url = folder.url;
+				myRecord.writePermission = eval(folder.writePermission);
+				myRecord.createPermission = eval(folder.createPermission);
+				myRecord.deletePermission = eval(folder.deletePermission);
 				Ext.state.Manager.set("currentFolderProperties", myRecord);
 			} catch (e) {
 				Ext.MessageBox.alert('Failed', 'An error occurred while loading current folder properties');
@@ -1163,7 +1175,7 @@ function getFolderContextMenu(id, record){
 
 	var contextMenu = new Ext.menu.Menu({
 		id: 'folderCtxMenu',
-		items: createActionItemsForFolder(id)[0],
+		items: createActionItemsForFolder(record)[0],
 		listeners: {
 			click: function(menu, menuItem, e){
 				menu.hide();
@@ -1252,48 +1264,60 @@ function hideToolTip() {
 	tooltip.hide();
 }
 
-function createActionItemsForFolder(id) {
+function createActionItemsForFolder(record) {
+	var id = record.id;
 	var result = new Array();
 	var html = '';
 	
-	html += '<a href="#" onClick="showFolderDetailsWindow(\''+id+'\'); return false;">'+
-			'<img title="View details" class="actionIcon" src="../../docasu/images/info.gif"/>'+
-			'</a>';
 	result.push({
 		text: 'View details',
 		icon: '../../docasu/images/info.gif',
 		handler: function() {showFolderDetailsWindow(id); return false;}
 	});
+	html += '<a href="#" onClick="showFolderDetailsWindow(\''+id+'\'); return false;">'+
+			'<img title="View details" class="actionIcon" src="../../docasu/images/info.gif"/>'+
+			'</a>';
 	
-	
-	result.push({
-		text: 'Create folder',
-		handler: function() {createFolder(id);}
-	});
-	result.push({
-		text: 'Delete folder',
-		handler: function() {deleteFolder(id);}
-	});
-	result.push({
-		text: 'Rename folder',
-		handler: function() {renameFolder(id);}
-	});
-	result.push({
-		text: 'Paste all',
-		handler: function() {pasteAll(id);}
-	});
-	result.push({
-		text: 'Create HTML content',
-		handler: function() {createContent('HTML', id);}
-	});
-	result.push({
-		text: 'Create text content',
-		handler: function() {createContent('text', id);}
-	});	
-	result.push({
-		text: 'Upload file',
-		handler: function() {showUploadFile(id);}
-	});	
+	if (record.createPermission) {
+		result.push({
+			text: 'Create folder',
+			handler: function() {createFolder(id);}
+		});
+	}
+	if (record.deletePermission) {
+		result.push({
+			text: 'Delete folder',
+			handler: function() {deleteFolder(id);}
+		});
+		html += 
+			'<a href="#" onclick="deleteFolder(\''+record.id+'\')">'+
+				'<img title="Delete" class="actionIcon" src="../../docasu/images/delete.gif"/>'+
+			'</a>';
+	}
+	if (record.writePermission) {
+		result.push({
+			text: 'Rename folder',
+			handler: function() {renameFolder(id);}
+		});
+	}
+	if (record.createPermission) {
+		result.push({
+			text: 'Paste all',
+			handler: function() {pasteAll(id);}
+		});
+		result.push({
+			text: 'Create HTML content',
+			handler: function() {createContent('HTML', id);}
+		});
+		result.push({
+			text: 'Create text content',
+			handler: function() {createContent('text', id);}
+		});	
+		result.push({
+			text: 'Upload file',
+			handler: function() {showUploadFile(id);}
+		});	
+	}
 		
 	var returnValue = new Array(result, html);
 	return returnValue;
@@ -1577,7 +1601,18 @@ function fileNameRenderer(value, column, record) {
 
 function actionRenderer(value, column, record) {
 	if (record.get('isFolder')) {
-		return createActionItemsForFolder(record.get('nodeId'))[1];
+	
+		var myRecord = new Object('Node '+record.get('nodeId'));
+       	myRecord.id = record.get('nodeId');
+       	myRecord.text = record.get('name');
+		myRecord.name = record.get('name');
+		myRecord.parentPath = record.get('parentPath');
+		myRecord.url = record.get('url');
+		myRecord.writePermission = record.get('writePermission');
+		myRecord.createPermission = record.get('createPermission');
+		myRecord.deletePermission = record.get('deletePermission');
+	
+		return createActionItemsForFolder(myRecord)[1];
 	}
 	else {
 		return createActionItems(record)[1];

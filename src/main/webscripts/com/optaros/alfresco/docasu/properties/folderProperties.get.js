@@ -28,3 +28,19 @@ if (logger.isLoggingEnabled()) {
 var folder = search.findNode(nodeRef); 
 
 model.folder = folder;
+
+if (folder.hasPermission("Write")) {
+	model.writePermission = true;
+} else {
+	model.writePermission = false;
+}
+if (folder.hasPermission("Delete")) {
+	model.deletePermission = true;
+} else {
+	model.deletePermission = false;
+}
+if (folder.hasPermission("CreateChildren")) {
+	model.createPermission = true;
+} else {
+	model.createPermission = false;
+}
