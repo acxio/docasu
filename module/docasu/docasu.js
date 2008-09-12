@@ -1499,7 +1499,7 @@ function showSearchResultsView() {
 	clearDocumentInfoPane();
 
 	/* no breadcrumbs displayed */
-	Ext.getCmp('centerPanel').setTitle('');	
+	//Ext.getCmp('centerPanel').setTitle('');	
 
 	
 	/* load search results into grid */
