@@ -25,6 +25,8 @@ import java.util.Map;
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.security.AccessStatus;
+import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.web.scripts.WebScriptRequest;
 import org.alfresco.web.scripts.Status;
 import org.apache.commons.logging.Log;
@@ -87,6 +89,8 @@ public class Browse extends AbstractDocumentWebScript {
 	private Map<String, Object> listCategory(Map<String, String> params) {
 		NodeRef baseNode = new NodeRef(storeRef, params.get(PARAM_CATEGORY_ID));
 
+		// TODO: catch AccessDeniedException and return something that front end
+		// can understand
 		String categoryName = (String) nodeService.getProperty(baseNode, ContentModel.PROP_NAME);
 
 		if (log.isDebugEnabled()) {
@@ -95,6 +99,9 @@ public class Browse extends AbstractDocumentWebScript {
 
 		// list result set
 		List<NodeRef> listResult = customFileFolderService.listCategory(baseNode, categoryName);
+
+		// filter result set
+		listResult = filterListResult(listResult);
 
 		// sort results
 		listResult = sort(listResult, params);
@@ -126,11 +133,16 @@ public class Browse extends AbstractDocumentWebScript {
 		// default to companyHome
 		NodeRef baseNode = params.get(PARAM_NODE_ID) != null ? new NodeRef(storeRef, params.get(PARAM_NODE_ID)) : repository.getCompanyHome();
 
+		// TODO: catch AccessDeniedException and return something that front end
+		// can understand
 		FileInfo fileInfo = fileFolderService.getFileInfo(baseNode);
 		String path = generatePath(baseNode);
 
 		// list result set
 		List<NodeRef> listResult = customFileFolderService.list(baseNode, foldersOnly);
+
+		// filter result set
+		listResult = filterListResult(listResult);
 
 		// sort results
 		listResult = sort(listResult, params);
@@ -160,6 +172,26 @@ public class Browse extends AbstractDocumentWebScript {
 		model.put(KEYWORD_ROWS, getResultRows(nodes));
 
 		return model;
+	}
+
+	/**
+	 * This method removes all inaccessible nodes from the result list.
+	 */
+	private List<NodeRef> filterListResult(List<NodeRef> listResult) {
+		int i = 0;
+		// remove inaccessible records from list result
+		while (i < listResult.size()) {
+			if (permissionService.hasPermission(listResult.get(i), PermissionService.READ) == AccessStatus.ALLOWED) {
+				// maintain node in list result
+				// increase step value
+				i++;
+			} else {
+				// remove node from list result
+				listResult.remove(i);
+				// keep step value
+			}
+		}
+		return listResult;
 	}
 
 	private Object[] getResultRows(List<FileInfo> nodes) {

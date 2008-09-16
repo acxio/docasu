@@ -29,6 +29,8 @@ import java.util.Map;
 import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.security.AccessStatus;
+import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.web.scripts.WebScriptRequest;
 import org.alfresco.web.scripts.WebScriptStatus;
 import org.apache.commons.logging.Log;
@@ -113,10 +115,8 @@ public class Search extends AbstractDocumentWebScript {
 			// search result set
 			List<NodeRef> searchResult = getSearchResult(params, searchType);
 
-			// cut result set size
-			if (searchResult.size() > RESULT_SET_MAX_SIZE) {
-				searchResult = searchResult.subList(0, RESULT_SET_MAX_SIZE);
-			}
+			// filter result set
+			searchResult = filterSearchResult(searchResult);
 
 			// sort results
 			searchResult = sort(searchResult, params);
@@ -137,6 +137,31 @@ public class Search extends AbstractDocumentWebScript {
 
 		log.debug("*** Exit search request handler ***");
 		return model;
+	}
+
+	/**
+	 * This method removes all inaccessible nodes from the result list and cuts
+	 * result set to RESULT_SET_MAX_SIZE records.
+	 */
+	private List<NodeRef> filterSearchResult(List<NodeRef> searchResult) {
+		int i = 0;
+		// remove inaccessible records from search result
+		while (i < searchResult.size() && i < RESULT_SET_MAX_SIZE) {
+			if (permissionService.hasPermission(searchResult.get(i), PermissionService.READ) == AccessStatus.ALLOWED) {
+				// maintain node in search result
+				// increase step value
+				i++;
+			} else {
+				// remove node from search result
+				searchResult.remove(i);
+				// keep step value
+			}
+		}
+		// cut search result to match size == RESULT_SET_MAX_SIZE
+		if (searchResult.size() > RESULT_SET_MAX_SIZE) {
+			searchResult = searchResult.subList(0, RESULT_SET_MAX_SIZE);
+		}
+		return searchResult;
 	}
 
 	private Object[] getResultRows(List<FileInfo> nodes) {

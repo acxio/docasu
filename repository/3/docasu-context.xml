@@ -43,7 +43,7 @@
 		init-method="init">
 		<property name="dictionaryService" ref="DictionaryService" />
 		<!-- <property name="tenantService" ref="tenantService"/>  -->
-		<property name="searchService" ref="admSearchService" />
+		<property name="searchService" ref="SearchService" />
 		<property name="blacklist">
 			<bean
 				class="org.springframework.beans.factory.config.PropertiesFactoryBean">
