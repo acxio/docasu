@@ -199,8 +199,8 @@ function deleteFile(fileName, nodeId) {
 function showNewUploadFile(folder) {
 
 	var win = new Ext.Window({
-         width:180
-		,minWidth:165
+         width:280
+		,minWidth:265
         ,id:'winid'
         ,height:220
 		,minHeight:200
@@ -233,6 +233,7 @@ function showNewUploadFile(folder) {
 
 /*
  * Use The New File Upload Implementation !
+ * TODO: remove this when upload ticket is closed
  */
 function showUploadFile(folder) {
 
