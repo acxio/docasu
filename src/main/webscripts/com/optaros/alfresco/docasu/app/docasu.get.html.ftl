@@ -30,6 +30,15 @@
 	<script type="text/javascript" src="../../docasu/lib/extjs/ux/miframe-min.js"></script>
 	<!-- script type="text/javascript" src="../../docasu/lib/tiny_mce3/tiny_mce.js"></script -->
 	<!-- script type="text/javascript" src="../../docasu/Ext.ux.TinyMCE.js"></script -->
+	
+	<!-- Ext.ux.UploadPanel and CSS files  -->
+	<script type="text/javascript" src="../../docasu/lib/Ext.ux.FileTree/js/Ext.ux.form.BrowseButton.js"></script>
+	<script type="text/javascript" src="../../docasu/lib/Ext.ux.FileTree/js/Ext.ux.FileUploader.js"></script>
+	<script type="text/javascript" src="../../docasu/lib/Ext.ux.FileTree/js/Ext.ux.UploadPanel.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../docasu/lib/Ext.ux.FileTree/css/filetree.css">
+	<link rel="stylesheet" type="text/css" href="../../docasu/lib/Ext.ux.FileTree/css/filetype.css">
+	<link rel="stylesheet" type="text/css" href="../../docasu/lib/Ext.ux.FileTree/css/icons.css">
+	
 
 	<!-- Custom DoCASU Script and CSS files  -->
 
@@ -47,6 +56,7 @@
 
 	<title>DoCASU Web Client</title>
 </head>
-<body style="background: none !important"></body>
+<body style="background: none !important">
 	<input type="hidden" id="initialFolderId" value="${initialFolderId}" />
+</body>
 </html>

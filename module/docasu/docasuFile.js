@@ -196,7 +196,49 @@ function deleteFile(fileName, nodeId) {
 		
 }
 
+function showNewUploadFile(folder) {
+
+	var win = new Ext.Window({
+         width:180
+		,minWidth:165
+        ,id:'winid'
+        ,height:220
+		,minHeight:200
+        ,layout:'fit'
+        ,border:false
+        ,closable:true
+        ,title:'Upload Content'
+		,iconCls:'icon-upload'
+		,items:[{
+			  xtype:'uploadpanel'
+			 ,buttonsAt:'tbar'
+			 ,id:'uppanel'
+			 ,url:'ui/fileupload'
+			 ,path:folder // nodeId for the upload folder
+			 ,maxFileSize:1048576
+			 ,enableProgress:false // not implemented yet
+			 ,progressUrl:'ui/progress'
+			 ,singleUpload:false // upload a file at a time - to allow multiple uploads at a time, adjust fileupload.post.js and progress.post.js
+		}]
+    });
+    win.show();
+    
+    var uploadPanel = win.items.map.uppanel;
+    //debugger;
+	uploadPanel.on('allfinished', function (obj) {
+		reloadView(true);		
+	});
+
+}
+
+/*
+ * Use The New File Upload Implementation !
+ */
 function showUploadFile(folder) {
+
+	showNewUploadFile(folder);
+	return;
+
 	var fileField = new Ext.form.TextField({
 		name: 'file',
 		inputType: 'file',
