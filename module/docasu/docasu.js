@@ -1184,10 +1184,7 @@ function getFolderContextMenu(id, record){
 	});
 	
 	contextMenu.add(
-			{
-		    	text: 'View in Browser',
-				handler: function() {loadFolder(id);}
-		    }, {
+			 {
 		    	text: 'Add to Favorites',
 		    	handler: function() {addFavorite(id);}
 		    }
@@ -1197,6 +1194,9 @@ function getFolderContextMenu(id, record){
 	if(record && record != null){
 		contextMenu.add(
 			{
+		    	text: 'Open in new tab',
+				handler: function() {window.open(location.protocol + '//' + location.host + record.url, '', '');}
+		    }, {
 		    	text: 'Mail Link',
 		    	handler: function() {mailLink(record.name, record.url);}
 		    }, {
