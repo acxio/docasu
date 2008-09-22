@@ -16,13 +16,16 @@
  *    
  */
 
-function updateFavorites() {
 
+function updateFavorites() {
 	Ext.Ajax.request({
 		url: 'ui/shortcuts',
 		method: 'GET',
 		success: function(response, options){
-			//Ext.MessageBox.alert('Must have been 2xx http status code');
+			if(sessionExpired(response)) {
+				checkStatusAndReload(200);
+				return;
+			}
 			_updateFavorites(response.responseText);
 		}, 
 		failure: function(){
@@ -34,9 +37,7 @@ function updateFavorites() {
 
 function _updateFavorites(responseText) {
 	var favHtml = '<table style="width:100%;">';
-	
 	var favorites = eval(responseText).rows;
-	
 	var i;
 	for (i = 0; i < favorites.length; i++) {
 		var f = favorites[i];
@@ -55,15 +56,13 @@ function _updateFavorites(responseText) {
 			favHtml += '<td><a href="#" onclick="loadFolder(\'' + f.id + '\'); return false;">' + f.name + '</a></td>';
 			favHtml += '<td style="text-align:right;"><a href="#" onclick="removeFavorite(\'' + f.id + '\')"><img src="../../docasu/images/delete.gif" /></a></td>';
 		}
-			
 		favHtml += '</tr>';
 	}
-	
 	favHtml += '</table>';
 	var favoritesEl = Ext.get('favorites');
 	favoritesEl.update(favHtml);
-	
 }
+
 
 function removeFavorite(nodeId) {
 	Ext.Ajax.request({
@@ -71,7 +70,10 @@ function removeFavorite(nodeId) {
 		method: 'GET',
 		params: 'nodeId=' + nodeId,
 		success: function(response, options){
-			//Ext.MessageBox.alert('Must have been 2xx http status code');
+			if(sessionExpired(response)) {
+				checkStatusAndReload(200);
+				return;
+			}
 			_removeFavorite(response.responseText);
 		}, 
 		failure: function(){
@@ -80,9 +82,11 @@ function removeFavorite(nodeId) {
 	});
 }
 
+
 function _removeFavorite() {
 	updateFavorites();
 }
+
 
 function addFavorite(nodeId) {
 	if (typeof nodeId != 'undefined') {
@@ -91,20 +95,23 @@ function addFavorite(nodeId) {
 			method: 'GET',
 			params: 'nodeId=' + nodeId,
 			success: function(response, options){
-			//Ext.MessageBox.alert('Must have been 2xx http status code');
-			_addFavorite(response.responseText);
-		}, 
-		failure: function(){
-			Ext.MessageBox.alert('Failed to add favorite.');
-		}
+				if(sessionExpired(response)) {
+					checkStatusAndReload(200);
+					return;
+				}
+				_addFavorite(response.responseText);
+			}, 
+			failure: function(){
+				Ext.MessageBox.alert('Failed to add favorite.');
+			}
 		});
-
 		Ext.getCmp('favoritesPanel').expand();
 	}
 	else {
 		console.log('Warning, trying to add undefined node');
 	}
 }
+
 
 function _addFavorite() {
 	updateFavorites();

@@ -97,8 +97,12 @@ function pasteAll(folderId) {
 		method: 'GET',
 		params: 'c=' + c + '&folderId=' + folderId,
 		success: function(response, options){
-		// TODO update all panels !!
-		// folder contents changed
+			if(sessionExpired(response)) {
+				checkStatusAndReload(200);
+				return;
+			}
+			// TODO update all panels !!
+			// folder contents changed
 			clipboard.clear();
 			gridStore.load();
 		}, 

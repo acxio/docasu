@@ -120,11 +120,14 @@ function updateFile(name, id) {
 			method: 'POST',
 			form: uploadForm.getForm().el,
 			success: function(response, options){
-					gridStore.on('load', updateDocumentInfoPane);
-					gridStore.load();
-					updateFileWindow.close();
-					// TODO: update panels
-		
+				if(sessionExpired(response)) {
+					checkStatusAndReload(200);
+					return;
+				}
+				gridStore.on('load', updateDocumentInfoPane);
+				gridStore.load();
+				updateFileWindow.close();
+				// TODO: update panels
 			},
 			failure: function(){Ext.MessageBox.alert('Failed to upload file')}
 		});
@@ -135,22 +138,22 @@ function updateFile(name, id) {
 
 function deleteFile(fileName, nodeId) {
 
-	Ext.Msg.confirm("Confirm file deletion","Are you sure to delete the file " + fileName + " ?", function(btn, text) {	
+	Ext.Msg.confirm("Confirm file deletion","Are you sure you want to delete the file " + fileName + " ?", function(btn, text) {	
     	if (btn == 'yes') {
 			Ext.Ajax.request({
 				url: 'ui/node/remove',
 				params: {nodeId : nodeId},
 				method: 'GET',
 				success: function(response, options) {
-					
+					if(sessionExpired(response)) {
+						checkStatusAndReload(200);
+						return;
+					}
 					var result = eval('('+response.responseText+')');
-					
 					if (!result.success) {
 						Ext.MessageBox.alert('Failed', 'Failed to delete file. The following error occurred:\n\n' + result.msg);
 					}
-					
 					if (advancedSearchQuery != "") {
-												
 						Ext.Ajax.request({
 							url: 'ui/as',
 							method: 'GET',
@@ -159,15 +162,12 @@ function deleteFile(fileName, nodeId) {
 								clearDocumentInfoPane();
 								var responseObj = Ext.util.JSON.decode(response.responseText);
 								loadSearchResults(responseObj);
-								
 							},
 							failure: function(){
 								Ext.MessageBox.alert('Failed', 'Failed to display search results of advanced search');
 							}
 						});
-					
 					} else if (simpleSearchQuery != ""){	
-						
 						Ext.Ajax.request({
 							url: 'ui/ss',
 							method: 'GET',
@@ -181,7 +181,6 @@ function deleteFile(fileName, nodeId) {
 								Ext.MessageBox.alert('Failed', 'Failed to display search results of simple search');
 		    				}
 						});
-
 					} else {
 						clearDocumentInfoPane();
 						gridStore.load();
@@ -332,6 +331,10 @@ function checkoutFile(nodeId) {
 		url: 'ui/node/checkout/'+nodeId,
 		method: 'PUT',
 		success: function(result, request){
+			if(sessionExpired(result)) {
+				checkStatusAndReload(200);
+				return;
+			}
 			gridStore.load();
 		},
 		failure: function(result, request){
@@ -348,6 +351,10 @@ function checkinFile(nodeId) {
 		url: 'ui/node/checkin/'+nodeId,
 		method: 'PUT',
 		success: function(result, request){
+			if(sessionExpired(result)) {
+				checkStatusAndReload(200);
+				return;
+			}
 			updateDocumentInfoPane();
 			gridStore.load();
 		},
@@ -362,6 +369,10 @@ function undoCheckout(nodeId) {
 		url: 'ui/node/checkout/'+nodeId,
 		method: 'DELETE',
 		success: function(result, request){
+			if(sessionExpired(result)) {
+				checkStatusAndReload(200);
+				return;
+			}
 			updateDocumentInfoPane();
 			gridStore.load();
 		},
@@ -686,6 +697,10 @@ function _initFileDetailsWindow() {
 					fileUpload: true,
 					form: Ext.getCmp('filePropertiesForm').getForm().getEl(),
 					success: function(response, options) {
+						if(sessionExpired(response)) {
+							checkStatusAndReload(200);
+							return;
+						}
 						// document contents changed => refresh the data
 						// for the currently selected document
 						// Also reload the grid, since the filename might

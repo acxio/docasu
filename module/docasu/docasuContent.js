@@ -145,9 +145,11 @@ function createContent(type, folderId) {
 			method: 'POST',
 			form: createContentForm.getForm().getEl(),
 			success: function(response, options){
-			
+				if(sessionExpired(response)) {
+					checkStatusAndReload(200);
+					return;
+				}
 				var result = eval('(' + response.responseText + ')');
-
                 if (result.success) {
 						// TODO: update all panels !!
 						// folder contents changed
@@ -183,7 +185,10 @@ function editContent(fileName, nodeId) {
 		params: 'nodeId=' + nodeId,
 		method: 'GET',
 		success: function(result, request){
-			
+			if(sessionExpired(result)) {
+				checkStatusAndReload(200);
+				return;
+			}
  			//updateContentText.setValue(result.responseText);
 			Ext.getCmp('content').setValue(result.responseText);
 			updateContentWindow.show();
@@ -300,6 +305,10 @@ function editContent(fileName, nodeId) {
 			method: 'POST',
 			form: editContentForm.getForm().getEl(),
 			success: function(response, options){
+				if(sessionExpired(response)) {
+					checkStatusAndReload(200);
+					return;
+				}
 				if (extension.toLowerCase() == 'html' || extension.toLowerCase() == 'htm') {		
 					fileNameField.destroy();
 					hiddenField.destroy();

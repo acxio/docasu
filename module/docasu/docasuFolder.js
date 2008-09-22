@@ -117,6 +117,10 @@ function showFolderDetailsWindow(folderId) {
 		method: 'GET',
 		params: {folderId : folderId},
 		success: function (response, options) {
+			if(sessionExpired(response)) {
+				checkStatusAndReload(200);
+				return;
+			}
 			try {
 				var folder = eval(response.responseText);
 				// Only create new window with content if doesn't exist
@@ -135,10 +139,7 @@ function showFolderDetailsWindow(folderId) {
 				Ext.getCmp('folderDetailsWindow').setTitle(folder.name); 
 				Ext.getCmp('folderDetailsWindow').show();
 			} catch (e) {
-				// If the response isn't valid json it's probably the login page because the session timed out.
-				// Redirect the user to force a new login.
-				// TODO: not good. (#53)
-				checkStatusAndReload(200);
+				Ext.MessageBox.alert('Failed', 'The resource does not exist or you may not have permission to access it!', 200);
 			}
 		}, 
 		failure: function(response, options){
@@ -154,12 +155,15 @@ function copyFolder() {
 		method: 'GET',
 		params: {folderId : folderId},
 		success: function(response, options){
+			if(sessionExpired(response)) {
+				checkStatusAndReload(200);
+				return;
+			}
 			// TODO: check new response format
-			// TODO: check for session timeout
 			_copyFolder(response.responseText);
 		}, 
 		failure: function(){
-			Ext.MessageBox.alert('Failed', 'An error occured while loading the folder');
+			Ext.MessageBox.alert('Failed', 'An error occurred while loading the folder');
 		}
 	});
 }
@@ -183,6 +187,10 @@ function deleteFolder(folderId) {
 				method: 'GET',
 				params: {nodeId : folderId},
 				success: function(response, options){
+					if(sessionExpired(response)) {
+						checkStatusAndReload(200);
+						return;
+					}
 					try {
 						var result = eval('(' + response.responseText + ')');
 
@@ -194,14 +202,11 @@ function deleteFolder(folderId) {
 	                    }
                     
                     } catch (e) {
-                    	console.error(e);
-                		// TODO: not good. (#53)
-                		checkStatusAndReload(200);
+                    	Ext.MessageBox.alert('Failed', 'The resource does not exist or you may not have permission to access it!', 200);
                     }
 				}, 
 				failure: function(response, options){
 					Ext.MessageBox.alert('Failed', 'Failed to delete folder.\n\n');
-					//Ext.MessageBox.alert('Delete Folder failed!');
 				}
 			});	
 			
@@ -221,13 +226,16 @@ function createFolder(folderId) {
 				method: 'GET',
 				params: {folderId : folderId, folderName : folderName},
 				success: function(response, options){
+					if(sessionExpired(response)) {
+						checkStatusAndReload(200);
+						return;
+					}
 					// TODO: check new response format
-					// TODO: check for session timeout
 					Ext.MessageBox.alert("New folder", "New folder "+ folderName +" created");
 			        reloadView(true);
 				}, 
 				failure: function(){
-					Ext.MessageBox.alert("New folder", "The folder "+ folderName + " couldn\'t be created!");
+					Ext.MessageBox.alert("New folder", "The folder "+ folderName + " could not be created!");
 				}
 			});	
 	    }
@@ -246,13 +254,15 @@ function renameFolder(f) {
 				method: 'GET',
 				params: {nodeId : f, newName : folderName},
 				success: function(response, options){
+					if(sessionExpired(response)) {
+						checkStatusAndReload(200);
+						return;
+					}
 					// TODO: check new response format
-					// TODO: check for session timeout
-					//Ext.MessageBox.alert("New folder "+ folderName +" renamed");
 					reloadView(true);
 				}, 
 				failure: function(){
-					Ext.MessageBox.alert('Failed', 'The folder couldn\'t be renamed!');
+					Ext.MessageBox.alert('Failed', 'The folder could not be renamed!');
 				}
 			});
 	    }

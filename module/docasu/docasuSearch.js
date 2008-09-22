@@ -106,10 +106,12 @@ function _initSearchResultsView() {
 	});
 
 	searchProxy.on('loadexception', function(proxy, options, response, error) {
-		// TODO handle errors !
 		Ext.MessageBox.hide();
-		Ext.MessageBox.alert('Error', 'An internal error occured or you may not have permission to perform the search!', 200);
-		// console.error('loadexception in search:' + error);
+		if(sessionExpired(response)) {
+			checkStatusAndReload(200);
+		} else {
+			Ext.MessageBox.alert('Error', 'An internal error occurred or you may not have permission to perform the search!', 200);
+		}
 	});
 
 	return searchResultsPanel;

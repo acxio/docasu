@@ -80,55 +80,19 @@ Ext.onReady(function(){
 	Ext.Ajax.request({
 		url: 'ui/user',
 		method: 'GET',
-		success: _init,
+		success: function(result, request){
+			if(sessionExpired(result)) {
+				checkStatusAndReload(200);
+				return;
+			}
+			_init(result, request);
+		},
 		failure: function(result, request){
 			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
 			Ext.MessageBox.alert('Failed', 'Failed on user login. \n\r\n\r' + result.responseText);
 		}
 	});
-	
-	// start checking for session timed out
-	checkSessionTimedOut();
-	
 });
-
-/**
-* Retrieves the timeout interval for the session and 
-* schedules next request one second after timeout to make sure session is expired.
-*/
-function checkSessionTimedOut() {
-	// get session timeout and schedule next request
-	Ext.Ajax.request({
-		url: 'ui/sessiontimeout',
-		method: 'GET',
-		success: function(result, request) {
-			var response = "";
-			try {
-				response = eval(result.responseText);
-			} catch(err) {
-				// there's a syntax error when session is expired
-				// don't allow this error to break the application
-			}
-			if(response.timeout) {
-				// convert to number
-				var sessionTimeout = parseInt(response.timeout);
-				if (!sessionTimeout || sessionTimeout == 0) {
-					sessionTimeout = 3601; // default Alfresco session timeout is one hour
-				} else {
-					sessionTimeout += 1; // increase timeout by one second to make sure session is expired
-				}
-				setTimeout("checkSessionTimedOut();", sessionTimeout * 1000);
-			} else {
-				// any answer other than a timeout
-				// session expired - redirect to login page
-				checkStatusAndReload(200);
-			}
-		},
-		failure: function(result, request) {
-			Ext.MessageBox.alert('Failed', 'Failed on retrieving session timeout. \n\r\n\r' + result.responseText);
-		}
-	});
-}
 
 function _init(result, request) {
 	
@@ -257,7 +221,7 @@ function _init(result, request) {
 	clipboard.update();	
 
 	// Load data into grid.
-	gridStore.load({callback: onGridStoreLoad});
+	gridStore.load();
 	
 	// use this to load current folder from url
 	// TODO: replace document.getElementById with something cross browser
@@ -266,24 +230,6 @@ function _init(result, request) {
 		loadFolder(initialFolderId.value);
 	} else {
 		loadFolder(Ext.state.Manager.get('companyHomeId'));
-	}
-}
-
-/**
- * onload event listener
- * TODO: find out why the default listener is not called
- */
-function onGridStoreLoad(r, options, success) {
-	if(success) {
-		var folderName = gridStore.reader.jsonData.folderName;
-		var folderId = gridStore.reader.jsonData.folderId;
-		if(gridStore.baseParams.nodeId != null) {
-			showFolderView(folderId, folderName);
-		} else {
-			showCategoryView(folderName);
-		}
-	} else {
-		Ext.MessageBox.alert('Error', 'The resource does not exist or you may not have permission to access it!', 200);
 	}
 }
 
@@ -417,17 +363,24 @@ function _initCenter() {
             ]
 		})
 	});
-
-/* see onGridStoreLoad()
-	gridStore.on("load", function() {
+	
+	gridStore.on('load', function() {
 		var folderName = gridStore.reader.jsonData.folderName;
 		var folderId = gridStore.reader.jsonData.folderId;
-		showFolderView(folderId, folderName);
+		if(gridStore.baseParams.nodeId != null) {
+			showFolderView(folderId, folderName);
+		} else {
+			showCategoryView(folderName);
+		}
 	});
-*/
 	
-	gridStore.on('loadexception', function(options, response, e) {
-		checkStatusAndReload(e.status);
+	gridStore.on('loadexception', function(proxy, options, response, error) {
+		if(sessionExpired(response)) {
+			checkStatusAndReload(200);
+		} else {
+			// alfresco internal error
+			Ext.MessageBox.alert('Failed', 'The resource does not exist or you may not have permission to access it!', 200);
+		}
 	});
 	
 	// SELECTION
@@ -1076,9 +1029,12 @@ function updateCurrentFolder(folderId){
 		method: 'GET',
 		params: {folderId : folderId},
 		success: function (response, options) {
+			if(sessionExpired(response)) {
+				checkStatusAndReload(200);
+				return;
+			}
 			try {
 				var folder = eval(response.responseText);
-				
 				var myRecord = new Object('Node '+folder.nodeId);
 		       	myRecord.id = folder.nodeId;
 		       	myRecord.text = folder.name;
@@ -1090,7 +1046,7 @@ function updateCurrentFolder(folderId){
 				myRecord.deletePermission = eval(folder.deletePermission);
 				Ext.state.Manager.set("currentFolderProperties", myRecord);
 			} catch (e) {
-				Ext.MessageBox.alert('Failed', 'An error occurred while loading current folder properties');
+				Ext.MessageBox.alert('Failed', 'An error occurred while reading current folder properties');
 			}
 		}, 
 		failure: function(response, options){
@@ -1428,7 +1384,7 @@ function loadFolder(folderId) {
 	gridStore.baseParams.nodeId = folderId;
 	gridStore.baseParams.categoryId = null;
 	clearDocumentInfoPane();
-	gridStore.load({callback: onGridStoreLoad});
+	gridStore.load();
 	// TODO update all panels !! (search box ?)
 }
 
@@ -1460,7 +1416,7 @@ function loadCategory(categoryId) {
 	gridStore.baseParams.categoryId = categoryId;
 	gridStore.baseParams.nodeId = null;
 	clearDocumentInfoPane();
-	gridStore.load({callback: onGridStoreLoad});
+	gridStore.load();
 	// TODO update all panels !! (search box ?)
 }
 
@@ -1517,17 +1473,20 @@ function loadPermissions(nodeId) {
 		method: 'GET',
 		params: {nodeId : nodeId},
 		fileUpload: true,
-		success: function(response, options){	
+		success: function(response, options){
+			if(sessionExpired(response)) {
+				checkStatusAndReload(200);
+				return;
+			}	
 			try {
 				var jsonData = eval("(" + response.responseText + ")" );	
 				_addActionItems(jsonData);
 			} catch (e) {
-				console.error('Exception in loadPermissions(): ' + e)
-				checkStatusAndReload(200);
+				Ext.MessageBox.alert('Failed', 'An error occurred while reading folder properties');
 			}
 	    }, 
 		failure: function(){
-			Ext.MessageBox.alert('Failed to load permissions.');
+			Ext.MessageBox.alert('Failed', 'An error occurred while loading folder permissions');
 		}
 	});
 }
@@ -1695,27 +1654,19 @@ function doLogout() {
 			url: 'ui/logout',
 			method: 'GET',
 			success: function(response, options) {
-			// Decodes (parses) a JSON string to an object. If the JSON is invalid,
-			// this function throws a SyntaxError.
-			try {
-				var responseObj = Ext.util.JSON.decode(response.responseText);
-			} catch(err) {
-				// there's a syntax error when session is expired
-				// don't allow this error to break the application
-			}
-			//Must have been 2xx http status code
-			Ext.MessageBox.hide();
-			checkStatusAndReload(response.status);
-		}, 
-		failure: function(){
-			//Must have been 4xx or a 5xx http status code
-			Ext.MessageBox.hide();
-			Ext.Msg.show({
-				title:'Logout failed!',
-				msg: 'Please try again!', 
-				buttons: Ext.Msg.OK,
-				icon: Ext.MessageBox.ERROR});}
-		});
+				//Must have been 2xx http status code
+				Ext.MessageBox.hide();
+				checkStatusAndReload(200);
+			}, 
+			failure: function(){
+				//Must have been 4xx or a 5xx http status code
+				Ext.MessageBox.hide();
+				Ext.Msg.show({
+					title:'Logout failed!',
+					msg: 'Please try again!', 
+					buttons: Ext.Msg.OK,
+					icon: Ext.MessageBox.ERROR});}
+			});
 	}, 1000);
 }
 
