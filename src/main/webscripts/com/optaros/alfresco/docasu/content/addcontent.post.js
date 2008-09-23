@@ -21,13 +21,11 @@ var filecontent = null;
 var foldernode = null;
 
 // locate file attributes
-for each (field in formdata.fields)
-{
-  if (field.name == "file" && field.isFile)
-  {
+for each (field in formdata.fields) {
+  if (field.isFile) {
     filename = field.filename;
     filecontent = field.content;
-  } else if (field.name == "folder") {
+  } else if (field.name == "path") {
   	foldernode = field.value;
   }
 }
@@ -35,17 +33,15 @@ for each (field in formdata.fields)
 // ensure mandatory file attributes have been located
 if (filename == undefined || filecontent == undefined)
 {
-  status.code = 400;
-  status.message = "Uploaded file cannot be located in request";
-  status.redirect = true;
+	model.success = false;
+	model.msg = "Uploaded file cannot be located in request";
 }
 
 var folder = search.findNode("workspace://SpacesStore/" + foldernode);
 if (folder == null || !folder.isContainer)
 {
-	status.code = 404;
-   	status.message = "Folder " + foldernode + " not found.";
-   	status.redirect = true;
+   	model.success = false;
+	model.msg = "Folder " + foldernode + " not found.";
 } else { 
 	
 	var t = filename.lastIndexOf("\\");
@@ -71,15 +67,15 @@ if (folder == null || !folder.isContainer)
         addAspect.parameters["aspect-name"] = scAspectQName;
 		addAspect.execute(upload);
 	
-		model.msg = 'ok';
 		model.success = true;
+		model.msg = 'File uploaded successfully';
 	} catch(e) {
 		model.success = false;
 		logger.log(e.message);
 		if (e.message.indexOf('FileExistsException') != -1) {
-			model.msg = 'duplicate';
+			model.msg = 'File already exists';
 		} else {
-			model.msg = 'generror';
+			model.msg = 'An internal error occurred';
 		}
 	}
 }

@@ -20,12 +20,10 @@ var nodeId = null;
 var filecontent = null;
 
 // locate file attributes
-for each (field in formdata.fields)
-{
-  if (field.name == "file" && field.isFile)
-  {
+for each (field in formdata.fields) {
+  if (field.isFile) {
     filecontent = field.content;
-  } else if (field.name == "nodeId") {
+  } else if (field.name == "path") {
   	nodeId = field.value;
   }
 }

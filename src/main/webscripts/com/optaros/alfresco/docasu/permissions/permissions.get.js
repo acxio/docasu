@@ -77,7 +77,7 @@ if (!node.hasPermission("CreateChildren")) {
 	arrayIndex++;
 	entries[arrayIndex] = new Array(2);
 	entries[arrayIndex][0] = 'uploadFile';
-	entries[arrayIndex][1] = 'Upload File';
+	entries[arrayIndex][1] = 'Upload File(s)';
 	arrayIndex++;
 }
 
