@@ -58,9 +58,6 @@
     <bean name="webscript.com.optaros.alfresco.docasu.logout.logout.get" class="com.optaros.alfresco.docasu.wcs.Logout" parent="webscript">
     </bean>
     
-    <bean name="webscript.com.optaros.alfresco.docasu.sessiontimeout.sessiontimeout.get" class="com.optaros.alfresco.docasu.wcs.SessionTimeout" parent="webscript">
-    </bean>
-    
     <bean name="webscript.com.optaros.alfresco.docasu.shortcuts.shortcuts.get" class="com.optaros.alfresco.docasu.wcs.Shortcuts" parent="webscript">
     	<property name="nodeService" ref="NodeService" />
     </bean>
