@@ -493,7 +493,7 @@ function _initCenter() {
 			['pasteAll',     'Paste All'],
 			['text', 		 'Create Text File'],
 	        ['html', 		 'Create HTML File'],
-			['uploadFile', 	 'Upload File']
+			['uploadFile', 	 'Upload File(s)']
 		]
 	});
 
@@ -1270,7 +1270,7 @@ function createActionItemsForFolder(record) {
 			handler: function() {createContent('text', id);}
 		});	
 		result.push({
-			text: 'Upload file',
+			text: 'Upload file(s)',
 			handler: function() {showUploadFile(id);}
 		});	
 	}

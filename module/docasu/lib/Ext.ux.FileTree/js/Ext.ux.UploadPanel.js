@@ -120,6 +120,11 @@ Ext.ux.UploadPanel = Ext.extend(Ext.Panel, {
 	 * @cfg {Number} Maximum file name length for short file names
 	 */
 	,maxLength:18
+	
+	/**
+	 * @cfg {Number} Maximum number of files allowed for an upload
+	 */
+	,maxFiles:10
 
 	/**
 	 * @cfg {String} removeAllIconCls iconClass to use for Remove All button (defaults to 'icon-cross'
@@ -526,6 +531,11 @@ Ext.ux.UploadPanel = Ext.extend(Ext.Panel, {
 
 		this.uploadBtn.enable();
 		this.removeAllBtn.enable();
+		
+		// disable Add button if maxFiles was reached
+		if(this.store.getAt(this.maxFiles-1)) {
+			this.addBtn.disable();
+		}
 
 		if(true !== this.eventsSuspended) {
 			this.fireEvent('fileadd', this, this.store, rec);
@@ -622,6 +632,11 @@ Ext.ux.UploadPanel = Ext.extend(Ext.Panel, {
 		var count = this.store.getCount();
 		this.uploadBtn.setDisabled(!count);
 		this.removeAllBtn.setDisabled(!count);
+		
+		// enable Add button if maxFiles wasn't reached
+		if(!this.store.getAt(this.maxFiles-1)) {
+			this.addBtn.enable();
+		}
 
 		if(true !== this.eventsSuspended) {
 			this.fireEvent('fileremove', this, this.store);
@@ -724,6 +739,9 @@ Ext.ux.UploadPanel = Ext.extend(Ext.Panel, {
 		this.suspendEvents();
 
 		this.store.each(this.onRemoveFile, this);
+		
+		// enable Add button
+		this.addBtn.enable();
 
 		this.eventsSuspended = suspendState;
 		if(true !== this.eventsSuspended) {

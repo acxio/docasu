@@ -282,6 +282,7 @@ Ext.extend(Ext.ux.FileUploader, Ext.util.Observable, {
 	 * @param {Object} o decoded response.responseText
 	 */
 	,processSuccess:function(options, response, o) {
+	
 		var record = false;
 
 		// all files uploadded ok
@@ -312,6 +313,7 @@ Ext.extend(Ext.ux.FileUploader, Ext.util.Observable, {
 	 * @param {String/Object} error Error text or JSON decoded object. Optional.
 	 */
 	,processFailure:function(options, response, error) {
+	
 		var record = options.record;
 		var records;
 
@@ -341,7 +343,7 @@ Ext.extend(Ext.ux.FileUploader, Ext.util.Observable, {
 		// multipleUpload - each file uploaded in it's own form
 		else {
 			if(error && 'object' === Ext.type(error)) {
-				record.set('error', error.errors && error.errors[record.id] ? error.errors[record.id] : this.unknownErrorText);
+				record.set('error', error.msg ? error.msg : this.unknownErrorText);
 			}
 			else if(error) {
 				record.set('error', error);

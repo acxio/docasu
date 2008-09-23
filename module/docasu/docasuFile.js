@@ -72,66 +72,39 @@ function showFileDetailsWindow(fileRecordSet) {
 		
 }
 
+
 function updateFile(name, id) {
-	var fileField = new Ext.form.TextField({
-		name: 'file',
-		inputType: 'file',
-		hideLabel: true
+
+	var win = new Ext.Window({
+         width:280
+		,minWidth:265
+        ,id:'winid'
+        ,height:220
+		,minHeight:200
+        ,layout:'fit'
+        ,border:false
+        ,closable:true
+        ,title:'Update File '+ name
+		,iconCls:'icon-upload'
+		,items:[{
+			  xtype:'uploadpanel'
+			 ,buttonsAt:'tbar'
+			 ,id:'uppanel'
+			 ,url:'ui/updatefile'
+			 ,path:id // nodeId of the update file
+			 ,maxFileSize:1048576
+			 ,enableProgress:false // not implemented yet
+			 ,singleUpload:false // upload a file at a time
+			 ,maxFiles:1 // upload a single file
+		}]
+    });
+    win.show();
+    
+    var uploadPanel = win.items.map.uppanel;
+	uploadPanel.on('allfinished', function (obj) {
+		reloadView(true);		
 	});
 	
-	var uploadForm = new Ext.form.FormPanel({
-		title: "Choose file",
-		width: 200,
-		frame: false,
-		fileUpload: true,
-		items: [fileField,
-			new Ext.form.Hidden({
-				name: 'nodeId',
-				value: id
-			})],
-		method: 'POST',
-		buttons: [new Ext.Button({
-			text: "Upload",
-			handler: updateFileHandler
-			})]
-	});
-	
-	var updateFileWindow = new Ext.Window({
-		id: 'updateFile',
-		title: 'Update File: ' + name,
-		width: 300,
-		height: 200,
-		x: 200,
-		y: 200,
-		iconCls: 'icon-grid',
-		shim: false,
-		animCollapse: false,
-		constrainHeader: true,
-		items: [uploadForm],
-		layout: 'fit',
-		modal: true
-	});
-	
-	updateFileWindow.show();
-					
-	function updateFileHandler() {
-		Ext.Ajax.request({
-			url: 'ui/updatefile',
-			method: 'POST',
-			form: uploadForm.getForm().el,
-			success: function(response, options){
-				if(sessionExpired(response)) {
-					checkStatusAndReload(200);
-					return;
-				}
-				gridStore.on('load', updateDocumentInfoPane);
-				gridStore.load();
-				updateFileWindow.close();
-				// TODO: update panels
-			},
-			failure: function(){Ext.MessageBox.alert('Failed to upload file')}
-		});
-	}
 }
 
 
@@ -195,7 +168,8 @@ function deleteFile(fileName, nodeId) {
 		
 }
 
-function showNewUploadFile(folder) {
+
+function showUploadFile(folder) {
 
 	var win = new Ext.Window({
          width:280
@@ -212,12 +186,12 @@ function showNewUploadFile(folder) {
 			  xtype:'uploadpanel'
 			 ,buttonsAt:'tbar'
 			 ,id:'uppanel'
-			 ,url:'ui/fileupload'
-			 ,path:folder // nodeId for the upload folder
+			 ,url:'ui/ac'
+			 ,path:folder // nodeId of the parent folder
 			 ,maxFileSize:1048576
-			 ,enableProgress:false // not implemented yet
+			 ,enableProgress:false // not implemented yet - check progress.get.js
 			 ,progressUrl:'ui/progress'
-			 ,singleUpload:false // upload a file at a time - to allow multiple uploads at a time, adjust fileupload.post.js and progress.post.js
+			 ,singleUpload:false // upload a file at a time - to allow multiple uploads at a time, adjust addcontent.post.js
 		}]
     });
     win.show();
@@ -228,89 +202,6 @@ function showNewUploadFile(folder) {
 		reloadView(true);		
 	});
 
-}
-
-/*
- * Use The New File Upload Implementation !
- * TODO: remove this when upload ticket is closed
- */
-function showUploadFile(folder) {
-
-	showNewUploadFile(folder);
-	return;
-
-	var fileField = new Ext.form.TextField({
-		name: 'file',
-		inputType: 'file',
-		hideLabel: true
-	});
-	
-	var uploadForm = new Ext.form.FormPanel({
-		title: "Choose file",
-		id: 'uploadForm',
-		width: 200,
-		frame: false,
-		fileUpload: true,
-		items: [fileField,
-			new Ext.form.Hidden({
-				name: 'folder',
-				value: folder
-			})],
-		method: 'POST',
-		buttons: [new Ext.Button({
-			text: "Upload",
-			handler: uploadHandler
-			})]
-	});
-	
-	var uploadContentWindow = new Ext.Window({
-		id: 'uploadContent',
-		title: 'Upload Content',
-		width: 300,
-		height: 200,
-		x: 200,
-		y: 200,
-		iconCls: 'icon-grid',
-		shim: false,
-		animCollapse: false,
-		constrainHeader: true,
-		items: [uploadForm],
-		layout: 'fit',
-		modal: true
-	});
-	
-	uploadContentWindow.show();
-					
-	function uploadHandler() {
-		Ext.Ajax.request({
-			url: 'ui/ac',
-			method: 'POST',
-			form: uploadForm.getForm().el,
-			success: function(response, options) {
-				Ext.getCmp('uploadContent').close();
-				reloadView(true);
-				// TODO the webscript fails but the upload works. We don't understand why yet.
-//				if (response.responseText == '"ok"') {
-//					// TODO: update all panels !!
-//					reloadView(true);
-//				}
-//				else {
-//					if (response.responseText == '"duplicate"') {
-//						Ext.MessageBox.alert('File already exists.');
-//					}
-//					else {
-//						if (response.responseText == '"generror"') {
-//							Ext.MessageBox.alert('A general error occurred.');
-//						}
-//						else {
-//							Ext.MessageBox.alert('A unknown error occurred.');
-//						}
-//					}
-//				}
-			},
-			failure: function(){ Ext.MessageBox.alert('Failed to upload file'); }
-		});
-	}
 }
 
 /**
