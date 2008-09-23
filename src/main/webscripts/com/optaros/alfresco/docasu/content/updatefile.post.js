@@ -31,28 +31,26 @@ for each (field in formdata.fields) {
 // ensure mandatory file attributes have been located
 if (nodeId == undefined || filecontent == undefined)
 {
-  status.code = 400;
-  status.message = "Uploaded file cannot be located in request";
-  status.redirect = true;
+	model.success = false;
+	model.msg = "Uploaded file cannot be located in request";
 }
 
 var node = search.findNode("workspace://SpacesStore/" + nodeId);
 if (node == null)
 {
-	status.code = 404;
-   	status.message = "Node " + nodeId + " not found.";
-   	status.redirect = true;
+   	model.success = false;
+	model.msg = "File " + nodeId + " not found.";
 } else { 
 	
 	try {
 		node.properties.content.write(filecontent);
 		node.save();
 	
-		model.success = 'true';
-		model.msg = 'ok';
+		model.success = true;
+		model.msg = 'File updated successfully';
 	} catch(e) {
+		model.success = false;
 		logger.log(e.message);
-		model.msg = 'generror';
-		model.success = 'false';
+		model.msg = 'An internal error occurred';
 	}
 }
