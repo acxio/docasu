@@ -33,6 +33,7 @@ import org.alfresco.repo.web.scripts.RepositoryImageResolver;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
+import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
@@ -257,8 +258,9 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		if (fileInfo.isFolder()) {
 			row.put("isFolder", true);
 		} else {
-			row.put("size", fileInfo.getContentData().getSize());
-			row.put("mimetype", fileInfo.getContentData().getMimetype());
+			ContentData contentData = fileInfo.getContentData();
+			row.put("size", contentData != null ? contentData.getSize() : 0L);
+			row.put("mimetype", contentData != null ? contentData.getMimetype() : "");
 		}
 		return row;
 	}
