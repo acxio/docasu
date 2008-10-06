@@ -22,7 +22,7 @@ var SEARCH_PAGE_SIZE = 50;
 function _initSearchResultsView() {
 	
 	var searchProxy = new Ext.data.HttpProxy({
-		url: 'ui/s',
+		url: 'ui/search',
 		method: 'GET'
 	});
 	
@@ -110,7 +110,7 @@ function _initSearchResultsView() {
 		if(sessionExpired(response)) {
 			checkStatusAndReload(200);
 		} else {
-			Ext.MessageBox.alert('Error', 'An internal error occurred or you may not have permission to perform the search!', 200);
+			Ext.MessageBox.alert('Failed', 'Failed to display search results', 200);
 		}
 	});
 
@@ -224,6 +224,11 @@ function searchFormListener(form, action) {
 	options.params = form.getValues(false);
 	options.params.start = 0;
 	options.params.limit = SEARCH_PAGE_SIZE;
+	
+	searchQuery = new Object({
+		form : form,
+		options : options
+	});
 
 	var store = Ext.getCmp('searchResultsView').getStore();
 	store.params = form.getValues(false);

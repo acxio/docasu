@@ -62,7 +62,7 @@
 		</property>
 	</bean>
 
-	<bean name="webscript.com.optaros.alfresco.docasu.logout.logout.get" class="com.optaros.alfresco.docasu.wcs.Logout" parent="webscript">
+	<bean name="webscript.com.optaros.alfresco.docasu.ui.logout.get" class="com.optaros.alfresco.docasu.wcs.Logout" parent="webscript">
 	</bean>
 
 	<bean
@@ -75,7 +75,7 @@
 		</property>
 	</bean>
 
-	<bean name="webscript.com.optaros.alfresco.docasu.browse.docs.get"
+	<bean name="webscript.com.optaros.alfresco.docasu.folders.docs.get"
 		class="com.optaros.alfresco.docasu.wcs.Browse" parent="webscript">
 		<property name="customFileFolderService"
 			ref="CustomFileFolderService" />
@@ -92,7 +92,7 @@
 	</bean>
 
 	<bean
-		name="webscript.com.optaros.alfresco.docasu.browse.folders.get"
+		name="webscript.com.optaros.alfresco.docasu.folders.folders.get"
 		class="com.optaros.alfresco.docasu.wcs.Browse" parent="webscript">
 		<property name="customFileFolderService"
 			ref="CustomFileFolderService" />

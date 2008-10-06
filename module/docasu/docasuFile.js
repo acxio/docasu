@@ -56,7 +56,11 @@ function showFileDetailsWindow(fileRecordSet) {
     if (fileRecordSet.get('versionable')) {
         Ext.getCmp('versionsPanel').enable();
         var store = Ext.getCmp('versionsGrid').getStore();
-        store.baseParams.nodeId = fileRecordSet.get('nodeId');
+        //store.baseParams.nodeId = fileRecordSet.get('nodeId');
+        store.proxy = new Ext.data.HttpProxy({
+							url: 'ui/node/versions/'+fileRecordSet.get('nodeId'),
+							method: 'GET'
+						}),
         store.load();
     } else {
         Ext.getCmp('versionsPanel').disable();
@@ -90,8 +94,8 @@ function updateFile(name, id) {
 			  xtype:'uploadpanel'
 			 ,buttonsAt:'tbar'
 			 ,id:'uppanel'
-			 ,url:'ui/updatefile'
-			 ,path:id // nodeId of the update file
+			 ,url:'ui/node/content/update/' + id // nodeId of the update file
+			 ,method:'POST'
 			 ,maxFileSize:1048576
 			 ,enableProgress:false // not implemented yet
 			 ,singleUpload:false // upload a file at a time
@@ -110,13 +114,11 @@ function updateFile(name, id) {
 
 
 function deleteFile(fileName, nodeId) {
-
 	Ext.Msg.confirm("Confirm file deletion","Are you sure you want to delete the file " + fileName + " ?", function(btn, text) {	
     	if (btn == 'yes') {
 			Ext.Ajax.request({
-				url: 'ui/node/remove',
-				params: {nodeId : nodeId},
-				method: 'GET',
+				url: 'ui/node/' + nodeId,
+				method: 'DELETE',
 				success: function(response, options) {
 					if(sessionExpired(response)) {
 						checkStatusAndReload(200);
@@ -126,34 +128,10 @@ function deleteFile(fileName, nodeId) {
 					if (!result.success) {
 						Ext.MessageBox.alert('Failed', 'Failed to delete file. The following error occurred:\n\n' + result.msg);
 					}
-					if (advancedSearchQuery != "") {
-						Ext.Ajax.request({
-							url: 'ui/as',
-							method: 'GET',
-							params: advancedSearchQuery,
-							success: function(response, options){
-								clearDocumentInfoPane();
-								var responseObj = Ext.util.JSON.decode(response.responseText);
-								loadSearchResults(responseObj);
-							},
-							failure: function(){
-								Ext.MessageBox.alert('Failed', 'Failed to display search results of advanced search');
-							}
-						});
-					} else if (simpleSearchQuery != ""){	
-						Ext.Ajax.request({
-							url: 'ui/ss',
-							method: 'GET',
-							params: 'q=' + simpleSearchQuery,
-							success: function(response, options){
-								clearDocumentInfoPane();
-								var responseObj = Ext.util.JSON.decode(response.responseText);
-								loadSearchResults(responseObj);
-						    }, 
-		    				failure: function(){	
-								Ext.MessageBox.alert('Failed', 'Failed to display search results of simple search');
-		    				}
-						});
+					if (searchQuery != null) {
+						var store = Ext.getCmp('searchResultsView').getStore();
+						store.params = searchQuery.form.getValues(false);
+						store.load(searchQuery.options);
 					} else {
 						clearDocumentInfoPane();
 						gridStore.load();
@@ -165,7 +143,6 @@ function deleteFile(fileName, nodeId) {
 	    	});
 		}
 	});
-		
 }
 
 
@@ -186,11 +163,11 @@ function showUploadFile(folder) {
 			  xtype:'uploadpanel'
 			 ,buttonsAt:'tbar'
 			 ,id:'uppanel'
-			 ,url:'ui/ac'
-			 ,path:folder // nodeId of the parent folder
+			 ,url:'ui/node/content/upload/' + folder // nodeId of the parent folder
+			 ,method:'POST' 
 			 ,maxFileSize:1048576
 			 ,enableProgress:false // not implemented yet - check progress.get.js
-			 ,progressUrl:'ui/progress'
+			 ,progressUrl:'ui/node/content/progress'
 			 ,singleUpload:false // upload a file at a time - to allow multiple uploads at a time, adjust addcontent.post.js
 		}]
     });
@@ -468,10 +445,7 @@ function _initFileDetailsWindow() {
 		height: 400,
 		deferredRender:false,
 		store: new Ext.data.Store({
-			proxy: new Ext.data.HttpProxy({
-				url: 'ui/versions',
-				method: 'GET'
-			}),
+			/*set proxy before load()*/
 
 			reader: new Ext.data.JsonReader({
 				root: 'rows',
@@ -536,9 +510,7 @@ function _initFileDetailsWindow() {
 		id: 'filePropertiesForm',
 		title: "Edit Properties",
 		frame: false,
-		url: 'ui/updateproperties',
-		method: 'POST',
-		fileUpload:true,
+		fileUpload: true,
 		baseCls: 'x-plain',
 		labelWidth: 75,
 		bodyStyle: 'padding: 15px',
@@ -583,9 +555,8 @@ function _initFileDetailsWindow() {
 			id: 'fileDetailsSaveButton',
 			handler: function(){
 				Ext.Ajax.request({
-					url: 'ui/updateproperties',
+					url: 'ui/node/properties/' + Ext.getCmp('filepropEditNodeId').getValue(),
 					method: 'POST',
-					fileUpload: true,
 					form: Ext.getCmp('filePropertiesForm').getForm().getEl(),
 					success: function(response, options) {
 						if(sessionExpired(response)) {

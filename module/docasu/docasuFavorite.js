@@ -66,9 +66,8 @@ function _updateFavorites(responseText) {
 
 function removeFavorite(nodeId) {
 	Ext.Ajax.request({
-		url: 'ui/removeshortcut',
-		method: 'GET',
-		params: 'nodeId=' + nodeId,
+		url: 'ui/shortcut/' + nodeId,
+		method: 'DELETE',
 		success: function(response, options){
 			if(sessionExpired(response)) {
 				checkStatusAndReload(200);
@@ -91,9 +90,8 @@ function _removeFavorite() {
 function addFavorite(nodeId) {
 	if (typeof nodeId != 'undefined') {
 		Ext.Ajax.request({
-			url: 'ui/addshortcut',
-			method: 'GET',
-			params: 'nodeId=' + nodeId,
+			url: 'ui/shortcut/'+nodeId,
+			method: 'PUT',
 			success: function(response, options){
 				if(sessionExpired(response)) {
 					checkStatusAndReload(200);

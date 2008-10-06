@@ -81,6 +81,11 @@ Ext.extend(Ext.ux.FileUploader, Ext.util.Observable, {
 	 baseParams:{cmd:'upload',dir:'.'}
 
 	/**
+	 * @cfg {String} method the HTTP method used to send data to server
+	 */
+	,method:'POST'
+
+	/**
 	 * @cfg {Boolean} concurrent true to start all requests upon upload start, false to start
 	 * the next request only if previous one has been completed (or failed). Applicable only if
 	 * singleUpload = false
@@ -171,7 +176,7 @@ Ext.extend(Ext.ux.FileUploader, Ext.util.Observable, {
 		var form = Ext.getBody().createChild({
 			 tag:'form'
 			,action:this.url
-			,method:'post'
+			,method:this.method
 			,cls:'x-hidden'
 			,id:Ext.id()
 			,cn:[{
@@ -251,7 +256,7 @@ Ext.extend(Ext.ux.FileUploader, Ext.util.Observable, {
 	,getOptions:function(record, params) {
 		var o = {
 			 url:this.url
-			,method:'post'
+			,method:this.method
 			,isUpload:true
 			,scope:this
 			,callback:this.uploadCallback
@@ -367,7 +372,7 @@ Ext.extend(Ext.ux.FileUploader, Ext.util.Observable, {
 		var records, p;
 		var o = {
 			 url:this.progressUrl
-			,method:'post'
+			,method:this.method
 			,params:{}
 			,scope:this
 			,callback:function(options, success, response) {

@@ -20,9 +20,9 @@ var advSearchWindow;
 
 var gridStore;
 var fileSelectionModel;
-var simpleSearchQuery = "";
-var advancedSearchQuery = "";
 var recentDocsStore;
+
+var searchQuery = null;
 
 function getNavigator() {
 	return Ext.getCmp('navigator');
@@ -323,7 +323,7 @@ function _initCenter() {
 		remoteSort: true,
 		
 		proxy: new Ext.data.HttpProxy({
-			url: 'ui/docs',
+			url: 'ui/folder/docs',
 			method: 'GET'
 		}),
 		
@@ -365,6 +365,7 @@ function _initCenter() {
 	});
 	
 	gridStore.on('load', function() {
+		searchQuery = null;
 		var folderName = gridStore.reader.jsonData.folderName;
 		var folderId = gridStore.reader.jsonData.folderId;
 		if(gridStore.baseParams.nodeId != null) {
@@ -375,6 +376,7 @@ function _initCenter() {
 	});
 	
 	gridStore.on('loadexception', function(proxy, options, response, error) {
+		searchQuery = null;
 		if(sessionExpired(response)) {
 			checkStatusAndReload(200);
 		} else {
@@ -426,8 +428,8 @@ function _initCenter() {
 	gridList.on('contextmenu', function(e){
         e.preventDefault();
         
-        // if no search is performed and not on category
-		if (advancedSearchQuery === '' && simpleSearchQuery === '' && gridStore.baseParams.categoryId == null) {
+        // if on a category
+		if (gridStore.baseParams.categoryId == null) {
 			this.contextMenu = getFolderContextMenu(Ext.state.Manager.get('currentFolder'), Ext.state.Manager.get('currentFolderProperties'));
         
 			var xy = e.getXY();
@@ -795,11 +797,6 @@ function _initCompanyHome() {
 
 	// Tree event handlers 	
 	companyHomeTree.addListener('click', function (node, event){
-
-		// TODO is this used?
-		simpleSearchQuery = "";
-		advancedSearchQuery = "";
-
 		loadFolder(node.id);
 		return false;
 	});
@@ -875,11 +872,6 @@ function _initMyHome() {
 
 	// Tree event handlers 	
     myHomeTree.addListener('click', function (node, event) {
-
-		// TODO is this used?
-		simpleSearchQuery = "";
-		advancedSearchQuery = "";
-
 		loadFolder(node.id);
 		return false;
 	});
@@ -911,7 +903,7 @@ function _initCategories() {
 
 	// Tree loader for global category tree
 	var categoriesTreeLoader = new Ext.tree.TreeLoader({
-		dataUrl: 'ui/cat',
+		dataUrl: 'ui/categories',
 		requestMethod: 'GET'
 	});
 	
@@ -954,13 +946,7 @@ function _initCategories() {
 
 	// Tree event handlers 	
 	categoriesTree.addListener('click', function (node, event){
-
-		// TODO is this used?
-		simpleSearchQuery = "";
-		advancedSearchQuery = "";
-
 		loadCategory(node.id);
-		
 		return false;
 	});
 
@@ -981,7 +967,7 @@ function _initRencentDocs() {
 
 	recentDocsStore = new Ext.data.Store({
 		proxy: new Ext.data.HttpProxy({
-			url: 'ui/recentdocs',
+			url: 'ui/node/recentdocs',
 			method: 'GET'
 		}),
 		reader: new Ext.data.JsonReader({
@@ -1025,9 +1011,8 @@ function _initBreadcrumbs() {
 
 function updateCurrentFolder(folderId){
 	Ext.state.Manager.set("currentFolder", folderId);
-	Ext.Ajax.request({ url: 'ui/folderproperties',
+	Ext.Ajax.request({ url: 'ui/folder/properties/' + folderId,
 		method: 'GET',
-		params: {folderId : folderId},
 		success: function (response, options) {
 			if(sessionExpired(response)) {
 				checkStatusAndReload(200);
@@ -1146,7 +1131,7 @@ function getFolderContextMenu(id, record){
 		    }
 		);
 
-	// record can be null if ui/folderproperties request did not succed	
+	// record can be null if ui/folder/properties request did not succed	
 	if(record && record != null){
 		contextMenu.add(
 			{
@@ -1469,9 +1454,8 @@ function showSearchResultsView() {
 function loadPermissions(nodeId) {
 	
 	Ext.Ajax.request({
-		url: 'ui/node/getPermission',
+		url: 'ui/node/permissions/' + nodeId,
 		method: 'GET',
-		params: {nodeId : nodeId},
 		fileUpload: true,
 		success: function(response, options){
 			if(sessionExpired(response)) {

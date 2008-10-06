@@ -18,10 +18,10 @@
     
 -->
 <webscript>
-	<shortname>Check out</shortname>
-	<description>Check out a document</description>
+	<shortname>Custom UI - Check out</shortname>
+	<description>Check out a document based on the node id</description>
 	<url>/docasu/ui/node/checkout/{nodeId}</url>
 	<format default="json">extension</format>
-	<transaction>required</transaction>
 	<authentication>user</authentication>
+	<transaction>required</transaction>
 </webscript>

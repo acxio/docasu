@@ -18,10 +18,10 @@
     
 -->
 <webscript>
-	<shortname>Check in</shortname>
-	<description>Check in a document</description>
+	<shortname>Custom UI - Check in</shortname>
+	<description>Check in a document based on the node id</description>
 	<url>/docasu/ui/node/checkin/{nodeId}</url>
-	<transaction>required</transaction>
 	<format default="json">extension</format>
 	<authentication>user</authentication>
+	<transaction>required</transaction>
 </webscript>

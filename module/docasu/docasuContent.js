@@ -62,8 +62,7 @@ function createContent(type, folderId) {
 		var createContentForm = new Ext.form.FormPanel({
 			id: 'newContentForm',
 			frame: false,
-			method: 'POST',
-			fileUpload: true,
+			fileUpload:true,
 			bodyStyle: 'padding:5px',
 			defaults: {border: false},
 			items: [
@@ -96,8 +95,7 @@ function createContent(type, folderId) {
 		var createContentForm = new Ext.form.FormPanel({
 			id: 'newContentForm',
 			frame: false,
-			method: 'POST',
-			fileUpload: true,
+			fileUpload:true,
 			bodyStyle: 'padding:5px',
 			defaults: {border: false},
 			items: [
@@ -141,7 +139,7 @@ function createContent(type, folderId) {
 		fileNameField.setValue(fileNameField.getValue() + '.' +contentType.getValue().toLowerCase());
 		
 		Ext.Ajax.request({
-			url: 'ui/node/create',
+			url: 'ui/node/create/' + folderId,
 			method: 'POST',
 			form: createContentForm.getForm().getEl(),
 			success: function(response, options){
@@ -181,8 +179,7 @@ function editContent(fileName, nodeId) {
 	var extension = fileName.substring(fileName.lastIndexOf('.')+1, fileName.length);
 
 	Ext.Ajax.request({
-		url: 'ui/content',
-		params: 'nodeId=' + nodeId,
+		url: 'ui/node/content/' + nodeId,
 		method: 'GET',
 		success: function(result, request){
 			if(sessionExpired(result)) {
@@ -239,8 +236,7 @@ function editContent(fileName, nodeId) {
 		var editContentForm = new Ext.form.FormPanel({
 			id: 'editContentForm',
 			frame: false,
-			method: 'POST',
-			fileUpload: true,
+			fileUpload:true,
 			bodyStyle: 'padding:5px',
 			defaults: {border: false},
 			items: [
@@ -264,9 +260,7 @@ function editContent(fileName, nodeId) {
 		});
 		var editContentForm = new Ext.form.FormPanel({
 			id: 'editContentForm',
-			frame: false,
-			method: 'POST',
-			fileUpload: true,
+			fileUpload:true,
 			bodyStyle: 'padding:5px',
 			defaults: {border: false},
 			items: [
@@ -301,7 +295,7 @@ function editContent(fileName, nodeId) {
 	 */
 	function updateHandler() {
 		Ext.Ajax.request({
-			url: 'ui/node/update',
+			url: 'ui/node/update/' + nodeId,
 			method: 'POST',
 			form: editContentForm.getForm().getEl(),
 			success: function(response, options){

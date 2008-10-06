@@ -55,19 +55,19 @@
 	  </property>
    </bean>
 
-    <bean name="webscript.com.optaros.alfresco.docasu.logout.logout.get" class="com.optaros.alfresco.docasu.wcs.Logout" parent="webscript">
+    <bean name="webscript.com.optaros.alfresco.docasu.ui.logout.get" class="com.optaros.alfresco.docasu.wcs.Logout" parent="webscript">
     </bean>
     
     <bean name="webscript.com.optaros.alfresco.docasu.shortcuts.shortcuts.get" class="com.optaros.alfresco.docasu.wcs.Shortcuts" parent="webscript">
     	<property name="nodeService" ref="NodeService" />
     </bean>
     
-	<bean name="webscript.com.optaros.alfresco.docasu.browse.docs.get" class="com.optaros.alfresco.docasu.wcs.Browse" parent="webscript">
+	<bean name="webscript.com.optaros.alfresco.docasu.folders.docs.get" class="com.optaros.alfresco.docasu.wcs.Browse" parent="webscript">
 		<property name="customFileFolderService" ref="CustomFileFolderService"/>
 		<property name="foldersOnly" value="false"/>
 	</bean>
 
-	<bean name="webscript.com.optaros.alfresco.docasu.browse.folders.get" class="com.optaros.alfresco.docasu.wcs.Browse" parent="webscript">
+	<bean name="webscript.com.optaros.alfresco.docasu.folders.folders.get" class="com.optaros.alfresco.docasu.wcs.Browse" parent="webscript">
 		<property name="customFileFolderService" ref="CustomFileFolderService"/>
 		<property name="foldersOnly" value="true"/>
 	</bean>

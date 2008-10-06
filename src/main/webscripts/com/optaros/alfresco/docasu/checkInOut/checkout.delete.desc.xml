@@ -18,10 +18,10 @@
     
 -->
 <webscript>
-	<shortname>Undo check out</shortname>
-	<description>Undo a check out of a document</description>
+	<shortname>Custom UI - Undo check out</shortname>
+	<description>Undo a check out of a document based on the node id</description>
 	<url>/docasu/ui/node/checkout/{nodeId}</url>
-	<transaction>required</transaction>
 	<format default="json">extension</format>
 	<authentication>user</authentication>
+	<transaction>required</transaction>
 </webscript>

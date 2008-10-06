@@ -63,6 +63,11 @@ Ext.ux.UploadPanel = Ext.extend(Ext.Panel, {
 	 * @cfg {String} emptyText empty text for dataview
 	 */
 	,emptyText:'No files'
+	
+	/**
+	 * @cfg {String} method the HTTP method used to send data to server
+	 */
+	,method:'POST'
 
 	/**
 	 * @cfg {Boolean} enableProgress true to enable querying server for progress information
@@ -372,6 +377,7 @@ Ext.ux.UploadPanel = Ext.extend(Ext.Panel, {
 		// create uploader
 		var config = {
 			 store:this.store
+			,method:this.method
 			,singleUpload:this.singleUpload
 			,maxFileSize:this.maxFileSize
 			,enableProgress:this.enableProgress

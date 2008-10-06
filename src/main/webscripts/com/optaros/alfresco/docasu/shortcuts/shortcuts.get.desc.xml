@@ -18,11 +18,9 @@
     
 -->
 <webscript>
-  <shortname>Custom UI - Get Shortcuts</shortname>
+  <shortname>Custom UI - Get shortcuts</shortname>
   <description>Get shortcuts for current user</description>
    <url>/docasu/ui/shortcuts</url>
-   <url>/docasu/ui/sc</url>
    <format default="json">extension</format>
    <authentication>user</authentication>
-   <transaction>required</transaction>
 </webscript>

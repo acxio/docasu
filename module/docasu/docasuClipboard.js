@@ -93,9 +93,9 @@ function pasteAll(folderId) {
 	c = c.substr(0, c.length -1);
 	
 	Ext.Ajax.request({
-		url: 'ui/paste',
-		method: 'GET',
-		params: 'c=' + c + '&folderId=' + folderId,
+		url: 'ui/folder/paste/' + folderId,
+		method: 'POST',
+		params: {c : c},
 		success: function(response, options){
 			if(sessionExpired(response)) {
 				checkStatusAndReload(200);

@@ -113,9 +113,8 @@ function _initFolderDetailsWindow(folder) {
 }
 
 function showFolderDetailsWindow(folderId) {
-	Ext.Ajax.request({ url: 'ui/folderproperties',
+	Ext.Ajax.request({ url: 'ui/folder/properties' + folderId,
 		method: 'GET',
-		params: {folderId : folderId},
 		success: function (response, options) {
 			if(sessionExpired(response)) {
 				checkStatusAndReload(200);
@@ -151,9 +150,8 @@ function showFolderDetailsWindow(folderId) {
 function copyFolder() {
 	var folderId = Ext.state.Manager.get('currentFolder');
 	Ext.Ajax.request({
-		url: 'ui/folderproperties',
+		url: 'ui/folder/properties' + folderId,
 		method: 'GET',
-		params: {folderId : folderId},
 		success: function(response, options){
 			if(sessionExpired(response)) {
 				checkStatusAndReload(200);
@@ -183,9 +181,8 @@ function deleteFolder(folderId) {
 	Ext.Msg.confirm('Confirm Folder Delete','Do you really want to delete this folder and its content?', function(btn, text){
 		if (btn == 'yes'){
 			Ext.Ajax.request({
-				url: 'ui/node/remove',
-				method: 'GET',
-				params: {nodeId : folderId},
+				url: 'ui/node/' + folderId,
+				method: 'DELETE',
 				success: function(response, options){
 					if(sessionExpired(response)) {
 						checkStatusAndReload(200);
@@ -222,9 +219,9 @@ function createFolder(folderId) {
 	Ext.Msg.prompt('New folder','Please enter the folder name?', function(btn, folderName){
     	if (btn == 'ok'){
 			Ext.Ajax.request({
-				url: 'ui/createFolder',
-				method: 'GET',
-				params: {folderId : folderId, folderName : folderName},
+				url: 'ui/folder/' + folderId,
+				method: 'POST',
+				params: {folderName : folderName},
 				success: function(response, options){
 					if(sessionExpired(response)) {
 						checkStatusAndReload(200);
@@ -250,9 +247,8 @@ function renameFolder(f) {
     	if (btn == 'ok'){
 			
 			Ext.Ajax.request({
-				url: 'ui/node/rename',
-				method: 'GET',
-				params: {nodeId : f, newName : folderName},
+				url: 'ui/node/name/' + f + '?newName=' + folderName,
+				method: 'PUT',
 				success: function(response, options){
 					if(sessionExpired(response)) {
 						checkStatusAndReload(200);
