@@ -19,8 +19,9 @@
 -->
 <webscript>
 	<shortname>Custom UI - Browse Folder Content</shortname>
-	<description>List content of a given folder or company home if no nodeId is passed. Paging is supported by start and limit params.</description>
+	<description>List content of a given folder or company home if no node id is passed. Paging is supported by start and limit params</description>
 	<url>/docasu/ui/folder/docs?nodeId={folderId?}&amp;start={rowsFrom?}&amp;limit={rowsTo?}&amp;sort={orderBy?}&amp;dir={orderDirection?}</url>
 	<format default="json">extension</format>
 	<authentication>user</authentication>
+	<transaction>none</transaction>
 </webscript>

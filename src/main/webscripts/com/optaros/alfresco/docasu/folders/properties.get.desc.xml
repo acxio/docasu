@@ -23,4 +23,5 @@
    <url>/docasu/ui/folder/properties/{folderId}</url>
    <format default="json">extension</format>
    <authentication>user</authentication>
+   <transaction>none</transaction>
 </webscript>

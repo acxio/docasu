@@ -1454,7 +1454,7 @@ function showSearchResultsView() {
 function loadPermissions(nodeId) {
 	
 	Ext.Ajax.request({
-		url: 'ui/node/permissions/' + nodeId,
+		url: 'ui/folder/permissions/' + nodeId,
 		method: 'GET',
 		fileUpload: true,
 		success: function(response, options){

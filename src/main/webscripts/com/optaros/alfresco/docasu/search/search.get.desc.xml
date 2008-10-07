@@ -23,4 +23,5 @@
 	<url>/docasu/ui/search?q={searchText}&amp;t={searchType?}&amp;nodeId={lookIn?}&amp;createdFrom={createdFrom?}&amp;createdTo={createdTo?}&amp;modifiedFrom={modifiedFrom?}&amp;modifiedTo={modifiedTo?}&amp;start={rowsFrom?}&amp;limit={rowsTo?}&amp;sort={orderBy?}&amp;dir={orderDirection?}</url>
 	<format default="json">extension</format>
 	<authentication>user</authentication>
+	<transaction>none</transaction>
 </webscript>

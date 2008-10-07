@@ -23,4 +23,5 @@
    <url>/docasu/ui/logout</url>
    <format default="json">extension</format>
    <authentication>user</authentication>
+   <transaction>none</transaction>
 </webscript>

@@ -113,7 +113,7 @@ function _initFolderDetailsWindow(folder) {
 }
 
 function showFolderDetailsWindow(folderId) {
-	Ext.Ajax.request({ url: 'ui/folder/properties' + folderId,
+	Ext.Ajax.request({ url: 'ui/folder/properties/' + folderId,
 		method: 'GET',
 		success: function (response, options) {
 			if(sessionExpired(response)) {
@@ -150,7 +150,7 @@ function showFolderDetailsWindow(folderId) {
 function copyFolder() {
 	var folderId = Ext.state.Manager.get('currentFolder');
 	Ext.Ajax.request({
-		url: 'ui/folder/properties' + folderId,
+		url: 'ui/folder/properties/' + folderId,
 		method: 'GET',
 		success: function(response, options){
 			if(sessionExpired(response)) {

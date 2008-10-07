@@ -19,8 +19,9 @@
 -->
 <webscript>
 	<shortname>DoCASU</shortname>
-	<description>Load the Custom UI</description>
+	<description>Load the Custom UI. If a folder id is passed then DoCASU opens to the specified folder</description>
 	<url>/docasu/ui?nodeId={folderId?}</url>
 	<format default="html">extension</format>
 	<authentication>user</authentication>
+	<transaction>none</transaction>
 </webscript>

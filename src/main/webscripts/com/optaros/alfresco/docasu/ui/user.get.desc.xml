@@ -23,4 +23,5 @@
 	<url>/docasu/ui/user</url>
 	<format default="json">extension</format>
 	<authentication>user</authentication>
+	<transaction>required</transaction>
 </webscript>

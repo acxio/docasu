@@ -18,9 +18,10 @@
     
 -->
 <webscript>
-	<shortname>Custom UI - Get node permissions</shortname>
-	<description>Get permissions for a node based on the node id</description>
-	<url>/docasu/ui/node/permissions/{nodeId}</url>
+	<shortname>Custom UI - Get folder permissions</shortname>
+	<description>Get permissions for a folder based on the node id</description>
+	<url>/docasu/ui/folder/permissions/{folderId}</url>
 	<format default="json">extension</format>
 	<authentication>user</authentication>
+	<transaction>none</transaction>
 </webscript>
