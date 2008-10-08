@@ -16,18 +16,31 @@
  *    
  */
 
+// PUT parameters
 var nodeId = url.extension;
+
 var newName = args.newName;
 
+// search for node
 var contentToRename = search.findNode("workspace://SpacesStore/" + nodeId);
-
-if (contentToRename.hasPermission("Write")) {
-	contentToRename.name = newName;
-	model.msg = "ok";
-	model.success = true;
-	logger.log("filename updated");
+if(contentToRename != null) {
+	if (contentToRename.hasPermission("Write")) {
+		// get name property before renaming
+		var nodeName = contentToRename.properties.name;
+		contentToRename.name = newName;
+		
+		model.success = true;
+		model.msg = "Node " + nodeName + " was renamed to " + newName;
+		logger.log("Node " + nodeName + " was renamed to " + newName);
+	} else {
+		status.code = 400;
+		status.message = "You do not have permission to rename node";
+		status.redirect = true;
+		logger.log("User does not have permission to rename node");
+	}
 } else {
-	model.msg = "privileges";
-	model.success = false;
-	logger.log("user didn't have privileges");
+	status.code = 400;
+	status.message = "Invalid node reference " + nodeId;
+	status.redirect = true;
+	logger.log("Invalid node reference " + nodeId);
 }

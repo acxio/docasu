@@ -16,20 +16,23 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-{ "noredirect": true, "success": true, "rows" : [
-	<#if hasAspect(d, "cm:versionable") == 1 && d.properties.versionLabel?exists>
-		<#list d.versionHistory?sort_by("versionLabel")?reverse as record>
-		{
-			"id"			: "${record.versionLabel?string?replace('.','')}",
-			"label"			: "${record.versionLabel}",
-			"name"			: "${record.name}",
-			"downloadLink"	: "${url.context}${record.url}",
-			"author"		: "${record.creator}",
-			"created"		: "${record.createdDate?string("yyyy-MM-dd HH:mm Z")}",
-			"description"	: <#if record.description?exists>"${record.description}"<#else>"<i>No description available</i>"</#if>
-		}
-	 <#if record_has_next>,
-	 </#if>
-		</#list>
-	</#if>
-]}
+{
+	"success"	:	${success?string},
+	"msg"		:	"${msg}",
+	"rows"		:	[	
+						<#if hasAspect(d, "cm:versionable") == 1 && d.properties.versionLabel?exists>
+							<#list d.versionHistory?sort_by("versionLabel")?reverse as record>
+								{
+									"id"			:	"${record.versionLabel?string?replace('.','')}",
+									"label"			:	"${record.versionLabel}",
+									"name"			:	"${record.name}",
+									"downloadLink"	:	"${url.context}${record.url}",
+									"author"		:	"${record.creator}",
+									"created"		:	"${record.createdDate?string("yyyy-MM-dd HH:mm Z")}",
+									"description"	:	<#if record.description?exists>"${record.description}"<#else>"<i>No description available</i>"</#if>
+								}
+						 		<#if record_has_next>,</#if>
+							</#list>
+						</#if>
+					]
+}

@@ -16,11 +16,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
+<#-- TreeLoader requires this response structure -->
 [
-<#list categories as cat>
-   	 {
-       	 "id"	:"${cat.id}",
-       	 "text"	:"${cat.name}"
-	 }<#if cat_has_next>,</#if>
-</#list>
+	<#list categories as cat>
+	   	 {
+	       	 "id"	:	"${cat.id}",
+	       	 "text"	:	"${cat.name}"
+		 }<#if cat_has_next>,</#if>
+	</#list>
 ]

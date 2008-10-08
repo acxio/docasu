@@ -16,30 +16,36 @@
  *    
  */
 
+// GET parameters
 var folderId = url.extension;
 
-var nodeRef = "workspace://SpacesStore/" + folderId;
-
-if (logger.isLoggingEnabled()) {
-	logger.log("Fetching details for file with nodeRef: " + nodeRef);
-}
-
-var folder = search.findNode(nodeRef); 
-
-model.folder = folder;
-
-if (folder.hasPermission("Write")) {
-	model.writePermission = true;
+// search for node
+var folder = search.findNode("workspace://SpacesStore/" + folderId); 
+if(folder != null) {
+	model.folder = folder;
+	
+	if (folder.hasPermission("Write")) {
+		model.writePermission = true;
+	} else {
+		model.writePermission = false;
+	}
+	if (folder.hasPermission("Delete")) {
+		model.deletePermission = true;
+	} else {
+		model.deletePermission = false;
+	}
+	if (folder.hasPermission("CreateChildren")) {
+		model.createPermission = true;
+	} else {
+		model.createPermission = false;
+	}
+	
+	model.success = true;
+	model.msg = "Folder properties were loaded";
+	logger.log("Folder properties were loaded");
 } else {
-	model.writePermission = false;
-}
-if (folder.hasPermission("Delete")) {
-	model.deletePermission = true;
-} else {
-	model.deletePermission = false;
-}
-if (folder.hasPermission("CreateChildren")) {
-	model.createPermission = true;
-} else {
-	model.createPermission = false;
+	status.code = 400;
+	status.message = "Invalid node reference " + folderId;
+	status.redirect = true;
+	logger.log("Invalid node reference " + folderId);
 }

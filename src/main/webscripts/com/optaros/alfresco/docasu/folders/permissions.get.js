@@ -16,19 +16,21 @@
  *    
  */
 
+// GET parameters
 var givenNode = url.extension;
-logger.log("Node ID: " + givenNode);
 
-// find the given node
+// default to company home
 if (givenNode == null) {
 	var givenNode = companyhome.id;
 }
 
+// search for node
 var node = search.findNode("workspace://SpacesStore/" + givenNode);
+
+
 var entries = new Array();
 var arrayIndex = 0;
 model.comment = '';
-
 
 if (!node.hasPermission("Read")) {
 	model.comment += "cannotRead ";
@@ -85,6 +87,9 @@ if (model.comment == '') {
 	model.comment = 'empty';
 }
 
-//model.entries = entries;
 model.entries = entries;
 model.total = arrayIndex;
+
+model.success = true;
+model.msg = "Folder permissions were loaded";
+logger.log("Folder permissions were loaded");

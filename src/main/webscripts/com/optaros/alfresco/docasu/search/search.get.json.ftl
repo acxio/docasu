@@ -17,39 +17,40 @@
     
 -->
 {
-	"success"	: true,
-	"total"		: ${total},
-	"rows" 		: [
-<#list rows as row>
-		{
-			"nodeId"			: "${row.nodeId}",
-			"name"				: "${row.name}",
-			"title"				: "${row.title}",
-			"modified"			: "${row.modified?string("yyyy-MM-dd HH:mm Z")}",
-			"created"			: "${row.created?string("yyyy-MM-dd HH:mm Z")}",
-			"author"			: "${row.author}",
-			"size"				: "${(row.size!0)?c}",
-			"link"				: "${url.context}${row.url}?${randomNumber?string}",
-			"creator"			: "${row.creator}",
-			"description"		: "${row.description?js_string}",
-			"parentId"			: "${row.parentId}",
-			"parentPath"		: "${row.parentPath}",
-			"modifier"			: "${row.modifier}",
-			"mimetype"			: "${row.mimetype!}",
-			"downloadUrl"		: "${url.context}${row.downloadUrl}",
-			"versionable"		: "${row.versionable?string}",
-			"version"			: "${row.version}",
-			"writePermission"	: "${row.writePermission?string}",
-			"createPermission"	: "${row.createPermission?string}",
-			"deletePermission"	: "${row.deletePermission?string}",
-			"locked"			: "${row.locked?string}",
-			"editable"			: "${row.editable?string}",
-			"isWorkingCopy"		: "${row.isWorkingCopy?string}",
-			"iconUrl"			: "${url.context}${row.icon16}",
-			"icon32Url"			: "${url.context}${row.icon32}",
-			"icon64Url"			: "${url.context}${row.icon64}",
-			"isFolder"			: "${(row.isFolder!false)?string}"
-		}<#if row_has_next>,</#if>
-</#list>
-		]
+	"success"	:	${success?string},
+	"msg"		:	"${msg}",
+	"total"		:	${total},
+	"rows" 		:	[
+						<#list rows as row>
+								{
+									"nodeId"			:	"${row.nodeId}",
+									"name"				:	"${row.name}",
+									"title"				:	"${row.title}",
+									"modified"			:	"${row.modified?string("yyyy-MM-dd HH:mm Z")}",
+									"created"			:	"${row.created?string("yyyy-MM-dd HH:mm Z")}",
+									"author"			:	"${row.author}",
+									"size"				:	"${(row.size!0)?c}",
+									"link"				:	"${url.context}${row.url}?${randomNumber?string}",
+									"creator"			:	"${row.creator}",
+									"description"		:	"${row.description?js_string}",
+									"parentId"			:	"${row.parentId}",
+									"parentPath"		:	"${row.parentPath}",
+									"modifier"			:	"${row.modifier}",
+									"mimetype"			:	"${row.mimetype!}",
+									"downloadUrl"		:	"${url.context}${row.downloadUrl}",
+									"versionable"		:	"${row.versionable?string}",
+									"version"			:	"${row.version}",
+									"writePermission"	:	"${row.writePermission?string}",
+									"createPermission"	:	"${row.createPermission?string}",
+									"deletePermission"	:	"${row.deletePermission?string}",
+									"locked"			:	"${row.locked?string}",
+									"editable"			:	"${row.editable?string}",
+									"isWorkingCopy"		:	"${row.isWorkingCopy?string}",
+									"iconUrl"			:	"${url.context}${row.icon16}",
+									"icon32Url"			:	"${url.context}${row.icon32}",
+									"icon64Url"			:	"${url.context}${row.icon64}",
+									"isFolder"			:	"${(row.isFolder!false)?string}"
+								}<#if row_has_next>,</#if>
+						</#list>
+					]
 }

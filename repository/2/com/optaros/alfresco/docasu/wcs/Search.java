@@ -42,7 +42,6 @@ import com.optaros.alfresco.docasu.wcs.CustomFileFolderService.SearchType;
  * @author Jean-Luc Geering
  */
 public class Search extends AbstractDocumentWebScript {
-
 	private static final Log log = LogFactory.getLog(Search.class);
 
 	// maximum size for a search result set
@@ -106,8 +105,9 @@ public class Search extends AbstractDocumentWebScript {
 
 		if (!validParams(params)) {
 			status.setCode(400);
-			status.setMessage("Search term has not been provided.");
+			status.setMessage("Invalid search parameters");
 			status.setRedirect(true);
+			log.debug("Invalid search parameters");
 		} else {
 			String searchTypeParam = params.get(PARAM_SEARCH_TYPE);
 			SearchType searchType = getSearchType(searchTypeParam);
@@ -133,6 +133,10 @@ public class Search extends AbstractDocumentWebScript {
 			model.put("randomNumber", Math.random());
 			model.put("total", total);
 			model.put(KEYWORD_ROWS, getResultRows(nodes));
+			
+			model.put("success", true);
+			model.put("msg", "Search was successful");
+			log.debug("Search was successful");
 		}
 
 		log.debug("*** Exit search request handler ***");

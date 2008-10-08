@@ -16,4 +16,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
+<#-- JSON does not support control characters thus cannot be used to 
+return the content of files -->
 ${node.content}

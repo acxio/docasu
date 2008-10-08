@@ -16,45 +16,48 @@
  *    
  */
 
+// POST parameters
 var folderId = url.extension;
 
-if (args.c == undefined) {
-	status.code = 404;
-   	status.message = "Empty clipboard";
-   	status.redirect = true;
-}
+var clipParam = args.c;
 
-
-var nodeRef = "workspace://SpacesStore/" + folderId;
-
-if (logger.isLoggingEnabled()) {
-	logger.log("Fetching Folder: " + nodeRef);
-}
-
-var folder = search.findNode(nodeRef); 
-
-if (folder == undefined || !folder.isContainer)
-{
-	status.code = 404;
-   	status.message = "Folder " + folderId + " not found.";
-   	status.redirect = true;
-}
-
-var nodes = args.c.split(",");
-
-for each (ref in nodes) {
-	var node = search.findNode("workspace://SpacesStore/" + ref);
-	
-	// TODO: error handling if node doesn't exist
-	
-	if (node != undefined) {
-		node.copy(folder, true);
-		logger.log("pasting " + ref);
+if(clipParam) {
+	// search for node
+	var folder = search.findNode("workspace://SpacesStore/" + folderId);
+	if(folder != null) {
+		// make sure it's folder
+		if(folder.isContainer) {
+			var copyStatus = "";
+			var nodes = clipParam.split(",");
+			for each (ref in nodes) {
+				// search for node
+				var node = search.findNode("workspace://SpacesStore/" + ref);
+				if(node != null) {
+					node.copy(folder, true);
+					copyStatus += node.properties.name + "-success; ";
+				} else {
+					copyStatus += ref + "-failed; ";
+				}
+			}
+			
+			model.success = true;
+			model.msg = "Copy status: " + copyStatus;
+			logger.log("Copy status: " + copyStatus);
+		} else {
+			status.code = 400;
+			status.message = "Invalid folder reference " + folderId;
+			status.redirect = true;
+			logger.log("Invalid folder reference " + folderId);
+		}
 	} else {
-		logger.log("couldn't find " + ref);
+		status.code = 400;
+		status.message = "Invalid node reference " + folderId;
+		status.redirect = true;
+		logger.log("Invalid node reference " + folderId);
 	}
+} else {
+	status.code = 400;
+	status.message = "No clipboard parameter passed";
+	status.redirect = true;
+	logger.log("No clipboard parameter passed");
 }
-
-model.success = true;
-model.msg = 'ok';
-

@@ -107,11 +107,10 @@ function _initSearchResultsView() {
 
 	searchProxy.on('loadexception', function(proxy, options, response, error) {
 		Ext.MessageBox.hide();
-		if(sessionExpired(response)) {
-			checkStatusAndReload(200);
-		} else {
-			Ext.MessageBox.alert('Failed', 'Failed to display search results', 200);
-		}
+		if(checkHandleErrors('Failed to perform search', response)) {
+			return;
+		} 
+		Ext.MessageBox.alert('Error', 'Failed to display search results');
 	});
 
 	return searchResultsPanel;
@@ -156,11 +155,6 @@ function validateSearchParameters(params) {
 	if (params.q != undefined && params.q.length > 0) {
 		query = params.q;
 	}
-	//alert("query:"+query+";");
-	if (query == null || query == "") {
-		// if search for empty string 
-		return "Cannot search for an empty string!";
-	}
 	// validate dates
 	var createdFrom = null;
 	var createdTo = null;
@@ -190,6 +184,15 @@ function validateSearchParameters(params) {
 	if(createdFrom != null &&  modifiedTo != null && modifiedTo < createdFrom) {
 		// if modifiedTo is before createdFrom 
 		return "'Modified Before' date cannot be set before 'Created After' date!";
+	}
+	
+	// check if valid search
+	if ((query == null || query == "") && 
+		(createdFrom == null || createdFrom == "") &&
+		(createdTo == null || createdTo == "") &&
+		(modifiedFrom == null || modifiedFrom == "") &&
+		(modifiedTo == null || modifiedTo == "")) {
+			return "Invalid search parameters";
 	}
 
 	return "";

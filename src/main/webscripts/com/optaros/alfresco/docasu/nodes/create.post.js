@@ -16,60 +16,64 @@
  *    
  */
 
+// POST parameters
 var folderId = url.extension;
 
 var fileName = null;
 var contentToWrite = null;
 var contentType = null;
 
-for each (field in formdata.fields)
-{
-logger.log("Name: " + field.name + " ; Value: " + field.value);
-  if (field.name == "filename") {
-      fileName = field.value;
-  } else if (field.name == "content") {
-  	  contentToWrite = field.value;
-  } else if (field.name == "contentType") {
-  	contentType = field.value;
-  }
+for each (field in formdata.fields) {
+	if (field.name == "filename") {
+	    fileName = field.value;
+	} else if (field.name == "content") {
+		  contentToWrite = field.value;
+	} else if (field.name == "contentType") {
+		contentType = field.value;
+	}
 }
 
-// find the listing folder - create if not already exists
-var folderToWriteIn = search.findNode("workspace://SpacesStore/" + folderId );
-
-// find if the new file already exist - create if not
-var file = folderToWriteIn.childByNamePath(fileName);
-
-if (folderToWriteIn.hasPermission("CreateChildren")) {
-	if (file == null) {
-		// create the file with the content
-	    file = folderToWriteIn.createFile(fileName);
-		
-		file.content = contentToWrite;
-		if ('HTML' == contentType) {
-			file.properties.content.mimetype = 'text/html';
+// search for folder
+var folderToWriteIn = search.findNode("workspace://SpacesStore/" + folderId);
+if(folderToWriteIn != null) {
+	// search for already existing file
+	var file = folderToWriteIn.childByNamePath(fileName);
+	if(file == null) {
+		// check for create content permission
+		if (folderToWriteIn.hasPermission("CreateChildren")) {
+			// create the new document
+		    file = folderToWriteIn.createFile(fileName);
+			file.content = contentToWrite;
+			if ('HTML' == contentType) {
+				file.properties.content.mimetype = 'text/html';
+			} else {
+				file.properties.content.mimetype = 'text/plain';
+			}
+			/* manually add titled aspect in order to fix issue with working-copy */
+			var scAspectQName = "{http://www.alfresco.org/model/content/1.0}titled";
+			var addAspect = actions.create("add-features");
+	        addAspect.parameters["aspect-name"] = scAspectQName;
+			addAspect.execute(file);
+			file.save();
+			
+			model.success = true;
+			model.msg = "Document " + fileName + " created";
+			logger.log("Document " + fileName + " created");
 		} else {
-			file.properties.content.mimetype = 'text/plain';
+			status.code = 400;
+			status.message = "You do not have permission to create new content";
+			status.redirect = true;
+			logger.log("User does not have permission to create new content");
 		}
-		
-		/* manually add titled aspect in order to fix issue with working-copy */
-		var scAspectQName = "{http://www.alfresco.org/model/content/1.0}titled";
-		var addAspect = actions.create("add-features");
-        addAspect.parameters["aspect-name"] = scAspectQName;
-		addAspect.execute(file);
-		
-		file.save();
-		
-		model.msg = "ok";
-		model.success = true;
-		logger.log("file create");
 	} else {
-	    model.msg = "This file exists already.";
-	    model.success = false;
-	    logger.log("file already exist");
+		status.code = 400;
+		status.message = "File " + fileName + " already exists";
+		status.redirect = true;
+		logger.log("File " + fileName + " already exists");
 	}
 } else {
-	model.msg = "You don\'t have the privileges to create a new content.";
-	model.success = false;
-	logger.log("user didn't have privileges");
+	status.code = 400;
+	status.message = "Invalid node reference " + folderId;
+	status.redirect = true;
+	logger.log("Invalid node reference " + folderId);
 }

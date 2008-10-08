@@ -16,17 +16,19 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 -->
+<#-- TreeLoader requires this response structure -->
 [
-<#list rows?sort_by("name") as row>
-		{
-			"id"	: "${row.nodeId}",
-			"text"	: "${row.name}",
-			"name"	: "${row.name}",
-			"parentPath"	: "${path}",
-			"url"	: "${url.context}${row.url}",
-			"writePermission"	: "${row.writePermission?string}",
-			"createPermission"	: "${row.createPermission?string}",
-			"deletePermission"	: "${row.deletePermission?string}"
-		}<#if row_has_next>,</#if>
-</#list>
+	<#list rows?sort_by("name") as row>
+			{
+				"id"				:	"${row.nodeId}",
+				"text"				:	"${row.name}",
+				"name"				:	"${row.name}",
+				"parentPath"		:	"${path}",
+				"url"				:	"${url.context}${row.url}",
+				"writePermission"	:	"${row.writePermission?string}",
+				"createPermission"	:	"${row.createPermission?string}",
+				"deletePermission"	:	"${row.deletePermission?string}"
+			}<#if row_has_next>,</#if>
+	</#list>
 ]
+					

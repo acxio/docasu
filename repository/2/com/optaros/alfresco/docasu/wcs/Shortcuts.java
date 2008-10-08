@@ -37,7 +37,6 @@ import org.alfresco.web.scripts.WebScriptStatus;
 import org.apache.commons.logging.LogFactory;
 
 public class Shortcuts extends DeclarativeWebScript {
-
 	private static final org.apache.commons.logging.Log log = LogFactory.getLog(Shortcuts.class);
 
 	private static final QName TYPE_PREFERENCES = QName.createQName(NamespaceService.APP_MODEL_1_0_URI, "preferences");
@@ -48,7 +47,6 @@ public class Shortcuts extends DeclarativeWebScript {
 
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> executeImpl(WebScriptRequest req, WebScriptStatus status) {
-
 		NodeRef person = getRepositoryContext().getPerson();
 
 		List<ChildAssociationRef> configurationList = nodeService.getChildAssocs(person, ApplicationModel.ASSOC_CONFIGURATIONS,
@@ -91,11 +89,14 @@ public class Shortcuts extends DeclarativeWebScript {
 		} else {
 			nodeService.setProperty(preferences, PROP_SHORTCUTS, new ArrayList<String>());
 		}
+		
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("shortcuts", shortcutRefs);
-
+		
+		model.put("success", true);
+		model.put("msg", "Favorites fetched");
+		log.debug("Favorites fetched");
 		return model;
-
 	}
 
 	public void setNodeService(NodeService nodeService) {

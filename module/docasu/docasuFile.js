@@ -56,7 +56,6 @@ function showFileDetailsWindow(fileRecordSet) {
     if (fileRecordSet.get('versionable')) {
         Ext.getCmp('versionsPanel').enable();
         var store = Ext.getCmp('versionsGrid').getStore();
-        //store.baseParams.nodeId = fileRecordSet.get('nodeId');
         store.proxy = new Ext.data.HttpProxy({
 							url: 'ui/node/versions/'+fileRecordSet.get('nodeId'),
 							method: 'GET'
@@ -120,15 +119,12 @@ function deleteFile(fileName, nodeId) {
 				url: 'ui/node/' + nodeId,
 				method: 'DELETE',
 				success: function(response, options) {
-					if(sessionExpired(response)) {
-						checkStatusAndReload(200);
+					// check response for errors
+					if(checkHandleErrors('Failed to delete file', response)) {
 						return;
 					}
-					var result = eval('('+response.responseText+')');
-					if (!result.success) {
-						Ext.MessageBox.alert('Failed', 'Failed to delete file. The following error occurred:\n\n' + result.msg);
-					}
 					if (searchQuery != null) {
+						// if delete is performed on a search result
 						var store = Ext.getCmp('searchResultsView').getStore();
 						store.params = searchQuery.form.getValues(false);
 						store.load(searchQuery.options);
@@ -137,8 +133,8 @@ function deleteFile(fileName, nodeId) {
 						gridStore.load();
 					}
 				},
-				failure: function(response, options){
-					Ext.MessageBox.alert('Failed', 'Failed to delete file.\n\n' + response.responseText);
+				failure: function(response, options) {
+					handleFailureMessage('Failed to delete file', response);
 				}
 	    	});
 		}
@@ -188,90 +184,72 @@ function showUploadFile(folder) {
  * @param {String} nodeId
  */
 function copyLink(icon, name, nodeId) {
-	
 	clipboard.put(icon, name, nodeId);
 	clipboard.update();
 }
 
-function checkoutFile(nodeId) {
-				
-	Ext.Ajax.request({
-		url: 'ui/node/checkout/'+nodeId,
-		method: 'PUT',
-		success: function(result, request){
-			if(sessionExpired(result)) {
-				checkStatusAndReload(200);
-				return;
-			}
-			gridStore.load();
-		},
-		failure: function(result, request){
-			handleErrorMessage('Failed to checkout file', result);
-		}
-	});
-}
 
-
-
-
+/**
+ * File checkin
+ */
 function checkinFile(nodeId) {
 	Ext.Ajax.request({
 		url: 'ui/node/checkin/'+nodeId,
 		method: 'PUT',
-		success: function(result, request){
-			if(sessionExpired(result)) {
-				checkStatusAndReload(200);
+		success: function(response, options) {
+			// check response for errors
+			if(checkHandleErrors('Failed to checkin file', response)) {
 				return;
 			}
 			updateDocumentInfoPane();
 			gridStore.load();
 		},
-		failure: function(result, request){
-			handleErrorMessage('Failed to checkin file', result);
+		failure: function(response, options) {
+			handleFailureMessage('Failed to checkin file', response);
 		}
 	});
 }
 
+/**
+ * File checkout
+ */
+function checkoutFile(nodeId) {
+	Ext.Ajax.request({
+		url: 'ui/node/checkout/'+nodeId,
+		method: 'PUT',
+		success: function(response, options) {
+			// check response for errors
+			if(checkHandleErrors('Failed to checkout file', response)) {
+				return;
+			}
+			gridStore.load();
+		},
+		failure: function(response, options) {
+			handleFailureMessage('Failed to checkout file', response);
+		}
+	});
+}
+
+/**
+ * Undo file checkout
+ */
 function undoCheckout(nodeId) {
 	Ext.Ajax.request({
 		url: 'ui/node/checkout/'+nodeId,
 		method: 'DELETE',
-		success: function(result, request){
-			if(sessionExpired(result)) {
-				checkStatusAndReload(200);
+		success: function(response, options) {
+			// check response for errors
+			if(checkHandleErrors('Failed to undo checkout file', response)) {
 				return;
 			}
 			updateDocumentInfoPane();
 			gridStore.load();
 		},
-		failure: function(result, request){
-			handleErrorMessage('Failed to undo checkout file', result);
+		failure: function(response, options) {
+			handleFailureMessage('Failed to undo checkout file', response);
 		}
 	});
 }
-
-
-function handleErrorMessage(stringMsg, result) {
-		try {
-			var jsonData = Ext.util.JSON.decode(result.responseText);
-			if (!jsonData.success)
-			{
-				var message = '<b>' + stringMsg + '</b> : ' + jsonData.msg;
-				if (jsonData.status.code >= 500) {
-					message = message + '<br/><br/>' + 
-					'<b>Status: </b>' + jsonData.status.code  +' ' + jsonData.status.name + '' + jsonData.status.description + '<br/><br/>' +
-					'<b>Exception: </b>' + jsonData.exception + '<br/><br/>' +
-					'<b>Server:</b> ' + jsonData.server + '<br/><br/>' +
-					jsonData.time;
-				}
-			Ext.MessageBox.alert('Failed', message);
-			return;
-			}
-		}
-		catch (err) {
-			Ext.MessageBox.alert('Failed', err + ' cannot parse error message: ' + result.responseText);
-		}
-	}
 
 
 /**
@@ -559,21 +537,17 @@ function _initFileDetailsWindow() {
 					method: 'POST',
 					form: Ext.getCmp('filePropertiesForm').getForm().getEl(),
 					success: function(response, options) {
-						if(sessionExpired(response)) {
-							checkStatusAndReload(200);
+						Ext.getCmp('fileDetailsWindow').close();
+						// check response for errors
+						if(checkHandleErrors('Failed to update document properties', response)) {
 							return;
 						}
-						// document contents changed => refresh the data
-						// for the currently selected document
-						// Also reload the grid, since the filename might
-						// have changed.
-						gridStore.on('load', updateDocumentInfoPane); // !!
+						gridStore.on('load', updateDocumentInfoPane);
 						gridStore.load();
-						Ext.getCmp('fileDetailsWindow').close();
 					}, 
-					failure: function(){
-						//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
-						Ext.MessageBox.alert('Failed', 'Failed on updating properties');
+					failure: function(response, options) {
+						Ext.getCmp('fileDetailsWindow').close();
+						handleFailureMessage('Failed to update document properties', response);
 					}
 				});
 			}

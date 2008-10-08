@@ -16,27 +16,26 @@
  *    
  */
 
+// DELETE parameters
 var nodeId = url.extension;
-logger.log('Node ID to remove is: ' + nodeId);
 
-// Get the node
+// search for node
 var node = search.findNode("workspace://SpacesStore/" + nodeId);
-
 if (node != null) {
-	// Get the old name
-	model.msg = node.properties.name + " has been removed.";
-	model.parent = node.parent.id;
+	// get some properties before deletion
+	var nodeName = node.properties.name;
+	var parentNodeId = node.parent.id;
 	
-	// Remove it
-	try {
-		node.remove();
-		model.success = true;
-	} catch (e) {
-		model.success = false;
-		model.msg = e.message;
-	}
+	// remove node
+	node.remove();
+	model.parent = parentNodeId;
+		
+	model.success = true;
+	model.msg = "Node " + nodeName + " was removed";
+	logger.log("Node " + nodeName + " was removed");
 } else {
-	model.success = false;
-	model.msg = "Node could not be found.";
-	model.parent = "";
+	status.code = 400;
+	status.message = "Invalid node reference " + nodeId;
+	status.redirect = true;
+	logger.log("Invalid node reference " + nodeId);
 }

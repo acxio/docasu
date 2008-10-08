@@ -16,19 +16,20 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-({   "noredirect":true,
-	 "success"	:true,
-   	 "nodeId"	:"${folder.id}",
-   	 "name"		:"${folder.name}",
-  	 "size"		:"${folder.size}",
-   	 "modified"	:"${folder.properties.modified?string("yyyy-MM-dd HH:mm Z")}",
-   	 "created"	:"${folder.properties.created?string("yyyy-MM-dd HH:mm Z")}",
-   	 "parentId" :"${folder.parent.id}",
-   	 "path"     :"${folder.displayPath}",
-   	 "url"      :"${url.context}/wcs/docasu/ui?nodeId=${folder.id}",
-   	 "creator"  :"${folder.properties.creator}",
-   	 "icon"		:"${url.context}${folder.icon16}",
-   	 "writePermission"	: "${writePermission?string}",
-	 "createPermission"	: "${createPermission?string}",
-	 "deletePermission"	: "${deletePermission?string}"
-})
+{
+	"success"			:	${success?string},
+	"msg"				:	"${msg}",
+	"nodeId"			:	"${folder.id}",
+	"name"				:	"${folder.name}",
+	"size"				:	"${folder.size}",
+	"modified"			:	"${folder.properties.modified?string("yyyy-MM-dd HH:mm Z")}",
+	"created"			:	"${folder.properties.created?string("yyyy-MM-dd HH:mm Z")}",
+	"parentId"			:	"${folder.parent.id}",
+	"path"				:	"${folder.displayPath}",
+	"url"      			:	"${url.context}/wcs/docasu/ui?nodeId=${folder.id}",
+	"creator"  			:	"${folder.properties.creator}",
+	"icon"				:	"${url.context}${folder.icon16}",
+	"writePermission"	:	"${writePermission?string}",
+	"createPermission"	:	"${createPermission?string}",
+	"deletePermission"	:	"${deletePermission?string}"
+}

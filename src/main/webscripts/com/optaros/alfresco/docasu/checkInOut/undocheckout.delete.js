@@ -19,17 +19,27 @@
 // Get parameters
 var nodeId = url.extension;
 
-logger.log("Node ID to cancel the check out is: " + nodeId);
-
-// Get the node
+// search for node
 var node = search.findNode("workspace://SpacesStore/" + nodeId);
-
 if (node != null) {
-	node.cancelCheckout();
-	model.success = true;
-	model.msg = "Undo checked out";	
+	// make sure is document
+	if(node.isDocument) {
+		// get name property
+		var nodeName = node.properties.name;
+		node.cancelCheckout();
+		
+		model.success = true;
+		model.msg = "Checkout " + nodeName + " was removed";
+		logger.log("Checkout " + nodeName + " was removed");
+	} else {
+		status.code = 400;
+		status.message = "Invalid document reference " + nodeId;
+		status.redirect = true;
+		logger.log("Invalid document reference " + nodeId);
+	}	
 } else {
 	status.code = 400;
 	status.message = "Invalid node reference " + nodeId;
 	status.redirect = true;
+	logger.log("Invalid node reference " + nodeId);
 }

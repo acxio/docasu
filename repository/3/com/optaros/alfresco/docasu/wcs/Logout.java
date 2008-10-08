@@ -21,8 +21,6 @@ package com.optaros.alfresco.docasu.wcs;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.alfresco.web.scripts.DeclarativeWebScript;
 import org.alfresco.web.scripts.WebScriptRequest;
 import org.alfresco.web.scripts.Status;
@@ -33,9 +31,7 @@ public class Logout extends DeclarativeWebScript {
 	private static final org.apache.commons.logging.Log log = LogFactory.getLog(Logout.class);
 	
 	public Map<String, Object> executeImpl(WebScriptRequest req, Status status) {
-		
 		// Only works for the Webscript Servlet Runtime
-
 		if (!(req instanceof WebScriptServletRequest)) {
 			throw new RuntimeException("Unexpected request type. Logout only works for Webclient authentication");
 		}
@@ -44,13 +40,11 @@ public class Logout extends DeclarativeWebScript {
 		// invalidate the session
 		r.getHttpServletRequest().getSession().invalidate();
 		
-		log.debug("Invalidating HTTP Session.");		
-		status.setRedirect(false);
-		status.setCode(HttpServletResponse.SC_OK);
-		
-		return new HashMap<String, Object>();
-		
-		
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("success", true);
+		model.put("msg", "Logout was successful");
+		log.debug("User logged out successfully");
+		return model;
 	}
 
 }

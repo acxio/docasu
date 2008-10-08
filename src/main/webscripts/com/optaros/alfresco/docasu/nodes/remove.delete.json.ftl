@@ -17,7 +17,7 @@
     
 -->
 {
-	"success"	: ${success?string},
-	"parentId"	: "${parent}",
-	"msg"		: "${msg}"
+	"success"	:	${success?string},
+	"msg"		:	"${msg}",
+	"parentId"	:	"${parent}"
 }

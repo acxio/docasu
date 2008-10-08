@@ -16,6 +16,7 @@
  *    
  */
 
+// POST parameters
 var nodeId = url.extension;
 
 var title = "";
@@ -23,34 +24,43 @@ var name = "";
 var description = "";
 var author = "";
 
-for each (field in formdata.fields)
-{
-  if (field.name == "title") {
-  	title = field.value;
-  } else if (field.name == "name") {
-	name = field.value;
-  } else if (field.name == "description") {
-  	description = field.value;
-  } else if (field.name == "author") {
-    author = field.value;
-  }
+for each (field in formdata.fields) {
+	if (field.name == "title") {
+		title = field.value;
+	} else if (field.name == "name") {
+		name = field.value;
+	} else if (field.name == "description") {
+		description = field.value;
+	} else if (field.name == "author") {
+		author = field.value;
+	}
 }
-logger.log(nodeId);
-var doc = search.findNode("workspace://SpacesStore/" + nodeId);
-if (doc == null || doc.isContainer) {
-	status.code = 404;
-	status.message = "Document " + nodeId + " not found.";
-	status.redirect = true;
-	model.msg = 'err';
-}
-else {
 
-	doc.properties["title"] = title;
-	doc.properties["name"] = name;
-	doc.properties["description"] = description;
-	doc.properties["author"] = author;
-	doc.save();
-	
-	model.msg = "ok";
-	model.success = true;
+// search for node
+var doc = search.findNode("workspace://SpacesStore/" + nodeId);
+if(doc != null) {
+	// make sure is document 
+	if(!doc.isContainer) {
+		// get name property before renaming
+		var nodeName = doc.properties.name;
+		doc.properties["title"] = title;
+		doc.properties["name"] = name;
+		doc.properties["description"] = description;
+		doc.properties["author"] = author;
+		doc.save();
+		
+		model.success = true;
+		model.msg = "Properties for " + nodeName + " were updated";
+		logger.log("Properties for " + nodeName + " were updated");
+	} else {
+		status.code = 400;
+		status.message = "Invalid document reference " + nodeId;
+		status.redirect = true;
+		logger.log("Invalid document reference " + nodeId);
+	}
+} else {
+	status.code = 400;
+	status.message = "Invalid node reference " + nodeId;
+	status.redirect = true;
+	logger.log("Invalid node reference " + nodeId);
 }

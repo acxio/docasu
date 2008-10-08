@@ -16,27 +16,45 @@
  *    
  */
 
+// POST parameters
 var folderId = url.extension;
 
-if (typeof(folderId) == 'undefined' || folderId == 'null') {
+var newFolderName = args.folderName;
+
+// default to company home
+if (folderId == null || typeof(folderId) == 'undefined') {
 	folderId = companyhome.id;
 }
 
-var nodeRef = "workspace://SpacesStore/" + folderId;
-if (logger.isLoggingEnabled()) {
-	logger.log("Create Folder in the folder: " + nodeRef);
+// search for node
+var folder = search.findNode("workspace://SpacesStore/" + folderId);
+if(folder != null) {
+	// get name property
+	var nodeName = folder.properties.name;
+	
+	// make sure is folder
+	if(folder.isContainer) {
+		if (folder.hasPermission("CreateChildren")) {
+			newFolder = folder.createFolder(newFolderName);
+			
+			model.success = true;
+			model.msg = "Folder " + newFolderName + " was created";
+			logger.log("Folder " + newFolderName + " was created");
+		} else {
+			status.code = 400;
+			status.message = "You do not have permission to create folder";
+			status.redirect = true;
+			logger.log("User does not have permission to create folder");
+		}
+	} else {
+		status.code = 400;
+		status.message = "Node " + nodeName + " is not a folder";
+		status.redirect = true;
+		logger.log("Folder " + nodeName + " is not a folder");
+	}
+} else {
+	status.code = 400;
+	status.message = "Invalid node reference " + folderId;
+	status.redirect = true;
+	logger.log("Invalid node reference " + folderId);
 }
-
-var folder = search.findNode(nodeRef);
-
-if (folder == undefined || !folder.isContainer)
-{
-	status.code = 404;
-   	status.message = "Folder " + url.extension + " not found.";
-   	status.redirect = true;
-} else if (folder.hasPermission("CreateChildren")) {
-   // create the folder
-   newFolder = folder.createFolder(args.folderName);
-}
-
-model.msg = args.folderName;

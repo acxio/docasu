@@ -16,12 +16,12 @@
  *    
  */
 
-var foldernode = url.extension;
+// POST parameters
+var folderId = url.extension;
 
 var filename = null;
 var filecontent = null;
 
-// locate file attributes
 for each (field in formdata.fields) {
   if (field.isFile) {
     filename = field.filename;
@@ -30,36 +30,25 @@ for each (field in formdata.fields) {
 }
 
 // ensure mandatory file attributes have been located
-if (filename == undefined || filecontent == undefined)
-{
-	model.success = false;
-	model.msg = "Uploaded file cannot be located in request";
-}
-
-var folder = search.findNode("workspace://SpacesStore/" + foldernode);
-if (folder == null || !folder.isContainer)
-{
-   	model.success = false;
-	model.msg = "Folder " + foldernode + " not found.";
-} else { 
-	
-	var t = filename.lastIndexOf("\\");
-	if (t != -1) {
-		filename = filename.substr(t + 1);
-	}
-	
-	try {
+if (folderId != null && filename != null && filecontent != null) {
+	// search for node
+	var folder = search.findNode("workspace://SpacesStore/" + folderId);
+	if (folder != null && folder.isContainer) {
+		// extract file name
+		var t = filename.lastIndexOf("\\");
+		if (t != -1) {
+			filename = filename.substr(t + 1);
+		}
+		// create file and set properties
 		var upload = folder.createFile(filename);
 		upload.properties.title = filename;
 		upload.properties.content.write(filecontent);
 		/* serviceRegistry is exposed as a JavaScript extension - @see docasu-context.xml */
 		upload.mimetype = serviceRegistry.getMimetypeService().guessMimetype(filename);
 		upload.save();
-		
 		/* manually execute metadata extractor */
 		var metadataExtracter = actions.create("extract-metadata");
 		metadataExtracter.execute(upload);
-		
 		/* manually add titled aspect in order to fix issue with working-copy */
 		var scAspectQName = "{http://www.alfresco.org/model/content/1.0}titled";
 		var addAspect = actions.create("add-features");
@@ -67,14 +56,17 @@ if (folder == null || !folder.isContainer)
 		addAspect.execute(upload);
 	
 		model.success = true;
-		model.msg = 'File uploaded successfully';
-	} catch(e) {
-		model.success = false;
-		logger.log(e.message);
-		if (e.message.indexOf('FileExistsException') != -1) {
-			model.msg = 'File already exists';
-		} else {
-			model.msg = 'An internal error occurred';
-		}
+		model.msg = "File was uploaded successfully";
+		logger.log("File was uploaded successfully");
+	} else {
+		status.code = 400;
+		status.message = "Invalid folder reference " + folderId;
+		status.redirect = true;
+		logger.log("Invalid folder reference " + folderId);
 	}
+} else {
+	status.code = 400;
+	status.message = "Invalid upload parameters";
+	status.redirect = true;
+	logger.log("Invalid upload parameters");
 }

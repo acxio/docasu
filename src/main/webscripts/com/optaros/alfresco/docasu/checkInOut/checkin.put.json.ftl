@@ -17,6 +17,6 @@
     
 -->
 {
-	"success" : ${success?string},
-	"msg"	 : "${msg}"
+	"success"	:	${success?string},
+	"msg"		:	"${msg}"
 }

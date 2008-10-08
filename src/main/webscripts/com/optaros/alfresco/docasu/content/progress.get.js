@@ -16,8 +16,6 @@
  *    
  */
 
-logger.log('*******************************');
-logger.log('progress not implemented yet');
-logger.log('*******************************');
 model.success = true;
-model.msg = 'success';
+model.msg = "Progress not implemented yet";
+logger.log("Progress not implemented yet");

@@ -80,23 +80,22 @@ Ext.onReady(function(){
 	Ext.Ajax.request({
 		url: 'ui/user',
 		method: 'GET',
-		success: function(result, request){
-			if(sessionExpired(result)) {
-				checkStatusAndReload(200);
+		success: function(response, options) {
+			// check response for errors
+			if(checkHandleErrors('Failed to load user data', response)) {
 				return;
 			}
-			_init(result, request);
+			_init(response, options);
 		},
-		failure: function(result, request){
-			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
-			Ext.MessageBox.alert('Failed', 'Failed on user login. \n\r\n\r' + result.responseText);
+		failure: function(response, options) {
+			handleFailureMessage('Failed to load user data', response);
 		}
 	});
 });
 
 function _init(result, request) {
 	
-	var user = eval(result.responseText);
+	var user = Ext.util.JSON.decode(result.responseText);
 	
     // Set initial parameters
     Ext.state.Manager.set('companyHomeId', user.companyHome);
@@ -377,12 +376,11 @@ function _initCenter() {
 	
 	gridStore.on('loadexception', function(proxy, options, response, error) {
 		searchQuery = null;
-		if(sessionExpired(response)) {
-			checkStatusAndReload(200);
-		} else {
-			// alfresco internal error
-			Ext.MessageBox.alert('Failed', 'The resource does not exist or you may not have permission to access it!', 200);
+		// check response for errors
+		if(checkHandleErrors('Failed to load content', response)) {
+			return;
 		}
+		Ext.MessageBox.alert('Error', 'Failed to display contents');
 	});
 	
 	// SELECTION
@@ -742,14 +740,13 @@ function _initNavigator() {
 }
 
 function _initCompanyHome() {
-
 	// Tree loader for global directory tree
 	var companyHomeTreeLoader = new Ext.tree.TreeLoader({
 		dataUrl: 'ui/folders',
 		requestMethod: 'GET'
 	});
 
-	companyHomeTreeLoader.on("load", function(treeLoader, node) {
+	companyHomeTreeLoader.on("load", function(treeLoader, node, response) {
 		var path = Ext.state.Manager.get('nextActiveFolder');
 		if (typeof(path) != 'undefined') {
 			// Expand the active folder in the tree structure
@@ -758,10 +755,15 @@ function _initCompanyHome() {
 		}
 	}, this);
 	
-	 // TODO understant why this forces IE6 to throw exceptions all the time
-//	companyHomeTreeLoader.on("loadexception", function(loader, node, response) {
-//		checkStatusAndReload(response.status);
-//	});
+	companyHomeTreeLoader.on('loadexception', function(treeLoader, node, response) {
+		// check for session expiration
+		if(sessionExpired(response)) {
+			// reload docasu
+			window.location = 'ui';
+			return;
+		}
+		handleFailureMessage('Failed to load sub-folders', response);
+	});
 
 	var companyHomeTree = new Ext.tree.TreePanel({
 		id: 'companyHomeTree',
@@ -825,17 +827,21 @@ function _initCompanyHome() {
 }
 
 function _initMyHome() {
-
 	// Tree loader for my home directory tree
 	var myHomeTreeLoader = new Ext.tree.TreeLoader({
 		dataUrl: 'ui/folders',
 		requestMethod: 'GET'
 	});
-
-    // TODO understant why this forces IE6 to throw exceptions all the time
-//	myHomeTreeLoader.on("loadexception", function(loader, node, response) {
-//		checkStatusAndReload(response.status);
-//	});
+	
+	myHomeTreeLoader.on('loadexception', function(treeLoader, node, response) {
+		// check for session expiration
+		if(sessionExpired(response)) {
+			// reload docasu
+			window.location = 'ui';
+			return;
+		}
+		handleFailureMessage('Failed to load sub-folders', response);
+	});
 
 	var myHomeTree = new Ext.tree.TreePanel({
 		id: 'myHomeTree',
@@ -900,17 +906,21 @@ function _initMyHome() {
 }
 
 function _initCategories() {
-
 	// Tree loader for global category tree
 	var categoriesTreeLoader = new Ext.tree.TreeLoader({
 		dataUrl: 'ui/categories',
 		requestMethod: 'GET'
 	});
 	
-	 // TODO understant why this forces IE6 to throw exceptions all the time
-//	companyHomeTreeLoader.on("loadexception", function(loader, node, response) {
-//		checkStatusAndReload(response.status);
-//	});
+	categoriesTreeLoader.on('loadexception', function(treeLoader, node, response) {
+		// check for session expiration
+		if(sessionExpired(response)) {
+			// reload docasu
+			window.location = 'ui';
+			return;
+		}
+		handleFailureMessage('Failed to load sub-categories', response);
+	});
 
 	var categoriesTree = new Ext.tree.TreePanel({
 		id: 'categoriesTree',
@@ -1011,15 +1021,16 @@ function _initBreadcrumbs() {
 
 function updateCurrentFolder(folderId){
 	Ext.state.Manager.set("currentFolder", folderId);
-	Ext.Ajax.request({ url: 'ui/folder/properties/' + folderId,
+	Ext.Ajax.request({ 
+		url: 'ui/folder/properties/' + folderId,
 		method: 'GET',
 		success: function (response, options) {
-			if(sessionExpired(response)) {
-				checkStatusAndReload(200);
+			// check response for errors
+			if(checkHandleErrors('Failed to load folder properties', response)) {
 				return;
 			}
 			try {
-				var folder = eval(response.responseText);
+				var folder = Ext.util.JSON.decode(response.responseText);
 				var myRecord = new Object('Node '+folder.nodeId);
 		       	myRecord.id = folder.nodeId;
 		       	myRecord.text = folder.name;
@@ -1031,11 +1042,11 @@ function updateCurrentFolder(folderId){
 				myRecord.deletePermission = eval(folder.deletePermission);
 				Ext.state.Manager.set("currentFolderProperties", myRecord);
 			} catch (e) {
-				Ext.MessageBox.alert('Failed', 'An error occurred while reading current folder properties');
+				Ext.MessageBox.alert('Error', 'Failed to read folder properties ' + e);
 			}
 		}, 
-		failure: function(response, options){
-			Ext.MessageBox.alert('Failed', 'An error occurred while loading current folder properties');
+		failure: function(response, options) {
+			handleFailureMessage('Failed to load folder properties', response);
 		}
 	});
 }
@@ -1131,7 +1142,7 @@ function getFolderContextMenu(id, record){
 		    }
 		);
 
-	// record can be null if ui/folder/properties request did not succed	
+	// record can be null if folder properties were not loaded properly	
 	if(record && record != null){
 		contextMenu.add(
 			{
@@ -1452,25 +1463,24 @@ function showSearchResultsView() {
  * Load permissions on current folder and populate the action dropdown
  */
 function loadPermissions(nodeId) {
-	
 	Ext.Ajax.request({
 		url: 'ui/folder/permissions/' + nodeId,
 		method: 'GET',
 		fileUpload: true,
-		success: function(response, options){
-			if(sessionExpired(response)) {
-				checkStatusAndReload(200);
+		success: function(response, options) {
+			// check response for errors
+			if(checkHandleErrors('Failed to load folder permissions', response)) {
 				return;
 			}	
 			try {
-				var jsonData = eval("(" + response.responseText + ")" );	
+				var jsonData = Ext.util.JSON.decode(response.responseText);	
 				_addActionItems(jsonData);
 			} catch (e) {
-				Ext.MessageBox.alert('Failed', 'An error occurred while reading folder properties');
+				Ext.MessageBox.alert('Error', 'Could not read folder permissions');
 			}
 	    }, 
-		failure: function(){
-			Ext.MessageBox.alert('Failed', 'An error occurred while loading folder permissions');
+		failure: function(response, options) {
+			handleFailureMessage('Failed to load folder permissions', response);
 		}
 	});
 }
@@ -1481,9 +1491,8 @@ function loadPermissions(nodeId) {
  * @param {json} jsonData
  */
 function _addActionItems(jsonData) {
-	
 	var store = Ext.getCmp('folderActions').store;
-	// We first remove all items from the list
+	// remove all items from the list
 	store.removeAll();
 	
 	var newRec = Ext.data.Record.create([
@@ -1499,7 +1508,6 @@ function _addActionItems(jsonData) {
 	    });
 		store.add(myNewRecord);
 	}
-
 }
 
 /**
@@ -1638,19 +1646,16 @@ function doLogout() {
 			url: 'ui/logout',
 			method: 'GET',
 			success: function(response, options) {
-				//Must have been 2xx http status code
-				Ext.MessageBox.hide();
+				// check response for errors
+				if(checkHandleErrors('Failed to logout', response)) {
+					return;
+				}
 				checkStatusAndReload(200);
 			}, 
-			failure: function(){
-				//Must have been 4xx or a 5xx http status code
-				Ext.MessageBox.hide();
-				Ext.Msg.show({
-					title:'Logout failed!',
-					msg: 'Please try again!', 
-					buttons: Ext.Msg.OK,
-					icon: Ext.MessageBox.ERROR});}
-			});
+			failure: function(response, options) {
+				handleFailureMessage('Failed to logout', response);
+			}
+		});
 	}, 1000);
 }
 

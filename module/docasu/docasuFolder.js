@@ -113,36 +113,35 @@ function _initFolderDetailsWindow(folder) {
 }
 
 function showFolderDetailsWindow(folderId) {
-	Ext.Ajax.request({ url: 'ui/folder/properties/' + folderId,
+	Ext.Ajax.request({ 
+		url: 'ui/folder/properties/' + folderId,
 		method: 'GET',
 		success: function (response, options) {
-			if(sessionExpired(response)) {
-				checkStatusAndReload(200);
+			// check response for errors
+			if(checkHandleErrors('Failed to load folder properties', response)) {
 				return;
 			}
 			try {
-				var folder = eval(response.responseText);
+				var folder = Ext.util.JSON.decode(response.responseText);
 				// Only create new window with content if doesn't exist
 				if (!Ext.getCmp('folderDetailsWindow')) {
 					_initFolderDetailsWindow();
 				}
 				Ext.getCmp('folderDetailsWindow').folderId = folderId;
-				
 				Ext.getCmp('folderpropName').setValue(folder.name);
 				Ext.state.Manager.set('parentFolderId', folder.parentId);
 				Ext.getCmp('folderpropParentPath').setValue(folder.path);
 				Ext.getCmp('folderCreator').setValue(folder.creator);
 				Ext.getCmp('folderpropModified').setValue(convertTimezone(folder.modified));
 				Ext.getCmp('folderpropCreated').setValue(convertTimezone(folder.created));
-
 				Ext.getCmp('folderDetailsWindow').setTitle(folder.name); 
 				Ext.getCmp('folderDetailsWindow').show();
 			} catch (e) {
-				Ext.MessageBox.alert('Failed', 'The resource does not exist or you may not have permission to access it!', 200);
+				Ext.MessageBox.alert('Error', 'Failed to read folder properties ' + e);
 			}
 		}, 
-		failure: function(response, options){
-			Ext.MessageBox.alert('Failed', 'An error occurred while loading the folder properties');
+		failure: function(response, options) {
+			handleFailureMessage('Failed to load folder properties', response);
 		}
 	});
 }
@@ -152,58 +151,42 @@ function copyFolder() {
 	Ext.Ajax.request({
 		url: 'ui/folder/properties/' + folderId,
 		method: 'GET',
-		success: function(response, options){
-			if(sessionExpired(response)) {
-				checkStatusAndReload(200);
+		success: function(response, options) {
+			// check response for errors
+			if(checkHandleErrors('Failed to load folder properties', response)) {
 				return;
 			}
-			// TODO: check new response format
-			_copyFolder(response.responseText);
+			var folder = Ext.util.JSON.decode(response.responseText);
+			clipboard.put(folder.icon, folder.name, folder.id);
+			clipboard.update();
 		}, 
-		failure: function(){
-			Ext.MessageBox.alert('Failed', 'An error occurred while loading the folder');
+		failure: function(response, options) {
+			handleFailureMessage('Failed to load folder properties', response);
 		}
 	});
 }
 
-function _copyFolder(data) {
-	var folder = eval(data);
-	clipboard.put(folder.icon,folder.name , folder.id);
-	clipboard.update();
-}
-
 /**
- * deletes a folder
+ * Deletes a folder
  * @param {String} folderId: the folder to delete
  */
 function deleteFolder(folderId) {
-	
-	Ext.Msg.confirm('Confirm Folder Delete','Do you really want to delete this folder and its content?', function(btn, text){
+	Ext.Msg.confirm('Confirm Folder Delete','Do you really want to delete this folder and it\'s content?', function(btn, text){
 		if (btn == 'yes'){
 			Ext.Ajax.request({
 				url: 'ui/node/' + folderId,
 				method: 'DELETE',
-				success: function(response, options){
-					if(sessionExpired(response)) {
-						checkStatusAndReload(200);
+				success: function(response, options) {
+					// check response for errors
+					if(checkHandleErrors('Failed to delete folder', response)) {
 						return;
 					}
-					try {
-						var result = eval('(' + response.responseText + ')');
-
-	                    if (result.success) {
-	            			Ext.state.Manager.set('currentFolder', result.parentId);
-	                    	reloadView(true);
-						} else {
-							Ext.MessageBox.alert('Failed', 'Failed to delete file. The following error occurred:\n\n' + result.msg);
-	                    }
-                    
-                    } catch (e) {
-                    	Ext.MessageBox.alert('Failed', 'The resource does not exist or you may not have permission to access it!', 200);
-                    }
+					var result = Ext.util.JSON.decode(response.responseText);
+           			Ext.state.Manager.set('currentFolder', result.parentId);
+                   	reloadView(true);
 				}, 
-				failure: function(response, options){
-					Ext.MessageBox.alert('Failed', 'Failed to delete folder.\n\n');
+				failure: function(response, options) {
+					handleFailureMessage('Failed to delete folder', response);
 				}
 			});	
 			
@@ -212,27 +195,24 @@ function deleteFolder(folderId) {
 }
 
 /**
- * create a folder
+ * Create a folder
  */
 function createFolder(folderId) {
-	
-	Ext.Msg.prompt('New folder','Please enter the folder name?', function(btn, folderName){
+	Ext.Msg.prompt('New folder','Please enter the folder name', function(btn, folderName){
     	if (btn == 'ok'){
 			Ext.Ajax.request({
 				url: 'ui/folder/' + folderId,
 				method: 'POST',
 				params: {folderName : folderName},
 				success: function(response, options){
-					if(sessionExpired(response)) {
-						checkStatusAndReload(200);
+					// check response for errors
+					if(checkHandleErrors('Failed to create folder', response)) {
 						return;
 					}
-					// TODO: check new response format
-					Ext.MessageBox.alert("New folder", "New folder "+ folderName +" created");
 			        reloadView(true);
 				}, 
-				failure: function(){
-					Ext.MessageBox.alert("New folder", "The folder "+ folderName + " could not be created!");
+				failure: function(response, options) {
+					handleFailureMessage('Failed to create folder', response);
 				}
 			});	
 	    }
@@ -243,22 +223,20 @@ function createFolder(folderId) {
  * Rename a folder
  */
 function renameFolder(f) {
-	Ext.Msg.prompt('Rename the folder','Please enter the new folder name', function(btn, folderName){
+	Ext.Msg.prompt('Rename folder','Please enter the new folder name', function(btn, folderName){
     	if (btn == 'ok'){
-			
 			Ext.Ajax.request({
 				url: 'ui/node/name/' + f + '?newName=' + folderName,
 				method: 'PUT',
-				success: function(response, options){
-					if(sessionExpired(response)) {
-						checkStatusAndReload(200);
+				success: function(response, options) {
+					// check response for errors
+					if(checkHandleErrors('Failed to rename folder', response)) {
 						return;
 					}
-					// TODO: check new response format
 					reloadView(true);
 				}, 
-				failure: function(){
-					Ext.MessageBox.alert('Failed', 'The folder could not be renamed!');
+				failure: function(response, options) {
+					handleFailureMessage('Failed to rename folder', response);
 				}
 			});
 	    }

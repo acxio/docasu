@@ -36,7 +36,6 @@ import org.apache.commons.logging.LogFactory;
  * @author Jean-Luc Geering
  */
 public class Browse extends AbstractDocumentWebScript {
-
 	private static final Log log = LogFactory.getLog(Browse.class);
 
 	private boolean listCategory = false;
@@ -49,7 +48,6 @@ public class Browse extends AbstractDocumentWebScript {
 
 	@Override
 	protected Map<String, String> readParams(WebScriptRequest req) {
-
 		Map<String, String> params = super.readParams(req);
 
 		if (foldersOnly) {
@@ -89,8 +87,6 @@ public class Browse extends AbstractDocumentWebScript {
 	private Map<String, Object> listCategory(Map<String, String> params) {
 		NodeRef baseNode = new NodeRef(storeRef, params.get(PARAM_CATEGORY_ID));
 
-		// TODO: catch AccessDeniedException and return something that front end
-		// can understand
 		String categoryName = (String) nodeService.getProperty(baseNode, ContentModel.PROP_NAME);
 
 		if (log.isDebugEnabled()) {
@@ -126,6 +122,9 @@ public class Browse extends AbstractDocumentWebScript {
 		model.put("folderId", baseNode.getId());
 		model.put(KEYWORD_ROWS, getResultRows(nodes));
 
+		model.put("success", true);
+		model.put("msg", "Fetched category content");
+		log.debug("Fetched category content");
 		return model;
 	}
 
@@ -133,8 +132,6 @@ public class Browse extends AbstractDocumentWebScript {
 		// default to companyHome
 		NodeRef baseNode = params.get(PARAM_NODE_ID) != null ? new NodeRef(storeRef, params.get(PARAM_NODE_ID)) : repository.getCompanyHome();
 
-		// TODO: catch AccessDeniedException and return something that front end
-		// can understand
 		FileInfo fileInfo = fileFolderService.getFileInfo(baseNode);
 		String path = generatePath(baseNode);
 
@@ -171,6 +168,9 @@ public class Browse extends AbstractDocumentWebScript {
 		model.put("folderId", baseNode.getId());
 		model.put(KEYWORD_ROWS, getResultRows(nodes));
 
+		model.put("success", true);
+		model.put("msg", "Fetched " + (foldersOnly ? "folders" : "folder content"));
+		log.debug("Fetched " + (foldersOnly ? "folders" : "folder content"));
 		return model;
 	}
 

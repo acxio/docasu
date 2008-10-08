@@ -16,16 +16,17 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-{ "noredirect": true, "success": true, "properties":
-   	[ {
-       	 "nodeId"	:"${file.id}",
-       	 "name"		:"${file.name}",
-       	 "size"		:"${file.size?c}",
-       	 "modified"	:"${file.properties.modified?string("yyyy-MM-dd HH:mm Z")}",
-       	 "created"	:"${file.properties.created?string("yyyy-MM-dd HH:mm Z")}",
-       	 "downloadUrl" : "${file.downloadUrl}"
-       	 "creator"		: "${file.properties.creator}",
-       	 "description"	: "${file.properties.description!}",
-	 }
-	 ]
+{ 
+	"success"	:	${success?string},
+	"msg"		:	"${msg}",
+	"properties":	[{
+			       	 "nodeId"		:	"${file.id}",
+			       	 "name"			:	"${file.name}",
+			       	 "size"			:	"${file.size?c}",
+			       	 "modified"		:	"${file.properties.modified?string("yyyy-MM-dd HH:mm Z")}",
+			       	 "created"		:	"${file.properties.created?string("yyyy-MM-dd HH:mm Z")}",
+			       	 "downloadUrl"	:	"${file.downloadUrl}",
+			       	 "creator"		:	"${file.properties.creator}",
+			       	 "description"	:	"${file.properties.description!}"
+					}]
 }

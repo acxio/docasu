@@ -16,27 +16,37 @@
  *    
  */
 
+// POST parameters
 var nodeId = url.extension;
+
 var contentToWrite = null;
 
-for each (field in formdata.fields)
-{
-  logger.log("Name: " + field.name + " ; Value: " + field.value);
-  if (field.name == "content") {
-  	  contentToWrite = field.value;
-  }
+for each (field in formdata.fields) {
+	if (field.name == "content") {
+		  contentToWrite = field.value;
+	}
 }
 
-// find the listing folder - create if not already exists
-var fileToWriteIn = search.findNode("workspace://SpacesStore/" + nodeId );
-
-if (fileToWriteIn.hasPermission("Write")) {
-	fileToWriteIn.content = contentToWrite;
-	model.msg = "ok";
-	model.success = true;
-	logger.log("updated");
+// search for node
+var fileToWriteIn = search.findNode("workspace://SpacesStore/" + nodeId);
+if(fileToWriteIn != null) {
+	if (fileToWriteIn.hasPermission("Write")) {
+		// get name property before renaming
+		var nodeName = fileToWriteIn.properties.name;
+		fileToWriteIn.content = contentToWrite;
+		
+		model.success = true;
+		model.msg = "Node " + nodeName + " was updated";
+		logger.log("Node " + nodeName + " was updated");
+	} else {
+		status.code = 400;
+		status.message = "You do not have permission to update node";
+		status.redirect = true;
+		logger.log("User does not have permission to update node");
+	}
 } else {
-	model.msg = "privileges";
-	model.success = false;
-	logger.log("user didn't have privileges");
+	status.code = 400;
+	status.message = "Invalid node reference " + nodeId;
+	status.redirect = true;
+	logger.log("Invalid node reference " + nodeId);
 }

@@ -16,28 +16,73 @@
  *    
  */
 
-
-function updateFavorites() {
+/**
+ * Add favorite
+ */
+function addFavorite(nodeId) {
 	Ext.Ajax.request({
-		url: 'ui/shortcuts',
-		method: 'GET',
-		success: function(response, options){
-			if(sessionExpired(response)) {
-				checkStatusAndReload(200);
+		url: 'ui/shortcut/'+nodeId,
+		method: 'PUT',
+		success: function(response, options) {
+			// check response for errors
+			if(checkHandleErrors('Failed to add favorite', response)) {
 				return;
 			}
-			_updateFavorites(response.responseText);
+			updateFavorites();
 		}, 
-		failure: function(){
-			Ext.MessageBox.alert('Failed to load favorites.');
+		failure: function(response, options) {
+			handleFailureMessage('Failed to add favorite', response);
+		}
+	});
+	Ext.getCmp('favoritesPanel').expand();
+}
+
+/**
+ * Remove favorite
+ */
+function removeFavorite(nodeId) {
+	Ext.Ajax.request({
+		url: 'ui/shortcut/' + nodeId,
+		method: 'DELETE',
+		success: function(response, options) {
+			// check response for errors
+			if(checkHandleErrors('Failed to remove favorite', response)) {
+				return;
+			}
+			updateFavorites();
+		}, 
+		failure: function(response, options) {
+			handleFailureMessage('Failed to remove favorite', response);
 		}
 	});
 }
 
+/**
+ * Load favorites
+ */
+function updateFavorites() {
+	Ext.Ajax.request({
+		url: 'ui/shortcuts',
+		method: 'GET',
+		success: function(response, options) {
+			// check response for errors
+			if(checkHandleErrors('Failed to load favorites', response)) {
+				return;
+			}
+			_updateFavorites(response.responseText);
+		}, 
+		failure: function(response, options) {
+			handleFailureMessage('Failed to load favorites', response);
+		}
+	});
+}
 
+/**
+ * Update favorites display
+ */
 function _updateFavorites(responseText) {
 	var favHtml = '<table style="width:100%;">';
-	var favorites = eval(responseText).rows;
+	var favorites = Ext.util.JSON.decode(responseText).rows;
 	var i;
 	for (i = 0; i < favorites.length; i++) {
 		var f = favorites[i];
@@ -61,56 +106,4 @@ function _updateFavorites(responseText) {
 	favHtml += '</table>';
 	var favoritesEl = Ext.get('favorites');
 	favoritesEl.update(favHtml);
-}
-
-
-function removeFavorite(nodeId) {
-	Ext.Ajax.request({
-		url: 'ui/shortcut/' + nodeId,
-		method: 'DELETE',
-		success: function(response, options){
-			if(sessionExpired(response)) {
-				checkStatusAndReload(200);
-				return;
-			}
-			_removeFavorite(response.responseText);
-		}, 
-		failure: function(){
-			Ext.MessageBox.alert('Failed to delete favorite.');
-		}
-	});
-}
-
-
-function _removeFavorite() {
-	updateFavorites();
-}
-
-
-function addFavorite(nodeId) {
-	if (typeof nodeId != 'undefined') {
-		Ext.Ajax.request({
-			url: 'ui/shortcut/'+nodeId,
-			method: 'PUT',
-			success: function(response, options){
-				if(sessionExpired(response)) {
-					checkStatusAndReload(200);
-					return;
-				}
-				_addFavorite(response.responseText);
-			}, 
-			failure: function(){
-				Ext.MessageBox.alert('Failed to add favorite.');
-			}
-		});
-		Ext.getCmp('favoritesPanel').expand();
-	}
-	else {
-		console.log('Warning, trying to add undefined node');
-	}
-}
-
-
-function _addFavorite() {
-	updateFavorites();
 }

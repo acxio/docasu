@@ -17,6 +17,7 @@
  */
 
 var clipboard = new Object();
+
 clipboard.put = function(icon, name, nodeId) {
 	var c = this.getAll();
 	// TODO handle duplicates
@@ -73,7 +74,7 @@ clipboard.clear = function() {
 }
 
 /**
- * paste all items on the clipboard
+ * Paste all items in clipboard
  * @param {String} folderId: the destination folder
  */
 function pasteAll(folderId) {
@@ -97,17 +98,15 @@ function pasteAll(folderId) {
 		method: 'POST',
 		params: {c : c},
 		success: function(response, options){
-			if(sessionExpired(response)) {
-				checkStatusAndReload(200);
+			// check response for errors
+			if(checkHandleErrors('Failed to paste clipboard', response)) {
 				return;
 			}
-			// TODO update all panels !!
-			// folder contents changed
 			clipboard.clear();
 			gridStore.load();
 		}, 
-		failure: function(){
-			Ext.MessageBox.alert('Paste failed!');
+		failure: function(response, options) {
+			handleFailureMessage('Failed to paste clipboard', response);
 		}
 	});
 		

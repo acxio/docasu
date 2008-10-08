@@ -16,10 +16,13 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-({"userName"	 :"${userName}",
-  "firstName"	 :"${firstName}",
-  "lastName"	 :"${lastName}",
-  "companyHome"	 :"${companyhome.id}",
-  "userHome"	 :"${userhome.id}",
-  "userHomeName" :"${userhome.name}"
-})
+{
+	"success"		:	${success?string},
+	"msg"			:	"${msg}",
+	"userName"		:	"${userName}",
+	"firstName"		:	"${firstName}",
+	"lastName"		:	"${lastName}",
+	"companyHome"	:	"${companyhome.id}",
+	"userHome"		:	"${userhome.id}",
+	"userHomeName"	:	"${userhome.name}"
+}

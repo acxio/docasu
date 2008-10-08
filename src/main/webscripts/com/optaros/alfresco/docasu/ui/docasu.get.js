@@ -15,13 +15,7 @@
  *    along with this program. If not, see <http://www.gnu.org/licenses/>.
  *    
  */
-if (url.service == url.serviceContext + "/docasu/ui") {
-	// load the DoCASU client app.
-	model.initialFolderId = args.nodeId ? args.nodeId : '';
-	// TODO: remove the parameter from the url
-} else {
-	status.code = 301;
-	status.redirect = true;
-	model.redirectUrl = url.serviceContext + "/docasu/ui" + args.nodeId ? "?nodeId=" + args.nodeId : "";
-}
+
+// GET parameters
+model.initialFolderId = args.nodeId ? args.nodeId : "";
  

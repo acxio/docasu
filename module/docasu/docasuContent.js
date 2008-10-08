@@ -131,44 +131,30 @@ function createContent(type, folderId) {
 	
 	createContentWindow.show();
 	
-	/*
-	 * Definition of the two handlers, submit and cancel btn
-	 */
+	// Submit button handler
 	function submitHandler() {
 		// add extension to file name
 		fileNameField.setValue(fileNameField.getValue() + '.' +contentType.getValue().toLowerCase());
-		
 		Ext.Ajax.request({
 			url: 'ui/node/create/' + folderId,
 			method: 'POST',
 			form: createContentForm.getForm().getEl(),
-			success: function(response, options){
-				if(sessionExpired(response)) {
-					checkStatusAndReload(200);
+			success: function(response, options) {
+				createContentWindow.close();
+				// check response for errors
+				if(checkHandleErrors('Failed to create content', response)) {
 					return;
 				}
-				var result = eval('(' + response.responseText + ')');
-                if (result.success) {
-						// TODO: update all panels !!
-						// folder contents changed
-					gridStore.load();
-				}
-                else {
-            		Ext.Msg.show({
-            			title:'File Creation',
-            			msg: result.msg,
-            			buttons: Ext.Msg.OK,
-            			icon: Ext.MessageBox.ERROR
-            		});
-				}
-				createContentWindow.close();
+				gridStore.load();
 			}, 
-			failure: function(){
-				//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
-				Ext.MessageBox.alert('Failed', 'Failed on creating content');
+			failure: function(response, options) {
+				createContentWindow.close();
+				handleFailureMessage('Failed to create content', response);
 			}
 		});
 	}
+	
+	// Cancel button handler
 	function cancelHandler() {
 		createContentWindow.close();
 	}
@@ -181,18 +167,18 @@ function editContent(fileName, nodeId) {
 	Ext.Ajax.request({
 		url: 'ui/node/content/' + nodeId,
 		method: 'GET',
-		success: function(result, request){
-			if(sessionExpired(result)) {
-				checkStatusAndReload(200);
+		success: function(response, options) {
+			// check for session expiration
+			if(sessionExpired(response)) {
+				// reload docasu
+				window.location = 'ui';
 				return;
 			}
- 			//updateContentText.setValue(result.responseText);
-			Ext.getCmp('content').setValue(result.responseText);
+			Ext.getCmp('content').setValue(response.responseText);
 			updateContentWindow.show();
 		},
-		failure: function(result, request){
-			//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
-			Ext.MessageBox.alert('Failed', 'Failed on editing content. \n\r\n\r' + result.responseText);
+		failure: function(response, options) {
+			handleFailureMessage('Failed to load document content', response);
 		}
 	});
 	
@@ -290,17 +276,15 @@ function editContent(fileName, nodeId) {
 	});
 		
 	
-	/*
-	 * Definition of the two handlers, submit and cancel btn
-	 */
+	// Submit button handler
 	function updateHandler() {
 		Ext.Ajax.request({
 			url: 'ui/node/update/' + nodeId,
 			method: 'POST',
 			form: editContentForm.getForm().getEl(),
 			success: function(response, options){
-				if(sessionExpired(response)) {
-					checkStatusAndReload(200);
+				// check response for errors
+				if(checkHandleErrors('Failed to update node', response)) {
 					return;
 				}
 				if (extension.toLowerCase() == 'html' || extension.toLowerCase() == 'htm') {		
@@ -308,18 +292,16 @@ function editContent(fileName, nodeId) {
 					hiddenField.destroy();
 					updateContentText.destroy();
 				}
-				// TODO: update all panels !!
-				// document _contents_ changed (not the metadata)
-				// preview might need to be updated
 				updateDocumentInfoPane();
 				updateContentWindow.close();
 			}, 
-			failure: function(){
-				//Ext.MessageBox.alert('Must have been 4xx or a 5xx http status code');
-				Ext.MessageBox.alert('Failed', 'Faild on updating node');
+			failure: function(response, options) {
+					handleFailureMessage('Failed to update node', response);
 			}
 		});
 	}
+	
+	// Cancel button handler
 	function cancelHandler() {
 		updateContentWindow.close();
 	}

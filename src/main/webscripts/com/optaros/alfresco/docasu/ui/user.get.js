@@ -16,10 +16,12 @@
  *    
  */
 
+
 model.userName = person.properties["cm:userName"];
 model.firstName = person.properties["cm:firstName"];
 model.lastName = person.properties["cm:lastName"];
-
-// Folders
 model.companyhome = companyhome;
 model.userhome = userhome;
+
+model.success = true;
+model.msg = "User data found for " + person.properties["cm:userName"];

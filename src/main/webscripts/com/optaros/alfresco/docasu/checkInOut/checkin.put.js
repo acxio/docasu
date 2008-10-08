@@ -19,19 +19,27 @@
 // Get parameters
 var nodeId = url.extension;
 
-logger.log("Node ID to check in is: " + nodeId);
-
-// Get the node
+// search for node
 var node = search.findNode("workspace://SpacesStore/" + nodeId);
-
 if (node != null) {
-	// Check it in
-	node.checkin();		
-	model.success = true;
-	model.msg = "Document checked in";
-		
+	// make sure is document
+	if(node.isDocument) {
+		// get name property
+		var nodeName = node.properties.name;
+		node.checkin();	
+			
+		model.success = true;
+		model.msg = "Node " + nodeName + " was checked in";
+		logger.log("Node " + nodeName + " was checked in");
+	} else {
+		status.code = 400;
+		status.message = "Invalid document reference " + nodeId;
+		status.redirect = true;
+		logger.log("Invalid document reference " + nodeId);
+	}
 } else {
 	status.code = 400;
 	status.message = "Invalid node reference " + nodeId;
 	status.redirect = true;
+	logger.log("Invalid node reference " + nodeId);
 }

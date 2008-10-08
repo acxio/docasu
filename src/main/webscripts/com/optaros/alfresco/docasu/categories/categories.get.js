@@ -16,12 +16,28 @@
  *    
  */
 
-logger.log('node parameter:'+args['node']);
+// GET parameters
+var category = args.node;
 
-if (args['node']=='cm:generalclassifiable') {
+if (category == 'cm:generalclassifiable') {
 	model.categories = classification.getRootCategories("cm:generalclassifiable");
+	
+	model.success = true;
+	model.msg = "Fetched categories";
+	logger.log("Fetched categories");
 } else {
-	var nodeRef = "workspace://SpacesStore/" + args['node'];
-	categoryNode = search.findNode(nodeRef);
-	model.categories = categoryNode.children;
+	// search for node
+	categoryNode = search.findNode("workspace://SpacesStore/" + category);
+	if(categoryNode != null) {
+		model.categories = categoryNode.children;
+		
+		model.success = true;
+		model.msg = "Fetched categories";
+		logger.log("Fetched categories");
+	} else {
+		status.code = 400;
+		status.message = "Invalid node reference " + category;
+		status.redirect = true;
+		logger.log("Invalid node reference " + category);
+	}
 }

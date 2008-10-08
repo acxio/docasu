@@ -16,35 +16,44 @@
  *    
  */
 
+// PUT parameters
 var nodeId = url.extension;
 
 function getPreferences() {
 	return person.childAssocs["app:configurations"][0].children[0];
 }
 
-if (nodeId == undefined || nodeId == null) {
-	status.code = 404;
-   	status.message = "No nodeId supplied";
-   	status.redirect = true;
-}
-// TODO check if node exists?
-
-var preferences = getPreferences();
-
-if (logger.isLoggingEnabled()) {
-	logger.log("Adding shortcut to: " + nodeId);
-}
-
-var addShortcut = true;
-for each (shortcut in preferences.properties["app:shortcuts"]) {
-	if (shortcut == nodeId) {
-		addShortcut = false;
+// search for node
+var node = search.findNode("workspace://SpacesStore/" + nodeId); 
+if(node != null) {
+	// get name property
+	var nodeName = node.properties.name;
+	
+	// check if shortcut already exists
+	var preferences = getPreferences();
+	var addShortcut = true;
+	for each (shortcut in preferences.properties["app:shortcuts"]) {
+		if (shortcut == nodeId) {
+			addShortcut = false;
+		}
 	}
+	if (addShortcut) {
+		// add shortcut
+		var shortcutNodes = preferences.properties["app:shortcuts"].push(nodeId);
+		preferences.save();
+		
+		model.success = true;
+		model.msg = "Favorite " + nodeName + " was added";
+		logger.log("Favorite " + nodeName + " was added");
+	} else {
+		status.code = 400;
+		status.message = "Favorite " + nodeName + " already exists";
+		status.redirect = true;
+		logger.log("Favorite " + nodeName + " already exists");
+	}
+} else {
+	status.code = 400;
+	status.message = "Invalid node reference " + nodeId;
+	status.redirect = true;
+	logger.log("Invalid node reference " + nodeId);
 }
-if (addShortcut) {
-	var shortcutNodes = preferences.properties["app:shortcuts"].push(nodeId);
-}
-
-preferences.save();
-model.msg = 'ok';
-model.success = true;

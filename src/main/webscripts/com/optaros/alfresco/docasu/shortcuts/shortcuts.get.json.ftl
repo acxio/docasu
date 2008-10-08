@@ -16,15 +16,20 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-({ "noredirect": true, "success": true, "rows": [
-<#list shortcuts as shortcut>
-{	"id"	:"${shortcut.id}",
-	"icon"  :"${url.context}${shortcut.icon16}",
-	"name"	:"${shortcut.name}",
-	"isFile":${(!shortcut.isContainer)?string},
-	"url" 	:"${url.context}${shortcut.url}",
-	"parentId":"${shortcut.parent.id}",
-	"parentIcon"  :"${url.context}${shortcut.parent.icon16}"
-}<#if shortcut_has_next>,</#if>
-</#list>
-]})
+{ 
+	"success"	:	${success?string},
+	"msg"		:	"${msg}",
+	"rows"		:	[
+						<#list shortcuts as shortcut>
+							{	
+								"id"		:	"${shortcut.id}",
+								"icon"  	:	"${url.context}${shortcut.icon16}",
+								"name"		:	"${shortcut.name}",
+								"isFile"	:	${(!shortcut.isContainer)?string},
+								"url" 		:	"${url.context}${shortcut.url}",
+								"parentId"	:	"${shortcut.parent.id}",
+								"parentIcon":	"${url.context}${shortcut.parent.icon16}"
+							}<#if shortcut_has_next>,</#if>
+						</#list>
+					]
+}

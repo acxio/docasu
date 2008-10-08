@@ -42,6 +42,7 @@
 
 	<!-- Custom DoCASU Script and CSS files  -->
 	<script type="text/javascript" src="../../docasu/docasuSession.js"></script>
+	<script type="text/javascript" src="../../docasu/docasuError.js"></script>
 
 	<script type="text/javascript" src="../../docasu/docasu.js"></script>
 

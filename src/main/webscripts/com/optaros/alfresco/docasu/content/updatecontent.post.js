@@ -16,39 +16,37 @@
  *    
  */
 
+// POST parameters
 var nodeId = url.extension;
 
 var filecontent = null;
 
 for each (field in formdata.fields) {
-  if (field.isFile) {
-    filecontent = field.content;
-  }
+	if (field.isFile) {
+		filecontent = field.content;
+	}
 }
 
 // ensure mandatory file attributes have been located
-if (nodeId == undefined || filecontent == undefined)
-{
-	model.success = false;
-	model.msg = "Uploaded file cannot be located in request";
-}
-
-var node = search.findNode("workspace://SpacesStore/" + nodeId);
-if (node == null)
-{
-   	model.success = false;
-	model.msg = "File " + nodeId + " not found.";
-} else { 
-	
-	try {
+if (nodeId != null && filecontent != null) {
+	// search for node
+	var node = search.findNode("workspace://SpacesStore/" + nodeId);
+	if (node != null) {
 		node.properties.content.write(filecontent);
 		node.save();
-	
+		
 		model.success = true;
-		model.msg = 'File updated successfully';
-	} catch(e) {
-		model.success = false;
-		logger.log(e.message);
-		model.msg = 'An internal error occurred';
+		model.msg = "File was updated successfully";
+		logger.log("File was updated successfully");
+	} else {
+		status.code = 400;
+		status.message = "Invalid node reference " + nodeId;
+		status.redirect = true;
+		logger.log("Invalid node reference " + nodeId);
 	}
+} else {
+	status.code = 400;
+	status.message = "Invalid upload parameters";
+	status.redirect = true;
+	logger.log("Invalid upload parameters");
 }

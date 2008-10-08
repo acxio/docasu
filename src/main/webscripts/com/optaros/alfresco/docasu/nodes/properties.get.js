@@ -16,21 +16,30 @@
  *    
  */
 
+// GET parameters
 var nodeId = url.extension;
 
 var nodeRef = "workspace://SpacesStore/" + nodeId;
 
-if (logger.isLoggingEnabled()) {
-	logger.log("Fetching details for file with nodeRef: " + nodeRef);
+// search for node
+var file = search.findNode(nodeRef);
+if(file != null) {
+	// make sure is document 
+	if(!file.isContainer) {
+		model.file = file;
+		
+		model.success = true;
+		model.msg = "Properties fetched for " + file.name;
+		logger.log("Properties fetched for " + file.name);
+	} else {
+		status.code = 400;
+		status.message = "Invalid document reference " + nodeId;
+		status.redirect = true;
+		logger.log("Invalid document reference " + nodeId);
+	}
+} else {
+	status.code = 400;
+	status.message = "Invalid node reference " + nodeId;
+	status.redirect = true;
+	logger.log("Invalid node reference " + nodeId);
 }
-
-var file = search.findNode(nodeRef); 
-
-if (file == undefined || file.isContainer)
-{
-	status.code = 404;
-   	status.message = "Folder " + nodeRef + " not found.";
-   	status.redirect = true;
-}
-
-model.file = file;

@@ -19,7 +19,6 @@
 function compareModified(n1, n2) {
 	var d1 = n1.properties["cm:modified"];
 	var d2 = n2.properties["cm:modified"];
-	
 	return d1 < d2 ? 1 : d1 > d2 ? -1 : 0;
 }
 
@@ -35,22 +34,23 @@ function y2k(number) {
 
 // get the date 3 days ago
 var date = new Date();
-var oldDate = new Date(Date.UTC(y2k(date.getYear()),date.getMonth(),date.getDate(),date.getHours(),date.getMinutes(),date.getSeconds()) 
-	- 3*24*60*60*1000);
+var oldDate = new Date(Date.UTC(y2k(date.getYear()),date.getMonth(),date.getDate(),date.getHours(),date.getMinutes(),date.getSeconds()) - 3*24*60*60*1000);
 
+// search for documents modified in the last 3 days
 var luceneQuery = "+@cm\\:modified:[" + writeDateForRange(oldDate) + " TO "
 			+ writeDateForRange(new Date()) + "] AND TYPE:\"cm:content\" AND NOT PATH:\"/app:company_home/app:dictionary//.\""
 			+ "AND PATH:\"/app:company_home//.\"";
 
-logger.log(luceneQuery);
-
 var results = search.luceneSearch(luceneQuery);
-
+// sort the result
 results.sort(compareModified);
 
+// fetch result
 if (results.length > 20) {
-	model.resultset = results.slice(0, 20);
+	results = results.slice(0, 20);
 }
-else {
-	model.resultset = results;
-}
+model.resultset = results;
+
+model.success = true;
+model.msg = "Found " + results.length + " recent documents";
+logger.log("Found " + results.length + " recent documents");
