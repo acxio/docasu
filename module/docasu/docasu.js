@@ -1533,7 +1533,7 @@ function fileNameRenderer(value, column, record) {
 	} else {
 		html += '<a href="'+record.get('downloadUrl')+'">';
 	}
-	html += '<div style="float:left">';
+	html += '<div style="float: left; cursor: pointer;">';
 	
 	if (record.get('isFolder')) {
 		html += '<img src="../../docasu/lib/extjs/resources/images/default/tree/folder.gif"';

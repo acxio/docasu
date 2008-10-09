@@ -133,8 +133,20 @@ function createContent(type, folderId) {
 	
 	// Submit button handler
 	function submitHandler() {
+		// validate file name
+		if(fileNameField.getValue().trim() == "") {
+			Ext.MessageBox.show({
+				title: 'Error',
+				msg: 'File name is required!',
+				buttons: Ext.MessageBox.OK,
+				icon: Ext.MessageBox.ERROR
+			});
+			return false;
+		}
+		
 		// add extension to file name
 		fileNameField.setValue(fileNameField.getValue() + '.' +contentType.getValue().toLowerCase());
+		
 		Ext.Ajax.request({
 			url: 'ui/node/create/' + folderId,
 			method: 'POST',
