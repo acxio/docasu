@@ -416,14 +416,13 @@ function _initCenter() {
 	    sm: fileSelectionModel
 	});
     
-    gridList.on('rowclick', function (grid, rowIndex) {
-    	// this event fires when a new row = document is selected in the grid
-    	// => update the docinfo panel!
+    fileSelectionModel.on('rowselect', function (grid, rowIndex) {
+    	// this event fires when a row is selected in the grid
         updateDocumentInfoPane();
     });
 
 	// prevent the default browser context menu for the grid
-	gridList.on('contextmenu', function(e){
+	gridList.on('contextmenu', function(e) {
         e.preventDefault();
         
         // if on a category
@@ -438,10 +437,11 @@ function _initCenter() {
     gridList.on('rowcontextmenu', function (grid, rowIndex, e) {
     	e.preventDefault();
     	
+    	// select row
+    	fileSelectionModel.selectRow(rowIndex, false);
+    	
         var record = grid.getStore().getAt(rowIndex);
-		
         if (record.get('isFolder')) {
-        
         	var myRecord = new Object('Node '+record.get('nodeId'));
         	myRecord.id = record.get('nodeId');
         	myRecord.text = record.get('name');
@@ -451,7 +451,6 @@ function _initCenter() {
 			myRecord.writePermission = record.get('writePermission');
 			myRecord.createPermission = record.get('createPermission');
 			myRecord.deletePermission = record.get('deletePermission');
-			
         	this.contextMenu = getFolderContextMenu(record.get('nodeId'), myRecord);
         }
         else {
