@@ -1230,7 +1230,7 @@ function createActionItemsForFolder(record) {
 		handler: function() {showFolderDetailsWindow(id); return false;}
 	});
 	html += '<a href="#" onClick="showFolderDetailsWindow(\''+id+'\'); return false;">'+
-			'<img title="View details" class="actionIcon" src="../../docasu/images/info.gif"/>'+
+				'<img title="View details" class="actionIcon" src="../../docasu/images/info.gif"/>'+
 			'</a>';
 	
 	if (record.createPermission) {
@@ -1242,6 +1242,7 @@ function createActionItemsForFolder(record) {
 	if (record.deletePermission) {
 		result.push({
 			text: 'Delete folder',
+			icon: '../../docasu/images/delete.gif',
 			handler: function() {deleteFolder(id);}
 		});
 		html += 
