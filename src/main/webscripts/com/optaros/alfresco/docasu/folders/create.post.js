@@ -21,11 +21,6 @@ var folderId = url.extension;
 
 var newFolderName = args.folderName;
 
-// default to company home
-if (folderId == null || typeof(folderId) == 'undefined') {
-	folderId = companyhome.id;
-}
-
 // search for node
 var folder = search.findNode("workspace://SpacesStore/" + folderId);
 if(folder != null) {

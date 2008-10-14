@@ -19,8 +19,8 @@
 -->
 <webscript>
   <shortname>Custom UI - Create folder</shortname>
-  <description>Create a folder with a given name. If no parent folder is specified then company home will be used</description>
-   <url>/docasu/ui/folder/{parentFolderId?}?folderName={folderName}</url>
+  <description>Create a folder with a given name in a specified folder</description>
+   <url>/docasu/ui/folder/{parentFolderId}?folderName={folderName}</url>
    <format default="json">extension</format>
    <authentication>user</authentication>
    <transaction>required</transaction>
