@@ -23,8 +23,9 @@
 				"id"				:	"${row.nodeId}",
 				"text"				:	"${row.name}",
 				"name"				:	"${row.name}",
+				"link"				:	"${url.context}${row.url}",
 				"parentPath"		:	"${path}",
-				"url"				:	"${url.context}${row.url}",
+				"url"				:	"${url.context}/wcs/docasu/ui?nodeId=${row.nodeId}",
 				"writePermission"	:	"${row.writePermission?string}",
 				"createPermission"	:	"${row.createPermission?string}",
 				"deletePermission"	:	"${row.deletePermission?string}"

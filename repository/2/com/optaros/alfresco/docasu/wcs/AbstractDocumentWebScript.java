@@ -229,7 +229,7 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 		row.put("deletePermission", AccessStatus.ALLOWED == permissionService.hasPermission(fileInfo.getNodeRef(), "Delete"));
 		row.put("locked", templateNode.getIsLocked());
 		row.put("isWorkingCopy", nodeService.hasAspect(fileInfo.getNodeRef(), ContentModel.ASPECT_WORKING_COPY));
-		row.put("url", getUrl(templateNode));
+		row.put("url", templateNode.getUrl());
 		row.put("downloadUrl", templateNode.getDownloadUrl());
 		row.put("icon16", templateNode.getIcon16());
 		row.put("icon32", templateNode.getIcon32());
@@ -243,17 +243,6 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 			row.put("mimetype", contentData != null ? contentData.getMimetype() : "");
 		}
 		return row;
-	}
-
-	private String getUrl(TemplateNode templateNode) {
-		if (templateNode.getIsDocument()) {
-			return templateNode.getUrl();
-		} else if (templateNode.getIsContainer()) {
-			// if folder, then return proper URL to load DoCASU interface
-			// TODO: move this outside source code
-			return "/wcs/docasu/ui?nodeId=" + templateNode.getId();
-		}
-		return "";
 	}
 
 	/**

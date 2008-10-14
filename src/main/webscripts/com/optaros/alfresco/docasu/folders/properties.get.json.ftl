@@ -26,6 +26,7 @@
 	"created"			:	"${folder.properties.created?string("yyyy-MM-dd HH:mm Z")}",
 	"parentId"			:	"${folder.parent.id}",
 	"path"				:	"${folder.displayPath}",
+	"link"				:	"${url.context}${folder.url}",
 	"url"      			:	"${url.context}/wcs/docasu/ui?nodeId=${folder.id}",
 	"creator"  			:	"${folder.properties.creator}",
 	"icon"				:	"${url.context}${folder.icon16}",

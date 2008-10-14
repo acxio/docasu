@@ -447,6 +447,7 @@ function _initCenter() {
         	myRecord.text = record.get('name');
 			myRecord.name = record.get('name');
 			myRecord.parentPath = record.get('parentPath');
+			myRecord.link = record.get('link');
 			myRecord.url = record.get('url');
 			myRecord.writePermission = record.get('writePermission');
 			myRecord.createPermission = record.get('createPermission');
@@ -811,6 +812,7 @@ function _initCompanyHome() {
        	myRecord.text = node.text;
 		myRecord.name = node.attributes.text;
 		myRecord.parentPath = node.attributes.parentPath;
+		myRecord.link = node.attributes.link;
 		myRecord.url = node.attributes.url;
 		myRecord.writePermission = eval(node.attributes.writePermission);
 		myRecord.createPermission = eval(node.attributes.createPermission);
@@ -890,6 +892,7 @@ function _initMyHome() {
        	myRecord.text = node.text;
 		myRecord.name = node.attributes.text;
 		myRecord.parentPath = node.attributes.parentPath;
+		myRecord.link = node.attributes.link;
 		myRecord.url = node.attributes.url;
 		myRecord.writePermission = eval(node.attributes.writePermission);
 		myRecord.createPermission = eval(node.attributes.createPermission);
@@ -1035,6 +1038,7 @@ function updateCurrentFolder(folderId){
 		       	myRecord.text = folder.name;
 				myRecord.name = folder.name;
 				myRecord.parentPath = folder.path;
+				myRecord.link = folder.link;
 				myRecord.url = folder.url;
 				myRecord.writePermission = eval(folder.writePermission);
 				myRecord.createPermission = eval(folder.createPermission);
@@ -1104,13 +1108,13 @@ function getFileContextMenu(record) {
 	    	handler: function() {addFavorite(record.get('nodeId'));}
 	    }, {
 	    	text: 'Mail Link',
-	    	handler: function() {mailLink(record.get('name'), record.get('link'));}
+	    	handler: function() {mailLink(record.get('name'), record.get('url'));}
 	    }, {
 	    	text: 'Copy File Path to System Clipboard',
-	    	handler: function() {copyTextToSystemClipboard(record.get('parentPath')+'/'+record.get('name'));}
+	    	handler: function() {copyTextToSystemClipboard(location.protocol + '//' + location.host + record.get('link'));}
 	    }, {
 	    	text: 'Copy File Url To System Clipboard',
-	    	handler: function() {copyTextToSystemClipboard(location.protocol + '//' + location.host + record.get('link'));}
+	    	handler: function() {copyTextToSystemClipboard(location.protocol + '//' + location.host + record.get('url'));}
 	    }
 	);
 	
@@ -1152,7 +1156,7 @@ function getFolderContextMenu(id, record){
 		    	handler: function() {mailLink(record.name, record.url);}
 		    }, {
 		    	text: 'Copy Folder Path to System Clipboard',
-		    	handler: function() {copyTextToSystemClipboard(record.parentPath+'/'+record.name);}
+		    	handler: function() {copyTextToSystemClipboard(location.protocol + '//' + location.host + record.link);}
 		    }, {
 		    	text: 'Copy Folder Url To System Clipboard',
 		    	handler: function() {copyTextToSystemClipboard(location.protocol + '//' + location.host + record.url);}
@@ -1557,6 +1561,7 @@ function actionRenderer(value, column, record) {
        	myRecord.text = record.get('name');
 		myRecord.name = record.get('name');
 		myRecord.parentPath = record.get('parentPath');
+		myRecord.link = record.get('link');
 		myRecord.url = record.get('url');
 		myRecord.writePermission = record.get('writePermission');
 		myRecord.createPermission = record.get('createPermission');

@@ -118,7 +118,6 @@ public class Browse extends AbstractDocumentWebScript {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("total", total);
 		model.put("path", "");
-		model.put("randomNumber", Math.random());
 		model.put("folderName", categoryName);
 		model.put("folderId", baseNode.getId());
 		model.put(KEYWORD_ROWS, getResultRows(nodes));
@@ -164,7 +163,6 @@ public class Browse extends AbstractDocumentWebScript {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("total", total);
 		model.put("path", path);
-		model.put("randomNumber", Math.random());
 		model.put("folderName", fileInfo.getName());
 		model.put("folderId", baseNode.getId());
 		model.put(KEYWORD_ROWS, getResultRows(nodes));
