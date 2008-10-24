@@ -23,9 +23,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import javax.faces.context.FacesContext;
-import javax.transaction.UserTransaction;
-
 import org.alfresco.service.cmr.dictionary.DataTypeDefinition;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -34,7 +31,6 @@ import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.ResultSetRow;
 import org.alfresco.service.cmr.search.SearchParameters;
 import org.alfresco.service.cmr.search.SearchService;
-import org.alfresco.web.bean.repository.Repository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -174,18 +170,8 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	 */
 	private List<NodeRef> searchLucene(SearchParameters params) {
 		// perform the search against the repository
-		UserTransaction tx = null;
-		List<NodeRef> results = new ArrayList<NodeRef>();
-
-		try {
-			tx = Repository.getUserTransaction(FacesContext.getCurrentInstance(), true);
-			tx.begin();
-			results = toNodeRef(searchService.query(params));
-			tx.commit();
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-
+		ResultSet rs = searchService.query(params);
+		List<NodeRef> results = toNodeRef(rs);
 		return results;
 	}
 

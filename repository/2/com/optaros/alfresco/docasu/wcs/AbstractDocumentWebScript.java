@@ -122,12 +122,12 @@ public class AbstractDocumentWebScript extends DeclarativeWebScript {
 	private void setPagingValues(Map<String, String> params) {
 		if (!params.containsKey(PARAM_START)) {
 			// TODO
-			log.warn("Setting start to 0 TODO refactor ui");
+			log.debug("Setting start to 0 TODO refactor ui");
 			params.put(PARAM_START, "0");
 		}
 		if (!params.containsKey(PARAM_LIMIT)) {
 			// TODO
-			log.warn("Setting limit to 50 TODO refactor ui");
+			log.debug("Setting limit to 50 TODO refactor ui");
 			params.put(PARAM_LIMIT, "50");
 		}
 	}
