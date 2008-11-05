@@ -17,13 +17,15 @@
 
 ## For development:
 # Where you unpacked alfresco-*-tomcat-* bundle
-alfresco.root.dir=/opt/alfresco
-# C:/Program Files/alfresco
+#alfresco.root.dir=/opt/alfresco
+alfresco.root.dir=D:/DoCASU/Alfresco
+#alfresco.root.dir=D:/DoCASU/Alfresco_3
 
 # The "deploy" task copies the modified web scripts here.
 # Note that Alfresco will need to be restarted for changes to be effective
 # (copying files to the "Data Dictionary/Web Scripts" Space in Alfresco,
-#  which can be mounted via CIFS/WebDAV, would note require a restart but 
-#  will not work with DoCASU because of the Java files)
-webscript.dir=/opt/alfresco/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts
-# webscript.dir=C:/Program Files/alfresco/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts
+# which can be mounted via CIFS/WebDAV, would note require a restart but 
+# will not work with DoCASU because of the Java files)
+# webscript.dir=/opt/alfresco/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts
+webscript.dir=D:/DoCASU/Alfresco/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts
+#webscript.dir=D:/DoCASU/Alfresco_3/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts
