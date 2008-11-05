@@ -1363,6 +1363,11 @@ function createActionItems(record) {
 				'<a href="#" onclick="updateFile(\''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
 					'<img title="Update" class="actionIcon" src="../../docasu/images/update.gif"/>'+
 				'</a>';
+			result.push({
+				 text: 'Categorization',
+				 icon: '../../docasu/images/categories.gif',
+				 handler: function() {showSelectCategoryWindow(record.get('nodeId'));}
+		   	});
 		}
 	   	result.push({
 			 text: 'Copy',
@@ -1373,7 +1378,7 @@ function createActionItems(record) {
 			'<a href="#" onclick="copyLink(\''+record.get('iconUrl')+'\', \''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
 				'<img title="Copy" class="actionIcon" src="../../docasu/images/copy.gif"/>'+
 			'</a>';
-   }
+    }
 	
 	var returnValue = new Array(result, html);
 	return returnValue;

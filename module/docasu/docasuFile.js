@@ -16,6 +16,51 @@
  *    
  */
 
+
+/*
+ * Add category to node
+ */
+function addCategory(nodeId, categoryId) {
+	Ext.Ajax.request({
+		url: 'ui/node/category/'+nodeId+'?categoryId='+categoryId,
+		method: 'PUT',
+		success: function(response, options) {
+			// check response for errors
+			if(checkHandleErrors('Failed to add category to node', response)) {
+				return;
+			}
+			// notify success to user
+			var jsonData = Ext.util.JSON.decode(response.responseText);
+			Ext.MessageBox.alert('Success', jsonData.msg);
+		},
+		failure: function(response, options) {
+			handleFailureMessage('Failed to add category to node', response);
+		}
+	});
+}
+
+/*
+ * Remove category from node
+ */
+function removeCategory(nodeId, categoryId) {
+	Ext.Ajax.request({
+		url: 'ui/node/category/'+nodeId+'?categoryId='+categoryId,
+		method: 'DELETE',
+		success: function(response, options) {
+			// check response for errors
+			if(checkHandleErrors('Failed to remove category from node', response)) {
+				return;
+			}
+			// reload categories grid
+			var store = Ext.getCmp('categoriesGrid').getStore();
+		    store.reload();
+		},
+		failure: function(response, options) {
+			handleFailureMessage('Failed to remove category from node', response);
+		}
+	});
+}
+
 /**
  * Show a window with file information &
  * a tab to edit properties
@@ -64,6 +109,14 @@ function showFileDetailsWindow(fileRecordSet) {
     } else {
         Ext.getCmp('versionsPanel').disable();
     }
+    
+    // load categories grid
+    var store = Ext.getCmp('categoriesGrid').getStore();
+    store.proxy = new Ext.data.HttpProxy({
+			url: 'ui/node/categories/'+fileRecordSet.get('nodeId'),
+			method: 'GET'
+		}),
+    store.load();
     
     Ext.getCmp('fileDetailsSaveButton').hide();
 	// set icon and file name as window title
@@ -449,6 +502,33 @@ function _initFileDetailsWindow() {
 		          sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
 		          frame: false
 	});
+	
+	// CATEGORIES GRID	
+	var categoriesGrid = new Ext.grid.GridPanel({
+		id: 'categoriesGrid',
+		width: 700,
+		height: 400,
+		deferredRender:false,
+		store: new Ext.data.Store({
+			/*set proxy before load()*/
+
+			reader: new Ext.data.JsonReader({
+				root: 'rows',
+				totalProperty: 'total',
+				id: 'nodeId',
+				fields: [
+				         {name: 'id', type:'string'},
+				         {name: 'text', type:'string'}
+				         ]
+			})
+		}),
+		columns: [
+		          {header: "Category", width: 200, sortable: true, dataIndex: 'text'},
+		          {header: "Actions", width: 100, sortable: false, dataIndex: 'actions', renderer:function(value, column, record){if(!Ext.getCmp('filepropEditName').disabled){return '<a href="#" onclick="removeCategory(\''+Ext.getCmp('filepropEditNodeId').getValue()+'\',\''+record.get("id")+'\')"><img title="Delete" class="actionIcon" src="../../docasu/images/delete.gif"/></a>';}}}
+		          ],
+        sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
+        frame: false
+	});
 
 	// create form panel
 	var showDetailsPanel = new Ext.form.FormPanel({
@@ -477,6 +557,23 @@ function _initFileDetailsWindow() {
 		bodyStyle: 'padding: 0px',
 		layout: 'fit',
 		items: [ versionsGrid ],
+		listeners: { activate: function() { 
+			Ext.getCmp('fileDetailsSaveButton').hide();
+			Ext.getCmp('mailtoButton').show();
+			Ext.getCmp('favoritesButton').show();  
+		}}
+	});
+	
+	// Panel with grid for document categories, if exist
+	var categoriesPanel = new Ext.Panel({
+		id: 'categoriesPanel',
+		title: "Categories",
+		frame: false,
+		baseCls: 'x-plain',
+		labelWidth: 75,
+		bodyStyle: 'padding: 0px',
+		layout: 'fit',
+		items: [ categoriesGrid ],
 		listeners: { activate: function() { 
 			Ext.getCmp('fileDetailsSaveButton').hide();
 			Ext.getCmp('mailtoButton').show();
@@ -526,7 +623,7 @@ function _initFileDetailsWindow() {
 			defaults: {
 				bodyStyle: 'padding:10px'
 			},
-			items: [showDetailsPanel, versionsPanel, editDetailsPanel]
+			items: [showDetailsPanel, versionsPanel, categoriesPanel, editDetailsPanel]
 		}],
 		buttons: [{
 			text: 'Save',
@@ -567,5 +664,99 @@ function _initFileDetailsWindow() {
 			}
 		}]
 	});
+}
 
+
+function showSelectCategoryWindow(nodeId) {
+	Ext.state.Manager.set("addToNodeId", nodeId);
+	Ext.state.Manager.set("addCategoryId", null);
+	
+	// Tree for add category window
+	var addCategoryTreeLoader = new Ext.tree.TreeLoader({
+		dataUrl: 'ui/categories',
+		requestMethod: 'GET'
+	});
+	addCategoryTreeLoader.on('loadexception', function(treeLoader, node, response) {
+		// check for session expiration
+		if(sessionExpired(response)) {
+			// reload docasu
+			window.location = 'ui';
+			return;
+		}
+		handleFailureMessage('Failed to load sub-categories', response);
+	});
+	var addCategoryTree = new Ext.tree.TreePanel({
+		id: 'addCategoryTree',
+		border: false,
+		frame: false,				
+		enableDD: false, // Allow tree nodes to be moved (dragged and dropped)
+		autoScroll: true,
+		containerScroll: true,
+		deferredRender: false,
+		loader: addCategoryTreeLoader,
+		// this adds a root node to the tree and tells it to expand when it is rendered
+		root: new Ext.tree.AsyncTreeNode({
+			id: Ext.state.Manager.get('categoryId'),
+			text: 'Categories',
+			draggable: false,
+			expanded: true
+		}),
+		rootVisible: false
+	});
+	// in case the tree is modfied via the standard Alfresco GUI, it needs to be reloaded
+	addCategoryTree.on('beforecollapsenode', function (node, deep, anim) {	
+		node.loaded = false;
+	});		
+	addCategoryTree.addListener('click', function (node, event) {
+		Ext.state.Manager.set("addCategoryId", node.id);
+	});
+	
+	var addCategoryTreeContainer = new Ext.Panel({
+		id: 'addCategoryTreeContainer',
+		layout: 'fit',
+		border: false,
+		autoScroll: true,
+		items: [addCategoryTree]
+	});
+
+	var acWindow = new Ext.Window({
+		id: 'addCategoryWindow',
+		title: '<b>Select Category</b>',
+		width: 500,
+		height: 500,
+		layout: 'fit',
+		modal: true,
+		resizable: false,
+		draggable: true,
+		closeAction: 'destroy',
+		buttonAlign: 'center',
+		items:	[addCategoryTreeContainer],
+		buttons: [
+					{
+						text: 'Add',
+						id: 'addCategoryButton',
+						handler: function() {
+							// check if any category was selected
+							var categoryId = Ext.state.Manager.get('addCategoryId');
+							if(!categoryId || categoryId == null) {
+								Ext.MessageBox.show({
+									title: 'Error',
+									msg: 'You must select a category first',
+									buttons: Ext.MessageBox.OK,
+									icon: Ext.MessageBox.ERROR
+								});
+								return false;
+							}
+							// add category to node
+							var addToNodeId = Ext.state.Manager.get('addToNodeId');
+							addCategory(addToNodeId, categoryId);
+						}
+					}, {
+						text: 'Cancel',
+						id: 'cancelButton',
+						handler: function() {acWindow.destroy();}
+					}
+				]
+	});
+	acWindow.show();
 }
