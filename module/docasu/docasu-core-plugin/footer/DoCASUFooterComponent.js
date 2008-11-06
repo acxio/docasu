@@ -15,19 +15,19 @@
  *    along with this program. If not, see <http://www.gnu.org/licenses/>.
  *    
  */
- 
 
-// TopBarComponent
+
+// DoCASUFooterComponent
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
 /* constructor */
-DoCASU.App.Core.TopBarComponent = function(config) {
+DoCASU.App.Core.DoCASUFooterComponent = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.TopBarComponent.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Core.DoCASUFooterComponent.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
@@ -35,10 +35,10 @@ DoCASU.App.Core.TopBarComponent = function(config) {
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.TopBarComponent, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Core.DoCASUFooterComponent, DoCASU.App.Component, {
 	// configuration options
-	id			:	"TopBarComponent",
-	title		:	"Top Bar Component",
+	id			:	"DoCASUFooterComponent",
+	title		:	"DoCASU Footer Component",
 	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
@@ -47,17 +47,16 @@ Ext.extend(DoCASU.App.Core.TopBarComponent, DoCASU.App.Component, {
 	getUIConfig : function() {
 		var uiConfig	=	{
 								// config
-								id				:	this.id,
+								id			:	this.id,
 								// look
-								height			:	40,
-								border			:	true,
-								layout			:	"table",
-								layoutConfig	:	{columns:3},
-								cls				:	"header-bar",
-								itemCls			:	"no-bgnd",
-								margins			:	"5"
+								region		:	"south",
+								collapsible	:	false,
+								margins		:	"5",
+								border		:	true,
+								style		:	"text-align:center;",
+								html		:	"<a href=\"http://code.optaros.com/trac/docasu\">DoCASU @VERSION@</a> - Powered by <a href=\"http://www.optaros.com\">Optaros</a>"
 							}; // the config to construct the UI object(widget)
 		return uiConfig;
 	} // the config to construct the UI object(widget) - use function for better control on building the JSON configuration	
 
-}); // eo DoCASU.App.Core.TopBarComponent
+}); // eo DoCASU.App.Core.DoCASUFooterComponent

@@ -17,17 +17,17 @@
  */
  
 
-// DoCASULayoutComponent
+// DoCASUHeaderComponent
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
 /* constructor */
-DoCASU.App.Core.DoCASULayoutComponent = function(config) {
+DoCASU.App.Core.DoCASUHeaderComponent = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.DoCASULayoutComponent.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Core.DoCASUHeaderComponent.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
@@ -35,21 +35,30 @@ DoCASU.App.Core.DoCASULayoutComponent = function(config) {
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.DoCASULayoutComponent, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Core.DoCASUHeaderComponent, DoCASU.App.Component, {
 	// configuration options
-	id			:	"DoCASULayoutComponent",
-	title		:	"DoCASU Layout Component",
+	id			:	"DoCASUHeaderComponent",
+	title		:	"DoCASU Header Component",
 	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
 	// UI
-	uiClass		:	"Ext.Viewport",
+	uiClass		:	"Ext.Panel",
 	getUIConfig : function() {
 		var uiConfig	=	{
-								id			:	this.id,
-								layout		:	"border"
+								// config
+								id				:	this.id,
+								// look
+								region			:	"north",
+								height			:	40,
+								border			:	true,
+								layout			:	"table",
+								layoutConfig	:	{columns:3},
+								cls				:	"header-bar",
+								itemCls			:	"no-bgnd",
+								margins			:	"5"
 							}; // the config to construct the UI object(widget)
 		return uiConfig;
 	} // the config to construct the UI object(widget) - use function for better control on building the JSON configuration	
 
-}); // eo DoCASU.App.Core.DoCASULayoutComponent
+}); // eo DoCASU.App.Core.DoCASUHeaderComponent

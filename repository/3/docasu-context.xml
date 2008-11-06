@@ -70,6 +70,8 @@
 		class="com.optaros.alfresco.docasu.wcs.Shortcuts"
 		parent="webscript">
 		<property name="nodeService" ref="NodeService" />
+		<property name="permissionService" ref="PermissionService" />
+    	<property name="fileFolderService" ref="FileFolderService" />
 		<property name="repository">
 			<ref bean="repositoryHelper" />
 		</property>

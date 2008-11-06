@@ -69,29 +69,29 @@ body{font:normal 11px tahoma,arial,helvetica,sans-serif;}
 	background: url(/alfresco/docasu/images/gray_bgnd_strip.gif);
 }
 
-#TopBarComponent {
+#DoCASUHeaderComponent {
 	background: url(/alfresco/docasu/images/gray_bgnd_strip.gif);
 }
 
-#TopBarComponent div {
+#DoCASUHeaderComponent div {
 	white-space: nowrap;
 	background: none;
 }
 
-#TopBarComponent td.filler {
+#DoCASUHeaderComponent td.filler {
 	width: 100%;
 }
 
-#TopBarComponent div.SearchFormComponent{
+#DoCASUHeaderComponent div.SearchFormComponent{
 	width: 470px;
 }
 
-#TopBarComponent div.SearchFormComponent td table {
+#DoCASUHeaderComponent div.SearchFormComponent td table {
 	margin-left: 5px;
 }
 
 
-#TopBarComponent .title {
+#DoCASUHeaderComponent .title {
 	font-weight: bold;
 	font-size: 120%;
 }

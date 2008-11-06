@@ -96,11 +96,11 @@ Ext.extend(DoCASU.App.Component, Ext.util.Observable, {
 		if(this.closable && this.closed) {
 			return;
 		}
-		var createUIComponentString = "new "+ this.uiClass + "();";
-		var uiWidget = eval(createUIComponentString); // create the UI object without the configuration first
-		// apply configuration to UI widget
-		uiWidget.constructor.call(uiWidget, this.getUIConfig()); // at this point, the component is registered in Ext.getCmp(this.id);
 		// add UI children to this UI widget 
+		var uiConfig = this.getUIConfig();
+		if(!uiConfig.items) {
+			uiConfig.items = []; // add container capabilities
+		}
 		for(i in this.components) {
 			var component = this.components[i];
 			if(typeof component != 'function') {
@@ -113,9 +113,16 @@ Ext.extend(DoCASU.App.Component, Ext.util.Observable, {
 					continue;
 				}
 				var uiWidgetChild = pluginManager.getUIWidget(component.id);
-				uiWidget.add(uiWidgetChild);
+				uiConfig.items.push(uiWidgetChild);
 			}
 		}
+		if(uiConfig.items.length <= 0) {
+			uiConfig.items = undefined; // the widget should not be a container
+		}
+		var createUIComponentString = "new "+ this.uiClass + "();";
+		var uiWidget = eval(createUIComponentString); // create the UI object without the configuration first
+		// apply configuration to UI widget
+		uiWidget.constructor.call(uiWidget, uiConfig); // at this point, the component is registered in Ext.getCmp(this.id);
 		// check if minimized
 		if(this.minimizable && this.minimized) {
 			// TODO: minimize ExtJS Window
