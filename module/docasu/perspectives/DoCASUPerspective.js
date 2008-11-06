@@ -114,6 +114,26 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 					file		:	"../../docasu/docasu-core-plugin/west/DoCASUWestComponent.js",
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+					components	:	[	// DoCASUWestComponent components
+										{	// CompanyHomeTreeComponent
+											id			:	'CompanyHomeTreeComponent',
+											file		:	"../../docasu/docasu-core-plugin/west/CompanyHomeTreeComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo CompanyHomeTreeComponent
+										{	// FavoritesComponent
+											id			:	'FavoritesComponent',
+											file		:	"../../docasu/docasu-core-plugin/west/FavoritesComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo FavoritesComponent
+										{	// ClipboardComponent
+											id			:	'ClipboardComponent',
+											file		:	"../../docasu/docasu-core-plugin/west/ClipboardComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										} // eo ClipboardComponent
+									] // eo DoCASUWestComponent components
 				}; // eo DoCASUWestComponent
 	}, // eo getDoCASUWestComponentConfig
 	
