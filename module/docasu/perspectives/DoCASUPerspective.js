@@ -24,6 +24,7 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 
 	getPerspective : function() {
 		var docasuCorePluginConfig = this.getDoCASUCorePluginConfig();
+		var docasuHelpPluginConfig = this.getDoCASUHelpPluginConfig();
 		return	{	// DoCASUPerspective
 				id				:	"DoCASUPerspective",
 				title			:	"DoCASU Perspective",
@@ -33,7 +34,8 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 										namespace	:	"DoCASU.App", // each plugin is stored under a specified namespace - must be different than any class name
 									}, // eo DoCASUPluginManager
 				plugins			:	[	// configure plugins
-										docasuCorePluginConfig
+										docasuCorePluginConfig,
+										docasuHelpPluginConfig
 									] // eo configure plugins
 			}; // eo  DoCASU Perspective
 	}, // eo getPerspective
@@ -45,7 +47,13 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 					file		:	"../../docasu/docasu-core-plugin/DoCASUCorePlugin.js",
 					namespace	:	"DoCASU.App.Core", // each plugin is stored under a specified namespace - must be different than any class name
 					components	:	[ // DoCASUCorePlugin components
-										docasuLayoutComponentConfig
+										docasuLayoutComponentConfig,
+										{	// LogoutAction
+											id			:	'LogoutAction',
+											file		:	"../../docasu/docasu-core-plugin/actions/LogoutAction.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										} // eo // LogoutAction
 									] // eo DoCASUCorePlugin components
 				}; // eo DoCASUCorePlugin
 	}, // eo getDoCASUCorePluginConfig
@@ -134,7 +142,23 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 				}; // eo DoCASUFooterComponent
-	} // eo getDoCASUFooterComponentConfig
+	}, // eo getDoCASUFooterComponentConfig
+	
+	getDoCASUHelpPluginConfig : function() {
+		return 	{	// DoCASUHelpPlugin
+					id			:	"DoCASUHelpPlugin",
+					file		:	"../../docasu/docasu-help-plugin/DoCASUHelpPlugin.js",
+					namespace	:	"DoCASU.App.Help", // each plugin is stored under a specified namespace - must be different than any class name
+					components	:	[ // DoCASUHelpPlugin components
+										{	// DoCASUHelpComponent
+											id			:	'DoCASUHelpComponent',
+											file		:	"../../docasu/docasu-help-plugin/DoCASUHelpComponent.js",
+											pluginId	:	"DoCASUHelpPlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Help" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										} // eo // DoCASUHelpComponent
+									] // eo DoCASUHelpPlugin components
+				}; // eo DoCASUHelpPlugin
+	}, // eo getDoCASUHelpPluginConfig
 	
 }); // eo DoCASU.App.Perspectives.DoCASUPerspective
  

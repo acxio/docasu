@@ -54,6 +54,7 @@
 		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUComponent.js"></script>
 		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUApplication.js"></script>
 		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUDataManager.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUActionManager.js"></script>
 		
 		
 		<!-- Custom DoCASU Script and CSS files  -->

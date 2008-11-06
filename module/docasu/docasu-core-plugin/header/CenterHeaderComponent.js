@@ -58,7 +58,7 @@ Ext.extend(DoCASU.App.Core.CenterHeaderComponent, DoCASU.App.Component, {
 								// look
 								margins		:	"0 2 0 2",
 								border		:	false,
-								html		:	"<span class=\"title\" style=\"margin-right:20px;margin-top:5px;\">Welcome " + user.firstName + " " + user.lastName + "</span> <a target=\"_blank\" href=\"../../faces/jsp/browse/browse.jsp\" class=\"header\">Standard Alfresco Client</a> <a href=\"#\" onClick=\"showHelp();\" class=\"header\" >Help</a> <a href=\"#\" id=\"logoutLink\" onClick=\"doLogout(); return false;\" class=\"header\" >Logout</a>"
+								html		:	"<span class=\"title\" style=\"margin-right:20px;margin-top:5px;\">Welcome " + user.firstName + " " + user.lastName + "</span> <a target=\"_blank\" href=\"../../faces/jsp/browse/browse.jsp\" class=\"header\">Standard Alfresco Client</a> <a href=\"#\" onClick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('DoCASUHelpComponent', 'DoCASU.App.Help').show();\" class=\"header\" >Help</a> <a href=\"#\" id=\"logoutLink\" onClick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LogoutAction', 'DoCASU.App.Core').logout(); return false;\" class=\"header\" >Logout</a>"
 							}; // the config to construct the UI object(widget)
 		return uiConfig;
 	}, // the config to construct the UI object(widget) - use function for better control on building the JSON configuration	

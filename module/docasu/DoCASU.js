@@ -47,5 +47,9 @@ DoCASU.App.onReady = function() {
 	
 	var docasuCorePlugin = pluginManager.getPlugin("DoCASUCorePlugin", "DoCASU.App.Core");
 	docasuCorePlugin.init();
+	
+	ar docasuHelpPlugin = pluginManager.getPlugin("DoCASUHelpPlugin", "DoCASU.App.Help");
+	docasuHelpPlugin.init();
+	
 	new Ext.LoadMask(Ext.getBody()).hide();
 }

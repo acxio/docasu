@@ -17,26 +17,30 @@
  */
 
 
-// DoCASUDataManager
+// DoCASUHelpPlugin
 
 /* Ext.namespace will create these objects if they don't already exist */
-Ext.namespace("DoCASU.App");
+Ext.namespace("DoCASU.App.Help");
 
-
-
-DoCASU.App.DataManager = new Object({
+/* constructor */
+DoCASU.App.Help.DoCASUHelpPlugin = function(config) {
+	Ext.apply(this, config);
 	
-	getComponentData : function(component, key) {
-		var data = Ext.state.Manager.get(component.namespace + "." + component.id + ".data." + key);
-		if(!data || data == null) {
-			throw "No data was found for " + component.namespace + "." + component.id + ".data." + key;
-			return;
-		}
-		return data;
-	},
+	// call parent
+	DoCASU.App.Help.DoCASUHelpPlugin.superclass.constructor.apply(this, arguments);
 	
-	setComponentData : function(component, key, value) {
-		Ext.state.Manager.set(component.namespace + "." + component.id + ".data." + key, value);
-	}
+	// add events
+	this.addEvents(
+	);
+	
+} // eo constructor
 
-}); // eo DoCASU.App.DataManager
+Ext.extend(DoCASU.App.Help.DoCASUHelpPlugin, DoCASU.App.Plugin, {
+	// configuration options
+	id			:	"DoCASUHelpPlugin",
+	title		:	"DoCASU Help Plugin",
+	namespace	:	"DoCASU.App.Help" // each plugin is stored under a specified namespace - must be different than any class name
+	// this configuration is overwritten by the perspective 
+	// configuration defaults are in DoCASU.App.Plugin
+	
+}); // eo DoCASU.App.Help.DoCASUHelpPlugin
