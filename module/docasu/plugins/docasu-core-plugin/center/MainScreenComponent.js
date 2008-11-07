@@ -17,17 +17,17 @@
  */
 
 
-// DoCASUCenterComponent
+// MainScreenComponent
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
 /* constructor */
-DoCASU.App.Core.DoCASUCenterComponent = function(config) {
+DoCASU.App.Core.MainScreenComponent = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.DoCASUCenterComponent.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Core.MainScreenComponent.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
@@ -35,10 +35,10 @@ DoCASU.App.Core.DoCASUCenterComponent = function(config) {
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.DoCASUCenterComponent, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Core.MainScreenComponent, DoCASU.App.Component, {
 	// configuration options
-	id			:	"DoCASUCenterComponent",
-	title		:	"DoCASU Center Component",
+	id			:	"MainScreenComponent",
+	title		:	"Main Screen Component",
 	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
@@ -49,31 +49,17 @@ Ext.extend(DoCASU.App.Core.DoCASUCenterComponent, DoCASU.App.Component, {
 								// config
 								id			:	this.id,
 								// look
+								title		:	"Main Screen",
 								region		:	"center",
+								layout		:	"fit",
+								split		:	true,
+								collapsible	:	false,
+								collapseMode:	"mini",
 								margins		:	"0 0 0 0",
 								header		:	true,
-								border		:	true,
-								layout		:	"border"
+								border		:	true
 							}; // the config to construct the UI object(widget)
 		return uiConfig;
-	}, // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
-	
-	// override init()
-	init : function() {
-		// call parent
-		DoCASU.App.Core.DoCASUCenterComponent.superclass.init.apply(this, arguments);
-		
-		// register event handlers
-		var uiWidget;
-		try {
-			uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
-		} catch(err) {
-			// no UI widget was created thus component is disabled or closed
-			return;
-		}
-		uiWidget.on("render", function(panel) {
-			panel.header.addClass('black-header');
-		});
-	}				
+	} // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
 
-}); // eo DoCASU.App.Core.DoCASUCenterComponent
+}); // eo DoCASU.App.Core.MainScreenComponent

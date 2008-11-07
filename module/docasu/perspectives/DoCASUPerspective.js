@@ -163,6 +163,20 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 					file		:	"../../docasu/plugins/docasu-core-plugin/center/DoCASUCenterComponent.js",
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+					components	:	[ // DoCASUCenterComponent components
+										{	// MainScreenComponent
+											id			:	'MainScreenComponent',
+											file		:	"../../docasu/plugins/docasu-core-plugin/center/MainScreenComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo // MainScreenComponent
+										{	// SecondaryScreenComponent
+											id			:	'SecondaryScreenComponent',
+											file		:	"../../docasu/plugins/docasu-core-plugin/center/SecondaryScreenComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										} // eo // SecondaryScreenComponent
+									] // eo DoCASUCenterComponent components
 				}; // eo DoCASUCenterComponent
 	}, // eo getDoCASUCenterComponentConfig
 	
