@@ -46,6 +46,7 @@
 		
 		
 		<!-- DoCASU Library -->
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUUtils.js"></script>
 		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUSession.js"></script>
 		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUError.js"></script>
 		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUScriptLoader.js"></script>
@@ -53,6 +54,7 @@
 		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUPlugin.js"></script>
 		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUComponent.js"></script>
 		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUApplication.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUApplicationManager.js"></script>
 		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUDataManager.js"></script>
 		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUActionManager.js"></script>
 		

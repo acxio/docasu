@@ -62,7 +62,7 @@ Ext.extend(DoCASU.App.Core.LogoutAction, DoCASU.App.Component, {
 			});
 		});
 		this.on("afterlogout", function(component) {
-			new DoCASU.App.Application().reload();
+			DoCASU.App.ApplicationManager.getApplication().reload();
 		});
 	},
 	

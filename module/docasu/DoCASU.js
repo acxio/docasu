@@ -22,14 +22,23 @@
 
 /* entry point to DoCASU */
 Ext.onReady( function() {
+	// custom config
 	Ext.BLANK_IMAGE_URL = "../../docasu/lib/extjs/resources/images/default/s.gif";
 	Ext.QuickTips.init();
 	Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
 		path		:	"/DoCASUApp/",
 		expires		:	new Date(new Date().getTime()+(1000*60*60*24*30)) //30 days
 	}));
+	document.oncontextmenu = function(e) {
+		// remove default context menu
+		if(!e) {e = window.event;}
+		if(e.returnValue) {e.returnValue = false;}
+		if(e.preventDefault) {e.preventDefault();}
+		return false;
+	};
 	
-	var docasu = new DoCASU.App.Application();
+	// begin DoCASU
+	var docasu = DoCASU.App.ApplicationManager.getApplication();
 	docasu.on('beforeload', function() {
 		new Ext.LoadMask(Ext.getBody()).show();
 	});

@@ -50,16 +50,20 @@ Ext.extend(DoCASU.App.Core.DoCASUEastComponent, DoCASU.App.Component, {
 								id			:	this.id,
 								// look
 								region		:	"east",
-								title		:	"Document Info",
-								border		:	true,
+								title		:	"Selected Document",
+								width		:	200,
+								minSize		:	175,
+								maxSize		:	400,
 								split		:	true,
 								collapsible	:	true,
 								collapseMode:	"mini",
-								width		:	200,
-							    minSize		:	175,
-							    maxSize		:	400,
-							    layout		:	"fit",
-								margins		:	"0 5 0 0"
+								margins		:	"0 0 0 5",
+								layout		:	"accordion",
+								layoutConfig:	{
+													hideCollapseTool: true,
+													titleCollapse: true,
+													animate: false
+												}
 							}; // the config to construct the UI object(widget)
 		return uiConfig;
 	}, // the config to construct the UI object(widget) - use function for better control on building the JSON configuration

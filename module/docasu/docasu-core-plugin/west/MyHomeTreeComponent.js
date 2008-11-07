@@ -59,7 +59,7 @@ Ext.extend(DoCASU.App.Core.MyHomeTreeComponent, DoCASU.App.Component, {
 			// check for session expiration
 			if(DoCASU.App.Session.isSessionExpired(response)) {
 				// reload docasu
-				new DoCASU.App.Application().reload();
+				DoCASU.App.ApplicationManager.getApplication().reload();
 				return;
 			}
 			DoCASU.App.Error.handleFailureMessage("Failed to load sub-folders", response);
