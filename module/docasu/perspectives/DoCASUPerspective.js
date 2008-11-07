@@ -25,6 +25,7 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 	getPerspective : function() {
 		var docasuCorePluginConfig = this.getDoCASUCorePluginConfig();
 		var docasuHelpPluginConfig = this.getDoCASUHelpPluginConfig();
+		var docasuCategoriesPluginConfig = this.getDoCASUCategoriesPluginConfig();
 		return	{	// DoCASUPerspective
 				id				:	"DoCASUPerspective",
 				title			:	"DoCASU Perspective",
@@ -35,7 +36,8 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 									}, // eo DoCASUPluginManager
 				plugins			:	[	// configure plugins
 										docasuCorePluginConfig,
-										docasuHelpPluginConfig
+										docasuHelpPluginConfig,
+										docasuCategoriesPluginConfig
 									] // eo configure plugins
 			}; // eo  DoCASU Perspective
 	}, // eo getPerspective
@@ -121,6 +123,12 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo CompanyHomeTreeComponent
+										{	// RecentDocumentsComponent
+											id			:	'RecentDocumentsComponent',
+											file		:	"../../docasu/docasu-core-plugin/west/RecentDocumentsComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo RecentDocumentsComponent
 										{	// FavoritesComponent
 											id			:	'FavoritesComponent',
 											file		:	"../../docasu/docasu-core-plugin/west/FavoritesComponent.js",
@@ -132,7 +140,19 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 											file		:	"../../docasu/docasu-core-plugin/west/ClipboardComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
-										} // eo ClipboardComponent
+										}, // eo ClipboardComponent
+										{	// MyHomeTreeComponent
+											id			:	'MyHomeTreeComponent',
+											file		:	"../../docasu/docasu-core-plugin/west/MyHomeTreeComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo MyHomeTreeComponent
+										{	// CategoriesTreeComponent
+											id			:	'CategoriesTreeComponent',
+											file		:	"../../docasu/docasu-categories-plugin/CategoriesTreeComponent.js",
+											pluginId	:	"DoCASUCategoriesPlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Categories" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										} // eo CategoriesTreeComponent
 									] // eo DoCASUWestComponent components
 				}; // eo DoCASUWestComponent
 	}, // eo getDoCASUWestComponentConfig
@@ -179,6 +199,14 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 									] // eo DoCASUHelpPlugin components
 				}; // eo DoCASUHelpPlugin
 	}, // eo getDoCASUHelpPluginConfig
+	
+	getDoCASUCategoriesPluginConfig : function() {
+		return 	{	// DoCASUCategoriesPlugin
+					id			:	"DoCASUCategoriesPlugin",
+					file		:	"../../docasu/docasu-categories-plugin/DoCASUCategoriesPlugin.js",
+					namespace	:	"DoCASU.App.Categories" // each plugin is stored under a specified namespace - must be different than any class name
+				}; // eo DoCASUCategoriesPlugin
+	} // eo getDoCASUCategoriesPluginConfig
 	
 }); // eo DoCASU.App.Perspectives.DoCASUPerspective
  

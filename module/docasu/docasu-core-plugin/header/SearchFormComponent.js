@@ -123,7 +123,13 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 		// call parent
 		DoCASU.App.Core.SearchFormComponent.superclass.init.apply(this, arguments);
 		// register event handlers
-		var uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		var uiWidget;
+		try {
+			uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		} catch(err) {
+			// no UI widget was created thus component is disabled or closed
+			return;
+		}
 		uiWidget.on("beforeaction", function (form, action) {
 			Ext.MessageBox.show({
 				msg				:	"Search",

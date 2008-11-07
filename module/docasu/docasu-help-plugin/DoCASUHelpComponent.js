@@ -84,7 +84,14 @@ Ext.extend(DoCASU.App.Help.DoCASUHelpComponent, DoCASU.App.Component, {
 	
 	show : function() {
 		this.init();
-		DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id).show();
+		var uiWidget;
+		try {
+			uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		} catch(err) {
+			// no UI widget was created thus component is disabled or closed
+			return;
+		}
+		uiWidget.show();
 	} // eo show
 
 }); // eo DoCASU.App.Help.DoCASUHelpComponent

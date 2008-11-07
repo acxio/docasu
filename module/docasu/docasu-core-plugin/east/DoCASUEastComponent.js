@@ -70,7 +70,13 @@ Ext.extend(DoCASU.App.Core.DoCASUEastComponent, DoCASU.App.Component, {
 		DoCASU.App.Core.DoCASUEastComponent.superclass.init.apply(this, arguments);
 		
 		// register event handlers
-		var uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		var uiWidget;
+		try {
+			uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		} catch(err) {
+			// no UI widget was created thus component is disabled or closed
+			return;
+		}
 		uiWidget.on("render", function(panel) {
 			panel.header.addClass('black-header');
 		});

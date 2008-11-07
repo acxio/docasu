@@ -17,17 +17,17 @@
  */
 
 
-// CompanyHomeTreeComponent
+// CategoriesTreeComponent
 
 /* Ext.namespace will create these objects if they don't already exist */
-Ext.namespace("DoCASU.App.Core");
+Ext.namespace("DoCASU.App.Categories");
 
 /* constructor */
-DoCASU.App.Core.CompanyHomeTreeComponent = function(config) {
+DoCASU.App.Categories.CategoriesTreeComponent = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.CompanyHomeTreeComponent.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Categories.CategoriesTreeComponent.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
@@ -35,42 +35,28 @@ DoCASU.App.Core.CompanyHomeTreeComponent = function(config) {
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.CompanyHomeTreeComponent, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Categories.CategoriesTreeComponent, DoCASU.App.Component, {
 	// configuration options
-	id			:	"CompanyHomeTreeComponent",
-	title		:	"Company Home Tree Component",
-	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+	id			:	"CategoriesTreeComponent",
+	title		:	"Categories Tree Component",
+	namespace	:	"DoCASU.App.Categories", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
 	// UI
 	uiClass		:	"Ext.tree.TreePanel",
 	getUIConfig : function() {
-		var companyHomeTreeLoader = new Ext.tree.TreeLoader({
-			dataUrl: "ui/folders",
+		var categoriesTreeLoader = new Ext.tree.TreeLoader({
+			dataUrl: "ui/categories",
 			requestMethod: "GET"
 		});
-		companyHomeTreeLoader.on("beforeload", function(treeLoader, node, response) {
-			if(node.id == "cancel_load") {
-				// cancel the load on the first render - wait for the user to be loaded first
-				return false;
-			}
-		});
-		companyHomeTreeLoader.on("load", function(treeLoader, node, response) {
-			/*var path = Ext.state.Manager.get('nextActiveFolder');
-			if (typeof(path) != "undefined") {
-				// TODO: expand the active folder in the tree structure
-				getCompanyHomeTree().expandPath(path);
-				Ext.state.Manager.set('nextActiveFolder', null);
-			}*/
-		});
-		companyHomeTreeLoader.on("loadexception", function(treeLoader, node, response) {
+		categoriesTreeLoader.on("loadexception", function(treeLoader, node, response) {
 			// check for session expiration
 			if(DoCASU.App.Session.isSessionExpired(response)) {
 				// reload docasu
 				new DoCASU.App.Application().reload();
 				return;
 			}
-			DoCASU.App.Error.handleFailureMessage("Failed to load sub-folders", response);
+			DoCASU.App.Error.handleFailureMessage("Failed to load sub-categories", response);
 		});
 		var uiConfig	=	{
 								// config
@@ -78,16 +64,16 @@ Ext.extend(DoCASU.App.Core.CompanyHomeTreeComponent, DoCASU.App.Component, {
 								autoScroll		:	true,
 								enableDD		:	false, // Allow tree nodes to be moved (dragged and dropped)
 								containerScroll	:	true,
-								loader			:	companyHomeTreeLoader,
+								loader			:	categoriesTreeLoader,
 								root			:	new Ext.tree.AsyncTreeNode({
-														id			:	"cancel_load", // companyHomeId - to be loaded from repository
-														text		:	"Company Home",
+														id			:	"cm:generalclassifiable", // default classification
+														text		:	"Categories",
 														draggable	:	false,
 														expanded	:	true
 													}), // this adds a root node to the tree and tells it to expand when it is rendered
 								rootVisible		:	false,
 								// look
-								title		:	"<b>Company Home</b>",
+								title		:	"<b>Categories</b>",
 								split		:	true,
 								width		:	200,
 								minSize		:	175,
@@ -103,7 +89,7 @@ Ext.extend(DoCASU.App.Core.CompanyHomeTreeComponent, DoCASU.App.Component, {
 	// override init()
 	init : function() {
 		// call parent
-		DoCASU.App.Core.CompanyHomeTreeComponent.superclass.init.apply(this, arguments);
+		DoCASU.App.Categories.CategoriesTreeComponent.superclass.init.apply(this, arguments);
 		
 		// register event handlers
 		var uiWidget;
@@ -117,27 +103,11 @@ Ext.extend(DoCASU.App.Core.CompanyHomeTreeComponent, DoCASU.App.Component, {
 			node.loaded = false;
 		});	
 		uiWidget.addListener("click", function (node, event) {
-			// loadFolder(node.id);
+			// loadCategory(node.id);
 			return false;
 		});
 		uiWidget.on("contextmenu", function(node, e) {
 			e.preventDefault();
-			/*
-			var myRecord = new Object('Node '+node.id);
-	       	myRecord.id = node.id;
-	       	myRecord.text = node.text;
-			myRecord.name = node.attributes.text;
-			myRecord.parentPath = node.attributes.parentPath;
-			myRecord.link = node.attributes.link;
-			myRecord.url = node.attributes.url;
-			myRecord.writePermission = eval(node.attributes.writePermission);
-			myRecord.createPermission = eval(node.attributes.createPermission);
-			myRecord.deletePermission = eval(node.attributes.deletePermission);
-	
-			this.contextMenu = getFolderContextMenu(node.id, myRecord);
-	
-			var xy = e.getXY();
-			this.contextMenu.showAt(xy);*/
 		});
 		uiWidget.on("beforeexpand", function(panel) {
 			var navigator = DoCASU.App.PluginManager.getPluginManager().getComponent("DoCASUWestComponent", "DoCASU.App.Core");
@@ -146,27 +116,14 @@ Ext.extend(DoCASU.App.Core.CompanyHomeTreeComponent, DoCASU.App.Component, {
 		uiWidget.on("beforecollapse", function(panel) {
 			var navigator = DoCASU.App.PluginManager.getPluginManager().getComponent("DoCASUWestComponent", "DoCASU.App.Core");
 			if (navigator.activeTab == panel.id) {
-				// loadFolder(Ext.state.Manager.get('companyHomeId'));
 				return false;
 			}
 		});
-		
-		// register listener for CenterHeaderComponent.userloaded
-		var centerHeader = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterHeaderComponent", "DoCASU.App.Core");
-		centerHeader.on("userloaded", function(component) {
-			var companyHomeTreeComponent = DoCASU.App.PluginManager.getPluginManager().getComponent("CompanyHomeTreeComponent", "DoCASU.App.Core");
-			companyHomeTreeComponent.reload(component);
-		});
-		
-		// set active tab
-		var navigator = DoCASU.App.PluginManager.getPluginManager().getComponent("DoCASUWestComponent", "DoCASU.App.Core");
-		navigator.activeTab = this.id;
 	},
 	
-	reload : function(component) {
+	reload : function() {
 		var uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
-		uiWidget.root.id = component.getUser().companyHome;
 		uiWidget.root.reload();
 	}
 
-}); // eo DoCASU.App.Core.CompanyHomeTreeComponent
+}); // eo DoCASU.App.Categories.CategoriesTreeComponent

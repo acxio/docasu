@@ -65,21 +65,27 @@ Ext.extend(DoCASU.App.Core.CenterHeaderComponent, DoCASU.App.Component, {
 
 	// override init()
 	init : function() {
-		// load user data
-		this.loadUserData();
-		
 		// call parent
 		DoCASU.App.Core.CenterHeaderComponent.superclass.init.apply(this, arguments);
 		
 		// register event handlers
+		var uiWidget;
+		try {
+			uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		} catch(err) {
+			// no UI widget was created thus component is disabled or closed
+			return;
+		}
+		uiWidget.on("render", function(panel) {
+			panel.getEl().parent("td").addClass("filler");
+		});
+		
 		this.on("userloaded", function(component) {
 			component.updateUI();
 		});
 		
-		var uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
-		uiWidget.on("render", function(panel) {
-			panel.getEl().parent("td").addClass("filler");
-		});
+		// load user data
+		this.loadUserData();
 	},
 	
 	updateUI : function() {

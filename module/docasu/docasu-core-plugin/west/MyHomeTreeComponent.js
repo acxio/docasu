@@ -17,17 +17,17 @@
  */
 
 
-// CompanyHomeTreeComponent
+// MyHomeTreeComponent
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
 /* constructor */
-DoCASU.App.Core.CompanyHomeTreeComponent = function(config) {
+DoCASU.App.Core.MyHomeTreeComponent = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.CompanyHomeTreeComponent.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Core.MyHomeTreeComponent.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
@@ -35,35 +35,27 @@ DoCASU.App.Core.CompanyHomeTreeComponent = function(config) {
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.CompanyHomeTreeComponent, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Core.MyHomeTreeComponent, DoCASU.App.Component, {
 	// configuration options
-	id			:	"CompanyHomeTreeComponent",
-	title		:	"Company Home Tree Component",
+	id			:	"MyHomeTreeComponent",
+	title		:	"My Home Tree Component",
 	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
 	// UI
 	uiClass		:	"Ext.tree.TreePanel",
 	getUIConfig : function() {
-		var companyHomeTreeLoader = new Ext.tree.TreeLoader({
+		var myHomeTreeLoader = new Ext.tree.TreeLoader({
 			dataUrl: "ui/folders",
 			requestMethod: "GET"
 		});
-		companyHomeTreeLoader.on("beforeload", function(treeLoader, node, response) {
+		myHomeTreeLoader.on("beforeload", function(treeLoader, node, response) {
 			if(node.id == "cancel_load") {
 				// cancel the load on the first render - wait for the user to be loaded first
 				return false;
 			}
 		});
-		companyHomeTreeLoader.on("load", function(treeLoader, node, response) {
-			/*var path = Ext.state.Manager.get('nextActiveFolder');
-			if (typeof(path) != "undefined") {
-				// TODO: expand the active folder in the tree structure
-				getCompanyHomeTree().expandPath(path);
-				Ext.state.Manager.set('nextActiveFolder', null);
-			}*/
-		});
-		companyHomeTreeLoader.on("loadexception", function(treeLoader, node, response) {
+		myHomeTreeLoader.on("loadexception", function(treeLoader, node, response) {
 			// check for session expiration
 			if(DoCASU.App.Session.isSessionExpired(response)) {
 				// reload docasu
@@ -78,16 +70,16 @@ Ext.extend(DoCASU.App.Core.CompanyHomeTreeComponent, DoCASU.App.Component, {
 								autoScroll		:	true,
 								enableDD		:	false, // Allow tree nodes to be moved (dragged and dropped)
 								containerScroll	:	true,
-								loader			:	companyHomeTreeLoader,
+								loader			:	myHomeTreeLoader,
 								root			:	new Ext.tree.AsyncTreeNode({
 														id			:	"cancel_load", // companyHomeId - to be loaded from repository
-														text		:	"Company Home",
+														text		:	"My Home",
 														draggable	:	false,
 														expanded	:	true
 													}), // this adds a root node to the tree and tells it to expand when it is rendered
 								rootVisible		:	false,
 								// look
-								title		:	"<b>Company Home</b>",
+								title		:	"<b>My Home</b>",
 								split		:	true,
 								width		:	200,
 								minSize		:	175,
@@ -103,7 +95,7 @@ Ext.extend(DoCASU.App.Core.CompanyHomeTreeComponent, DoCASU.App.Component, {
 	// override init()
 	init : function() {
 		// call parent
-		DoCASU.App.Core.CompanyHomeTreeComponent.superclass.init.apply(this, arguments);
+		DoCASU.App.Core.MyHomeTreeComponent.superclass.init.apply(this, arguments);
 		
 		// register event handlers
 		var uiWidget;
@@ -154,19 +146,15 @@ Ext.extend(DoCASU.App.Core.CompanyHomeTreeComponent, DoCASU.App.Component, {
 		// register listener for CenterHeaderComponent.userloaded
 		var centerHeader = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterHeaderComponent", "DoCASU.App.Core");
 		centerHeader.on("userloaded", function(component) {
-			var companyHomeTreeComponent = DoCASU.App.PluginManager.getPluginManager().getComponent("CompanyHomeTreeComponent", "DoCASU.App.Core");
+			var companyHomeTreeComponent = DoCASU.App.PluginManager.getPluginManager().getComponent("MyHomeTreeComponent", "DoCASU.App.Core");
 			companyHomeTreeComponent.reload(component);
 		});
-		
-		// set active tab
-		var navigator = DoCASU.App.PluginManager.getPluginManager().getComponent("DoCASUWestComponent", "DoCASU.App.Core");
-		navigator.activeTab = this.id;
 	},
 	
 	reload : function(component) {
 		var uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
-		uiWidget.root.id = component.getUser().companyHome;
+		uiWidget.root.id = component.getUser().userHome;
 		uiWidget.root.reload();
 	}
 
-}); // eo DoCASU.App.Core.CompanyHomeTreeComponent
+}); // eo DoCASU.App.Core.MyHomeTreeComponent

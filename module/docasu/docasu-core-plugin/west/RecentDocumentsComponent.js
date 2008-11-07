@@ -17,17 +17,17 @@
  */
 
 
-// FavoritesComponent
+// RecentDocumentsComponent
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
 /* constructor */
-DoCASU.App.Core.FavoritesComponent = function(config) {
+DoCASU.App.Core.RecentDocumentsComponent = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.FavoritesComponent.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Core.RecentDocumentsComponent.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
@@ -35,24 +35,46 @@ DoCASU.App.Core.FavoritesComponent = function(config) {
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.FavoritesComponent, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Core.RecentDocumentsComponent, DoCASU.App.Component, {
 	// configuration options
-	id			:	"FavoritesComponent",
-	title		:	"Favorites Component",
+	id			:	"RecentDocumentsComponent",
+	title		:	"Recent Documents Component",
 	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
 	// UI
-	uiClass		:	"Ext.Panel",
+	uiClass		:	"Ext.grid.GridPanel",
 	getUIConfig : function() {
+		var recentDocsStore = new Ext.data.Store({
+			proxy: new Ext.data.HttpProxy({
+				url: 'ui/node/recentdocs',
+				method: 'GET'
+			}),
+			reader: new Ext.data.JsonReader({
+				root: 'rows',
+				fields: [
+				         {name: 'name', type:'string'},
+				         {name: 'nameIcon', type:'string'},
+				         {name: 'path', type:'string'},
+				         {name: 'modified', type:'string'}
+				         ]
+			})
+		});
 		var uiConfig	=	{
 								// config
-								id		:	this.id,
+								id			:	this.id,
+								store		:	recentDocsStore,
 								// look
-								title	:	"My Favorites",
-						 	    html	:	"<div id=\"" + this.id + "\">No favorites defined.<div>",
-						 	    border	:	false,
-						 	    iconCls	:	"settings"
+								title		:	"Latest Documents",
+	    						border		:	false,
+	    						iconCls		:	"settings",
+	    						columns		:	[
+	    											{
+	    												id			:	"name",
+	    												dataIndex	:	"nameIcon"
+	    											}
+	    										],
+	    						viewConfig	:	{forceFit:true}
 							}; // the config to construct the UI object(widget)
 		return uiConfig;
 	}, // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
@@ -60,7 +82,7 @@ Ext.extend(DoCASU.App.Core.FavoritesComponent, DoCASU.App.Component, {
 	// override init()
 	init : function() {
 		// call parent
-		DoCASU.App.Core.FavoritesComponent.superclass.init.apply(this, arguments);
+		DoCASU.App.Core.RecentDocumentsComponent.superclass.init.apply(this, arguments);
 		
 		// register event handlers
 		var uiWidget;
@@ -80,6 +102,9 @@ Ext.extend(DoCASU.App.Core.FavoritesComponent, DoCASU.App.Component, {
 				return false;
 			}
 		});
+		
+		// load data
+		uiWidget.store.load();
 	}	
 
-}); // eo DoCASU.App.Core.FavoritesComponent
+}); // eo DoCASU.App.Core.RecentDocumentsComponent

@@ -22,7 +22,7 @@
 
 /* entry point to DoCASU */
 Ext.onReady( function() {
-	Ext.BLANK_IMAGE_URL = "./lib/extjs/resources/images/default/s.gif";
+	Ext.BLANK_IMAGE_URL = "../../docasu/lib/extjs/resources/images/default/s.gif";
 	Ext.QuickTips.init();
 	Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
 		path		:	"/DoCASUApp/",
@@ -48,7 +48,7 @@ DoCASU.App.onReady = function() {
 	var docasuCorePlugin = pluginManager.getPlugin("DoCASUCorePlugin", "DoCASU.App.Core");
 	docasuCorePlugin.init();
 	
-	ar docasuHelpPlugin = pluginManager.getPlugin("DoCASUHelpPlugin", "DoCASU.App.Help");
+	var docasuHelpPlugin = pluginManager.getPlugin("DoCASUHelpPlugin", "DoCASU.App.Help");
 	docasuHelpPlugin.init();
 	
 	new Ext.LoadMask(Ext.getBody()).hide();

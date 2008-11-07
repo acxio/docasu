@@ -50,7 +50,7 @@ Ext.extend(DoCASU.App.Core.ClipboardComponent, DoCASU.App.Component, {
 								id			:	this.id,
 								// look
 								title		:	"Clipboard",
-	    						html		:	"<div id=\"clipboard\">No items on clipboard.</div>",
+	    						html		:	"<div id=\"" + this.id + "\">No items on clipboard.</div>",
 	    						border		:	false,
 	    						iconCls		:	"settings"
 							}; // the config to construct the UI object(widget)
@@ -63,17 +63,22 @@ Ext.extend(DoCASU.App.Core.ClipboardComponent, DoCASU.App.Component, {
 		DoCASU.App.Core.ClipboardComponent.superclass.init.apply(this, arguments);
 		
 		// register event handlers
-		var uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		var uiWidget;
+		try {
+			uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		} catch(err) {
+			// no UI widget was created thus component is disabled or closed
+			return;
+		}
 		uiWidget.on("beforeexpand", function(panel) {
 			var navigator = DoCASU.App.PluginManager.getPluginManager().getComponent("DoCASUWestComponent", "DoCASU.App.Core");
-			navigator.activeTab = "clipboard";
+			navigator.activeTab = panel.id;
 		});
 		uiWidget.on("beforecollapse", function(panel) {
 			var navigator = DoCASU.App.PluginManager.getPluginManager().getComponent("DoCASUWestComponent", "DoCASU.App.Core");
-			if (navigator.activeTab == "clipboard") {
+			if (navigator.activeTab == panel.id) {
 				return false;
 			}
-			return undefined;
 		});
 	}	
 
