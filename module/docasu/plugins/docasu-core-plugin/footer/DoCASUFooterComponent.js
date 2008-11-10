@@ -52,7 +52,7 @@ Ext.extend(DoCASU.App.Core.DoCASUFooterComponent, DoCASU.App.Component, {
 								region		:	"south",
 								collapsible	:	false,
 								margins		:	"5",
-								border		:	true,
+								border		:	false,
 								style		:	"text-align:center;",
 								html		:	"<a href=\"http://code.optaros.com/trac/docasu\">DoCASU @VERSION@</a> - Powered by <a href=\"http://www.optaros.com\">Optaros</a>"
 							}; // the config to construct the UI object(widget)

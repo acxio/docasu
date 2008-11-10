@@ -17,17 +17,17 @@
  */
 
 
-// MainScreenComponent
+// DoCASUActionContainer
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
 /* constructor */
-DoCASU.App.Core.MainScreenComponent = function(config) {
+DoCASU.App.Core.DoCASUActionContainer = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.MainScreenComponent.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Core.DoCASUActionContainer.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
@@ -35,31 +35,12 @@ DoCASU.App.Core.MainScreenComponent = function(config) {
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.MainScreenComponent, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Core.DoCASUActionContainer, DoCASU.App.Component, {
 	// configuration options
-	id			:	"MainScreenComponent",
-	title		:	"Main Screen Component",
-	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+	id			:	"DoCASUActionContainer",
+	title		:	"DoCASU Action Container",
+	namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
-	// UI
-	uiClass		:	"Ext.Panel",
-	getUIConfig : function() {
-		var uiConfig	=	{
-								// config
-								id			:	this.id,
-								// look
-								title		:	"Main Screen",
-								region		:	"center",
-								layout		:	"fit",
-								split		:	true,
-								collapsible	:	false,
-								collapseMode:	"mini",
-								margins		:	"0 0 0 0",
-								header		:	true,
-								border		:	true
-							}; // the config to construct the UI object(widget)
-		return uiConfig;
-	} // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
 
-}); // eo DoCASU.App.Core.MainScreenComponent
+}); // eo DoCASU.App.Core.DoCASUActionContainer

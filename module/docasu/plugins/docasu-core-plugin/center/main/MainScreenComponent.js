@@ -17,17 +17,17 @@
  */
 
 
-// SecondaryScreenComponent
+// MainScreenComponent
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
 /* constructor */
-DoCASU.App.Core.SecondaryScreenComponent = function(config) {
+DoCASU.App.Core.MainScreenComponent = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.SecondaryScreenComponent.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Core.MainScreenComponent.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
@@ -35,10 +35,10 @@ DoCASU.App.Core.SecondaryScreenComponent = function(config) {
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.SecondaryScreenComponent, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Core.MainScreenComponent, DoCASU.App.Component, {
 	// configuration options
-	id			:	"SecondaryScreenComponent",
-	title		:	"Secondary Screen Component",
+	id			:	"MainScreenComponent",
+	title		:	"Main Screen Component",
 	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
@@ -49,18 +49,31 @@ Ext.extend(DoCASU.App.Core.SecondaryScreenComponent, DoCASU.App.Component, {
 								// config
 								id			:	this.id,
 								// look
-								title		:	"Secondary Screen",
-								region		:	"south",
-								layout		:	"fit",
-								split		:	true,
-								collapsible	:	true,
-								collapseMode:	"mini",
-								hideCollapseTool	:	true,
-								margins		:	"0 0 0 0",
+								region		:	"center",
+								layout		:	"border",
+								collapsible	:	false,
 								header		:	true,
 								border		:	true
 							}; // the config to construct the UI object(widget)
 		return uiConfig;
-	} // the config to construct the UI object(widget) - use function for better control on building the JSON configuration		
+	}, // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
+	
+	// override init()
+	init : function() {
+		// call parent
+		DoCASU.App.Core.MainScreenComponent.superclass.init.apply(this, arguments);
+		
+		// register event handlers
+		var uiWidget;
+		try {
+			uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		} catch(err) {
+			// no UI widget was created thus component is disabled or closed
+			return;
+		}
+		uiWidget.on("render", function(panel) {
+			panel.header.addClass('black-header');
+		});
+	}
 
-}); // eo DoCASU.App.Core.SecondaryScreenComponent
+}); // eo DoCASU.App.Core.MainScreenComponent

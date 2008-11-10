@@ -142,9 +142,46 @@ Ext.extend(DoCASU.App.Core.GeneralInfoComponent, DoCASU.App.Component, {
 			}
 		});
 		
+		// register handler with CenterViewComponent selection model
+		try {
+			var centerView = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
+			var selectionModel = centerView.items.items[0].selModel;
+			selectionModel.on("rowselect", function(selectionModel, rowIndex, record) {
+				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("GeneralInfoComponent", "DoCASU.App.Core");
+				component.update(record);
+			});
+		} catch(err) {
+			// no UI widget was created thus component is disabled or closed
+		}
+		
 		// set active tab
 		var navigator = DoCASU.App.PluginManager.getPluginManager().getComponent("DoCASUEastComponent", "DoCASU.App.Core");
 		navigator.activeTab = this.id;
-	}	
+	},
+	
+	clear : function() {
+		var uiWidget;
+		try {
+			uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		} catch(err) {
+			// no UI widget was created thus component is disabled or closed
+			return;
+		}
+		uiWidget.items.items[0].store.removeAll();
+	}, // eo clear
+	
+	update : function(record) {
+		var uiWidget;
+		try {
+			uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		} catch(err) {
+			// no UI widget was created thus component is disabled or closed
+			return;
+		}
+		this.clear();
+		if (record) {
+			uiWidget.items.items[0].store.add([record]);
+		}
+	}
 
 }); // eo DoCASU.App.Core.GeneralInfoComponent

@@ -17,73 +17,73 @@
  */
 
 
-// DoCASUEastComponent
+// LoadFolderAction
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
 /* constructor */
-DoCASU.App.Core.DoCASUEastComponent = function(config) {
+DoCASU.App.Core.LoadFolderAction = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.DoCASUEastComponent.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Core.LoadFolderAction.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
+		"beforeload",
+		"afterload"
 	);
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.DoCASUEastComponent, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Core.LoadFolderAction, DoCASU.App.Component, {
 	// configuration options
-	id			:	"DoCASUEastComponent.js",
-	title		:	"DoCASU East Component",
+	id			:	"LoadFolderAction",
+	title		:	"Load Folder Action",
 	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
-	// UI
-	uiClass		:	"Ext.Panel",
-	getUIConfig : function() {
-		var uiConfig	=	{
-								// config
-								id			:	this.id,
-								// look
-								region		:	"east",
-								title		:	"Selected Document",
-								width		:	200,
-								minSize		:	175,
-								maxSize		:	400,
-								split		:	true,
-								collapsible	:	true,
-								collapseMode:	"mini",
-								margins		:	"0 5 0 0",
-								layout		:	"accordion",
-								layoutConfig:	{
-													hideCollapseTool: true,
-													titleCollapse: true,
-													animate: false
-												}
-							}; // the config to construct the UI object(widget)
-		return uiConfig;
-	}, // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
 	
 	// override init()
 	init : function() {
 		// call parent
-		DoCASU.App.Core.DoCASUEastComponent.superclass.init.apply(this, arguments);
+		DoCASU.App.Core.LoadFolderAction.superclass.init.apply(this, arguments);
 		
 		// register event handlers
-		var uiWidget;
+		this.on("beforeload", function(component) {
+			new Ext.LoadMask(Ext.getBody()).show();
+		});
+		this.on("afterload", function(component) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+		});
+	},
+	
+	load : function(folderId) {
+		// fire beforeload event
+		this.fireEvent("beforeload", this);
+		var centerViewComponent;
 		try {
-			uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+			centerViewComponent = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
 		} catch(err) {
 			// no UI widget was created thus component is disabled or closed
 			return;
 		}
-		uiWidget.on("render", function(panel) {
-			panel.header.addClass('black-header');
+		var store = centerViewComponent.items.items[0].store;
+		store.baseParams.nodeId = folderId;
+		store.baseParams.categoryId = null;
+		
+		// register listeners for store
+		store.on("load", function() {
+			var loadFolderAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core");
+			loadFolderAction.fireEvent("afterload", loadFolderAction);
 		});
-	}	
+		store.on("loadexception", function() {
+			var loadFolderAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core");
+			loadFolderAction.fireEvent("afterload", loadFolderAction);
+		});
+		
+		store.load();
+	}
 
-}); // eo DoCASU.App.Core.DoCASUEastComponent
+}); // eo DoCASU.App.Core.LoadFolderAction

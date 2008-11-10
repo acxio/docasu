@@ -104,21 +104,12 @@ Ext.extend(DoCASU.App.Component, Ext.util.Observable, {
 		for(i in this.components) {
 			var component = this.components[i];
 			if(typeof component != 'function') {
-				// child can belong to other plugin - check if not disabled
-				var childParentPlugin = pluginManager.getPlugin(component.pluginId, component.namespace);
-				if(!childParentPlugin.required && childParentPlugin.disabled) {
-					continue;
+				try {
+					var uiWidgetChild = pluginManager.getUIWidget(component.id);
+					uiConfig.items.push(uiWidgetChild);
+				} catch(err) {
+					// widget was not created because: widget is not enabled, is closed or parent plugin is not enabled
 				}
-				// check if not disabled
-				if(!component.required && component.disabled) {
-					continue;
-				}
-				// check if not closed
-				if(component.closable && component.closed) {
-					continue;
-				}
-				var uiWidgetChild = pluginManager.getUIWidget(component.id);
-				uiConfig.items.push(uiWidgetChild);
 			}
 		}
 		if(uiConfig.items.length <= 0) {

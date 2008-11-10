@@ -103,7 +103,7 @@ Ext.extend(DoCASU.App.Categories.CategoriesTreeComponent, DoCASU.App.Component, 
 			node.loaded = false;
 		});	
 		uiWidget.addListener("click", function (node, event) {
-			// loadCategory(node.id);
+			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoryAction", "DoCASU.App.Categories").load(node.id);
 			return false;
 		});
 		uiWidget.on("contextmenu", function(node, e) {

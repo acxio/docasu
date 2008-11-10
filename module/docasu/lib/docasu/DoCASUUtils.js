@@ -48,3 +48,49 @@ DoCASU.App.Utils.convertTimezone = function(value) {
 	var formattedDate = Ext.util.Format.date(dateValue, "Y-m-d H:i");
 	return formattedDate;
 } // eo function convertTimezone
+
+/**
+ * File renderer used in file grid to enable sorting while displaying file icons
+ * for the first column.
+ * @param {Object} value
+ * @param {Object} column
+ * @param {Object} record
+ */
+DoCASU.App.Utils.fileNameRenderer = function(value, column, record) {
+	var html = "";
+	if (record.get("isFolder")) {
+		html += "<a href=\"#\" onClick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('"+record.get("nodeId")+"'); return false;\">";
+	} else {
+		html += "<a href=\""+record.get("downloadUrl")+"\">";
+	}
+	html += "<div style=\"float: left; cursor: pointer;\">";
+	if (record.get("isFolder")) {
+		html += "<img src=\"../../docasu/lib/extjs/resources/images/default/tree/folder.gif\"";
+	} else {
+		html += "<img src=\""+record.get("iconUrl")+"\"";
+	}
+	html += " alt=\""+record.get("name")+"\"";
+	html += "</div>";
+	html += "<span>&nbsp;"+record.get("name")+"</span>";
+	html += "</a>";
+    return html;
+}
+
+function actionRenderer(value, column, record) {
+	/*if (record.get("isFolder")) {
+		var myRecord = new Object("Node "+record.get("nodeId"));
+       	myRecord.id = record.get("nodeId");
+       	myRecord.text = record.get("name");
+		myRecord.name = record.get("name");
+		myRecord.parentPath = record.get("parentPath");
+		myRecord.link = record.get("link");
+		myRecord.url = record.get("url");
+		myRecord.writePermission = record.get("writePermission");
+		myRecord.createPermission = record.get("createPermission");
+		myRecord.deletePermission = record.get("deletePermission");
+		return createActionItemsForFolder(myRecord)[1];
+	}
+	else {
+		return createActionItems(record)[1];
+	}*/
+}

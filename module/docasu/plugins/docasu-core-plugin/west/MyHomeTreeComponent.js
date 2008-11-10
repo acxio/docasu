@@ -109,7 +109,7 @@ Ext.extend(DoCASU.App.Core.MyHomeTreeComponent, DoCASU.App.Component, {
 			node.loaded = false;
 		});	
 		uiWidget.addListener("click", function (node, event) {
-			// loadFolder(node.id);
+			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").load(node.id);
 			return false;
 		});
 		uiWidget.on("contextmenu", function(node, e) {
@@ -138,7 +138,8 @@ Ext.extend(DoCASU.App.Core.MyHomeTreeComponent, DoCASU.App.Component, {
 		uiWidget.on("beforecollapse", function(panel) {
 			var navigator = DoCASU.App.PluginManager.getPluginManager().getComponent("DoCASUWestComponent", "DoCASU.App.Core");
 			if (navigator.activeTab == panel.id) {
-				// loadFolder(Ext.state.Manager.get('companyHomeId'));
+				var centerHeader = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterHeaderComponent", "DoCASU.App.Core");
+				DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").load(centerHeader.getUser().userHome);
 				return false;
 			}
 		});

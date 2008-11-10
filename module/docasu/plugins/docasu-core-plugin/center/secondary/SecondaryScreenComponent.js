@@ -17,17 +17,17 @@
  */
 
 
-// DoCASUCenterComponent
+// SecondaryScreenComponent
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
 /* constructor */
-DoCASU.App.Core.DoCASUCenterComponent = function(config) {
+DoCASU.App.Core.SecondaryScreenComponent = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.DoCASUCenterComponent.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Core.SecondaryScreenComponent.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
@@ -35,11 +35,12 @@ DoCASU.App.Core.DoCASUCenterComponent = function(config) {
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.DoCASUCenterComponent, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Core.SecondaryScreenComponent, DoCASU.App.Component, {
 	// configuration options
-	id			:	"DoCASUCenterComponent",
-	title		:	"DoCASU Center Component",
+	id			:	"SecondaryScreenComponent",
+	title		:	"Secondary Screen Component",
 	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+	disabled	:	true,
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
 	// UI
@@ -49,11 +50,19 @@ Ext.extend(DoCASU.App.Core.DoCASUCenterComponent, DoCASU.App.Component, {
 								// config
 								id			:	this.id,
 								// look
-								region		:	"center",
-								border		:	false,
-								layout		:	"border"
+								title		:	"Secondary Screen",
+								region		:	"south",
+								height		:	350,
+								layout		:	"fit",
+								split		:	true,
+								collapsible	:	true,
+								collapsed	:	true,
+								collapseMode:	"mini",
+								hideCollapseTool	:	true,
+								header		:	true,
+								border		:	true
 							}; // the config to construct the UI object(widget)
 		return uiConfig;
-	} // the config to construct the UI object(widget) - use function for better control on building the JSON configuration				
+	} // the config to construct the UI object(widget) - use function for better control on building the JSON configuration		
 
-}); // eo DoCASU.App.Core.DoCASUCenterComponent
+}); // eo DoCASU.App.Core.SecondaryScreenComponent
