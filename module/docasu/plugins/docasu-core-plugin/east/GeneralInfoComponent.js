@@ -145,6 +145,11 @@ Ext.extend(DoCASU.App.Core.GeneralInfoComponent, DoCASU.App.Component, {
 		// register handler with CenterViewComponent selection model
 		try {
 			var centerView = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
+			var store = centerView.items.items[0].store;
+			store.on("beforeload", function(store, options) {
+				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("GeneralInfoComponent", "DoCASU.App.Core");
+				component.clear();
+			});
 			var selectionModel = centerView.items.items[0].selModel;
 			selectionModel.on("rowselect", function(selectionModel, rowIndex, record) {
 				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("GeneralInfoComponent", "DoCASU.App.Core");

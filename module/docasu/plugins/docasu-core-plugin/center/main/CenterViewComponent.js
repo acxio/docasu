@@ -88,40 +88,37 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 										            ]
 							})
 		});
-		gridStore.on("load", function() {
-			var searchQuery = null;
-			var folderName = gridStore.reader.jsonData.folderName;
-			var folderId = gridStore.reader.jsonData.folderId;
-			if(gridStore.baseParams.nodeId != null) {
-				//showFolderView(folderId, folderName);
+		gridStore.on("beforeload", function(store, options) {
+			new Ext.LoadMask(Ext.getBody()).show();
+		});
+		gridStore.on("load", function(store, records, options) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			var folderName = store.reader.jsonData.folderName;
+			var folderId = store.reader.jsonData.folderId;
+			var component = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");
+			if(store.baseParams.nodeId != null) {
+				component.showFolderView(folderId, folderName);
 			} else {
-				//showCategoryView(folderName);
+				component.showCategoryView(folderName);
 			}
 		});
 		gridStore.on("loadexception", function(proxy, options, response, error) {
-			var searchQuery = null;
-			// check response for errors
-			if(DoCASU.App.Error.checkHandleErrors("Failed to load content", response)) {
-				return;
-			}
-			Ext.MessageBox.alert("Error", "Failed to display contents");
+			new Ext.LoadMask(Ext.getBody()).hide();
+			DoCASU.App.Error.checkHandleErrors("Failed to load content", response);
+			// TODO: redirect to My Home folder
 		});
 		gridStore.setDefaultSort("name", "asc");
 		var fileSelectionModel = new Ext.grid.RowSelectionModel({singleSelect:true});
-		fileSelectionModel.on("rowselect", function (grid, rowIndex) {
-	    	// this event fires when a row is selected in the grid
-	        //updateDocumentInfoPane();
-	    });
 	    var gridList = new Ext.grid.GridPanel({
 	        id			:	"folderView",
 			store		:	gridStore,
 		    columns		:	[
-						        {id:"nodeId", header: "Name", width: 110, sortable: true, dataIndex: "name", renderer: DoCASU.App.Utils.fileNameRenderer},
+						        {id:"nodeId", header: "Name", width: 110, sortable: true, dataIndex: "name", renderer: this.fileNameRenderer},
 						        {header: "Size", width: 20, sortable: true, dataIndex: "size", renderer: Ext.util.Format.fileSize}, 
 						        {header: "Changed", width: 60, sortable: true, dataIndex: "modified", renderer: DoCASU.App.Utils.timeZoneAwareRenderer},
 						        {header: "Created", width: 60, sortable: true, dataIndex: "created", renderer: DoCASU.App.Utils.timeZoneAwareRenderer},
 								{header: "Creator", width: 60, sortable: true, dataIndex: "creator"},
-						        {header: "Action",  sortable: false, dataIndex: "nodeId", renderer: DoCASU.App.Utils.actionRenderer}
+						        {header: "Action",  sortable: false, dataIndex: "nodeId", renderer: this.actionRenderer}
 						    ],
 		    viewConfig	:	{forceFit:true},
 			bbar		:	new Ext.PagingToolbar({
@@ -226,11 +223,142 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		});
 	},
 	
+	showFolderView : function(folderId, folderName) {
+		// show folder icon 
+		Ext.get("folderName").child("img").show();
+		// show folder actions 
+		this.loadPermissions(folderId); // load permissions and action dropdown
+		Ext.get("folderActions").parent("div").show();
+		Ext.get("folderActionsLabel").show();
+		this.updateCurrentFolder(folderId);
+		this.updateBreadcrumbs(folderName, folderId);
+		// show folder name
+		Ext.get("folderName").child("div").update(folderName);
+	}, // eo showFolderView
+	
+	loadPermissions : function(nodeId) {
+		var loadPermissionsAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderPermissionsAction", "DoCASU.App.Core");
+		loadPermissionsAction.on("beforeload", function(action) {
+			new Ext.LoadMask(Ext.getBody()).show();
+		});
+		loadPermissionsAction.on("afterload", function(action, response) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			try {
+				var jsonData = Ext.util.JSON.decode(response.responseText);
+				var centerView = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");
+				centerView.addActionItems(jsonData);
+			} catch (e) {
+				Ext.MessageBox.alert("Error", "Could not read folder permissions");
+			}
+		});
+		loadPermissionsAction.on("fail", function(action) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+		});
+		loadPermissionsAction.load(nodeId);
+	}, // eo loadPermissions
+	
+	addActionItems : function(jsonData) {
+		var store = Ext.getCmp("folderActions").store;
+		store.removeAll(); // remove all items from the list
+		var newRec = Ext.data.Record.create([
+		    {name:"code",	mapping:"code"},
+		    {name:"label",	mapping:"label"}
+	    ]);
+		var nbRows = jsonData.total;
+		var item = jsonData.rows;
+		for (var i=0; i<nbRows; i++) {		
+			var myNewRecord = new newRec({
+			    code	:	item[i].code,
+			    label	:	item[i].label
+		    });
+			store.add(myNewRecord);
+		}
+	}, // eo addActionItems
+	
+	updateCurrentFolder : function(folderId){
+		this.setCurrentFolder(folderId);
+		var loadPropertiesAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderPropertiesAction", "DoCASU.App.Core");
+		loadPropertiesAction.on("beforeload", function(action) {
+			new Ext.LoadMask(Ext.getBody()).show();
+		});
+		loadPropertiesAction.on("afterload", function(action, response) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			try {
+				var folder = Ext.util.JSON.decode(response.responseText);
+				var myRecord = new Object("Node " + folder.nodeId);
+		       	myRecord.id = folder.nodeId;
+		       	myRecord.text = folder.name;
+				myRecord.name = folder.name;
+				myRecord.parentPath = folder.path;
+				myRecord.link = folder.link;
+				myRecord.url = folder.url;
+				myRecord.writePermission = eval(folder.writePermission);
+				myRecord.createPermission = eval(folder.createPermission);
+				myRecord.deletePermission = eval(folder.deletePermission);
+				var centerView = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");
+				centerView.setCurrentFolderProperties(myRecord);
+			} catch (e) {
+				Ext.MessageBox.alert("Error", "Failed to read folder properties " + e);
+			}
+		});
+		loadPropertiesAction.on("fail", function(action, response) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+		});
+		loadPropertiesAction.load(folderId);
+	}, // eo updateCurrentFolder
+	
+	updateBreadcrumbs : function(folderName, folderId) {
+		if (typeof folderId != "undefined" && folderId != this.getBreadcrumb("breadcrumb1Id")) {
+			var breadcrumbs = "";
+			var tempName = this.getBreadcrumb("breadcrumb3Name");
+			var tempId = this.getBreadcrumb("breadcrumb3Id");
+			if (typeof tempName != "undefined") {
+				breadcrumbs = "<a href=\"#\" class=\"breadcrumb\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('"+tempId+"'); return false;\">" + tempName + "</a> &gt; ";
+			}
+			tempName = this.getBreadcrumb("breadcrumb2Name");
+			tempId = this.getBreadcrumb("breadcrumb2Id");
+			if (typeof tempName != "undefined") {
+				breadcrumbs += "<a href=\"#\" class=\"breadcrumb\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('"+tempId+"'); return false;\">" + tempName + "</a> &gt; ";
+				this.setBreadcrumb("breadcrumb3Name", tempName);
+				this.setBreadcrumb("breadcrumb3Id", tempId);
+			}
+			tempName = this.getBreadcrumb("breadcrumb1Name");
+			tempId = this.getBreadcrumb("breadcrumb1Id");
+			if (typeof tempName != "undefined") {
+				breadcrumbs += "<a href=\"#\" class=\"breadcrumb\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('"+tempId+"'); return false;\">" + tempName + "</a> &gt; ";
+				this.setBreadcrumb("breadcrumb2Name", tempName);
+				this.setBreadcrumb("breadcrumb2Id", tempId);
+			}
+			breadcrumbs += "<a href=\"#\" class=\"breadcrumb\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('"+folderId+"'); return false;\">" + folderName + "</a>";
+			this.setBreadcrumb("breadcrumb1Name", folderName);
+			this.setBreadcrumb("breadcrumb1Id", folderId);
+			// set title on main screen
+			var uiWidget;
+			try {
+				uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget("MainScreenComponent");
+			} catch(err) {
+				// no UI widget was created thus component is disabled or closed
+				return;
+			}
+			uiWidget.setTitle(breadcrumbs);
+		}
+	}, // eo updateBreadcrumbs
+	
+	showCategoryView : function(categoryName) {
+		// show folder icon
+		Ext.get("folderName").child("img").show();
+		// hide folder actions
+		Ext.get("folderActions").parent("div").hide();
+		Ext.get("folderActionsLabel").hide();
+		// show category name
+		Ext.get("folderName").child("div").update(categoryName);
+	}, // eo showCategoryView
+	
 	getToolTip : function() {
 		var uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
 		var toolTipId = uiWidget.items.items[0].id + "ToolTip";
 		return Ext.getCmp(toolTipId);
-	},
+	}, // eo getToolTip
 	
 	showToolTip : function(row) {
 		var size = row.get("size");	size = Ext.util.Format.fileSize(size);
@@ -269,10 +397,239 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		toolTip.show(); // reset the counter for dismissDelay to 0
 	}, // eo showToolTip
 	
+	fileNameRenderer : function(value, column, record) {
+		var html = "";
+		if (record.get("isFolder")) {
+			html += "<a href=\"#\" onClick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('"+record.get("nodeId")+"'); return false;\">";
+		} else {
+			html += "<a href=\""+record.get("downloadUrl")+"\">";
+		}
+		html += "<div style=\"float: left; cursor: pointer;\">";
+		if (record.get("isFolder")) {
+			html += "<img src=\"../../docasu/lib/extjs/resources/images/default/tree/folder.gif\"";
+		} else {
+			html += "<img src=\""+record.get("iconUrl")+"\"";
+		}
+		html += " alt=\""+record.get("name")+"\"";
+		html += "</div>";
+		html += "<span>&nbsp;"+record.get("name")+"</span>";
+		html += "</a>";
+	    return html;
+	}, // eo fileNameRenderer
+	
+	actionRenderer : function(value, column, record) {
+		var centerView = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");
+		if (record.get("isFolder")) {
+			var myRecord = new Object("Node "+record.get("nodeId"));
+	       	myRecord.id = record.get("nodeId");
+	       	myRecord.text = record.get("name");
+			myRecord.name = record.get("name");
+			myRecord.parentPath = record.get("parentPath");
+			myRecord.link = record.get("link");
+			myRecord.url = record.get("url");
+			myRecord.writePermission = record.get("writePermission");
+			myRecord.createPermission = record.get("createPermission");
+			myRecord.deletePermission = record.get("deletePermission");
+			return centerView.createActionItemsForFolder(myRecord)[1];
+		}
+		else {
+			return centerView.createActionItems(record)[1];
+		}
+	}, // eo actionRenderer
+	
+	createActionItems : function(record) {
+		var result = new Array();
+		var html = "";
+	
+		result.push({
+			 text: "Show infos",
+			 icon: "../../docasu/images/info.gif",
+			 handler: function() { showFileInfos(record.get("nodeId"), record.get("writePermission")); return false;}
+		});
+		html += 
+			'<a href="#" onclick="showFileInfos(\''+record.get("nodeId")+'\','+record.get("writePermission")+'); return false;">'+
+				'<img title="Show infos" class="actionIcon" src="../../docasu/images/info.gif"/>'+
+			'</a>';
+		
+		if (!record.get("locked")) {
+			if (record.get("writePermission")) {
+				if (record.get("editable")) {
+					result.push({
+						text: "Edit",
+						icon: "../../docasu/images/edit.gif",
+						handler: function() {
+							editContent(record.get("name"), record.get("nodeId"));
+						}
+					});
+					html += 
+						'<a href="#" onclick="editContent(\''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
+							'<img title="Edit" class="actionIcon" src="../../docasu/images/edit.gif"/>'+
+						'</a>';
+				}
+		   		if (record.get("createPermission")) {
+		   			if (record.get("isWorkingCopy")) {
+		   				result.push({
+		   					text: "Checkin",
+		   					icon: "../../docasu/images/checkin.gif",
+		   					handler: function() {
+		   						checkinFile(record.get("nodeId"));
+		   					}
+		   				});
+						html += 
+							'<a href="#" onclick="checkinFile(\''+record.get('nodeId')+'\')">'+
+								'<img title="Checkin" class="actionIcon" src="../../docasu/images/checkin.gif"/>'+
+							'</a>';
+		   				result.push({
+		   					text: "Undo checkout",
+		   					icon: "../../docasu/images/undo_checkout.gif",
+		   					handler: function() {undoCheckout(record.get("nodeId"));}
+		   				});
+						html += 
+							'<a href="#" onclick="undoCheckout(\''+record.get('nodeId')+'\')">'+
+								'<img title="Undo checkout" class="actionIcon" src="../../docasu/images/undo_checkout.gif"/>'+
+							'</a>';
+		   			}
+		   			else {
+		   				result.push({
+		   					text: "Checkout",
+		   					icon: "../../docasu/images/checkout.gif",
+		   					handler: function() {checkoutFile(record.get("nodeId"));}
+		   				});
+		   				html += 
+							'<a href="#" onclick="checkoutFile(\''+record.get('nodeId')+'\')">'+
+								'<img title="Checkout" class="actionIcon" src="../../docasu/images/checkout.gif"/>'+
+							'</a>';
+		   				if (record.get("deletePermission")) {
+		   					result.push({
+		    					text: "Delete",
+		    					icon: "../../docasu/images/delete.gif",
+		    					handler: function() {deleteFile(record.get("name"), record.get("nodeId"));}
+		   					});
+		   					html += 
+	   							'<a href="#" onclick="deleteFile(\''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
+	   								'<img title="Delete" class="actionIcon" src="../../docasu/images/delete.gif"/>'+
+	   							'</a>';
+		   				}
+		   			}
+		   		}
+		   		result.push({
+					 text: "Update",
+					 icon: "../../docasu/images/update.gif",
+					 handler: function() {updateFile(record.get("name"), record.get("nodeId"));}
+		   		});
+		   		html += 
+					'<a href="#" onclick="updateFile(\''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
+						'<img title="Update" class="actionIcon" src="../../docasu/images/update.gif"/>'+
+					'</a>';
+				result.push({
+					 text: "Categorization",
+					 icon: "../../docasu/images/categories.gif",
+					 handler: function() {showSelectCategoryWindow(record.get("nodeId"));}
+			   	});
+			}
+		   	result.push({
+				 text: "Copy",
+				 icon: "../../docasu/images/copy.gif",
+				 handler: function() {copyLink(record.get("iconUrl"), record.get("name"), record.get("nodeId"));}
+		   	});
+		   	html += 
+				'<a href="#" onclick="copyLink(\''+record.get('iconUrl')+'\', \''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
+					'<img title="Copy" class="actionIcon" src="../../docasu/images/copy.gif"/>'+
+				'</a>';
+	    }
+		
+		var returnValue = new Array(result, html);
+		return returnValue;
+	}, // eo createActionItems
+	
+	createActionItemsForFolder : function(record) {
+		var id = record.id;
+		var result = new Array();
+		var html = "";
+		
+		result.push({
+			text: "View details",
+			icon: "../../docasu/images/info.gif",
+			handler: function() {showFolderDetailsWindow(id); return false;}
+		});
+		html += '<a href="#" onClick="showFolderDetailsWindow(\''+id+'\'); return false;">'+
+					'<img title="View details" class="actionIcon" src="../../docasu/images/info.gif"/>'+
+				'</a>';
+		
+		if (record.createPermission) {
+			result.push({
+				text: "Create folder",
+				handler: function() {createFolder(id);}
+			});
+		}
+		if (record.deletePermission) {
+			result.push({
+				text: "Delete folder",
+				icon: "../../docasu/images/delete.gif",
+				handler: function() {deleteFolder(id);}
+			});
+			html += 
+				'<a href="#" onclick="deleteFolder(\''+record.id+'\')">'+
+					'<img title="Delete" class="actionIcon" src="../../docasu/images/delete.gif"/>'+
+				'</a>';
+		}
+		if (record.writePermission) {
+			result.push({
+				text: "Rename folder",
+				handler: function() {renameFolder(id);}
+			});
+		}
+		if (record.createPermission) {
+			result.push({
+				text: "Paste all",
+				handler: function() {pasteAll(id);}
+			});
+			result.push({
+				text: "Create HTML content",
+				handler: function() {createContent("HTML", id);}
+			});
+			result.push({
+				text: "Create text content",
+				handler: function() {createContent("text", id);}
+			});	
+			result.push({
+				text: "Upload file(s)",
+				handler: function() {showUploadFile(id);}
+			});	
+		}
+			
+		var returnValue = new Array(result, html);
+		return returnValue;
+	}, // eo createActionItemsForFolder
+	
 	hideToolTip : function() {
 		var toolTip = this.getToolTip();
 		toolTip.noData = true;
 		toolTip.hide();
-	}
+	}, // eo hideToolTip
+	
+	getCurrentFolder : function() {
+		return Ext.state.Manager.get(this.id + ".currentFolder");
+	}, // eo getCurrentFolder
+	
+	setCurrentFolder : function(folderId) {
+		Ext.state.Manager.set(this.id + ".currentFolder", folderId);
+	}, // eo setCurrentFolder
+	
+	getCurrentFolderProperties : function() {
+		return Ext.state.Manager.get(this.id + ".currentFolderProperties");
+	}, // eo getCurrentFolderProperties
+	
+	setCurrentFolderProperties : function(folderProperties) {
+		Ext.state.Manager.set(this.id + ".currentFolderProperties", folderProperties);
+	}, // eo setCurrentFolderProperties
+	
+	getBreadcrumb : function(key) {
+		return Ext.state.Manager.get(this.id + ".Breadcrumbs." + key);
+	}, // eo getBreadcrumb
+	
+	setBreadcrumb : function(key, value) {
+		Ext.state.Manager.set(this.id + ".Breadcrumbs." + key, value);
+	} // eo setBreadcrumb
 
 }); // eo DoCASU.App.Core.CenterViewComponent

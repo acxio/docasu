@@ -32,7 +32,8 @@ DoCASU.App.Categories.LoadCategoryAction = function(config) {
 	// add events
 	this.addEvents(
 		"beforeload",
-		"afterload"
+		"afterload",
+		"fail"
 	);
 	
 } // eo constructor
@@ -44,20 +45,6 @@ Ext.extend(DoCASU.App.Categories.LoadCategoryAction, DoCASU.App.Component, {
 	namespace	:	"DoCASU.App.Categories", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
-	
-	// override init()
-	init : function() {
-		// call parent
-		DoCASU.App.Categories.LoadCategoryAction.superclass.init.apply(this, arguments);
-		
-		// register event handlers
-		this.on("beforeload", function(component) {
-			new Ext.LoadMask(Ext.getBody()).show();
-		});
-		this.on("afterload", function(component) {
-			new Ext.LoadMask(Ext.getBody()).hide();
-		});
-	},
 	
 	load : function(categoryId) {
 		// fire beforeload event
@@ -74,13 +61,13 @@ Ext.extend(DoCASU.App.Categories.LoadCategoryAction, DoCASU.App.Component, {
 		store.baseParams.categoryId = categoryId;
 		
 		// register listeners for store
-		store.on("load", function() {
+		store.on("load", function(store, records, options) {
 			var loadCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoryAction", "DoCASU.App.Categories");
-			loadCategoryAction.fireEvent("afterload", loadCategoryAction);
+			loadCategoryAction.fireEvent("afterload", loadCategoryAction, records);
 		});
-		store.on("loadexception", function() {
+		store.on("loadexception", function(proxy, options, response, error) {
 			var loadCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoryAction", "DoCASU.App.Categories");
-			loadCategoryAction.fireEvent("afterload", loadCategoryAction);
+			loadCategoryAction.fireEvent("fail", loadCategoryAction, response);
 		});
 		
 		store.load();

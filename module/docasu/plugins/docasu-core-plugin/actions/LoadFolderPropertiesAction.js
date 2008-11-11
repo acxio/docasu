@@ -17,17 +17,17 @@
  */
 
 
-// LoadFolderAction
+// LoadFolderPropertiesAction
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
 /* constructor */
-DoCASU.App.Core.LoadFolderAction = function(config) {
+DoCASU.App.Core.LoadFolderPropertiesAction = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.LoadFolderAction.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Core.LoadFolderPropertiesAction.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
@@ -38,39 +38,39 @@ DoCASU.App.Core.LoadFolderAction = function(config) {
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.LoadFolderAction, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Core.LoadFolderPropertiesAction, DoCASU.App.Component, {
 	// configuration options
-	id			:	"LoadFolderAction",
-	title		:	"Load Folder Action",
+	id			:	"LoadFolderPropertiesAction",
+	title		:	"Load Folder Properties Action",
 	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
 	
-	load : function(folderId) {
+	load : function(nodeId) {
 		// fire beforeload event
 		this.fireEvent("beforeload", this);
-		var centerViewComponent;
-		try {
-			centerViewComponent = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
-		} catch(err) {
-			// no UI widget was created thus component is disabled or closed
-			return;
-		}
-		var store = centerViewComponent.items.items[0].store;
-		store.baseParams.nodeId = folderId;
-		store.baseParams.categoryId = null;
-		
-		// register listeners for store
-		store.on("load", function(store, records, options) {
-			var loadFolderAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core");
-			loadFolderAction.fireEvent("afterload", loadFolderAction, records);
+		Ext.Ajax.request({
+				url: 'ui/folder/properties/' + nodeId,
+				method: 'GET',
+				success: function(response, options) {
+					var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderPropertiesAction", "DoCASU.App.Core");
+					// check response for errors
+					if(DoCASU.App.Error.checkHandleErrors('Failed to load folder properties', response)) {
+						// fire fail event
+						component.fireEvent("fail", component, response);
+					} else {
+						// fire afterload event
+						component.fireEvent("afterload", component, response);
+					}
+				}, 
+				failure: function(response, options) {
+					DoCASU.App.Error.handleFailureMessage('Failed to load folder properties', response);
+					// fire fail event
+					var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderPropertiesAction", "DoCASU.App.Core");
+					component.fireEvent("fail", component, response);
+					
+				}
 		});
-		store.on("loadexception", function(proxy, options, response, error) {
-			var loadFolderAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core");
-			loadFolderAction.fireEvent("fail", loadFolderAction, response);
-		});
-		
-		store.load();
 	}
 
-}); // eo DoCASU.App.Core.LoadFolderAction
+}); // eo DoCASU.App.Core.LoadFolderPropertiesAction

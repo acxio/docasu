@@ -61,7 +61,10 @@ Ext.extend(DoCASU.App.Core.LogoutAction, DoCASU.App.Component, {
 				icon: Ext.MessageBox.INFO
 			});
 		});
-		this.on("afterlogout", function(component) {
+		this.on("afterlogout", function(component, response) {
+			DoCASU.App.ApplicationManager.getApplication().reload();
+		});
+		this.on("fail", function(component, response) {
 			DoCASU.App.ApplicationManager.getApplication().reload();
 		});
 	},
@@ -75,16 +78,21 @@ Ext.extend(DoCASU.App.Core.LogoutAction, DoCASU.App.Component, {
 				url: 'ui/logout',
 				method: 'GET',
 				success: function(response, options) {
+					var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LogoutAction", "DoCASU.App.Core");
 					// check response for errors
 					if(DoCASU.App.Error.checkHandleErrors('Failed to logout', response)) {
-						return;
+						// fire fail event
+						component.fireEvent("fail", component, response);
+					} else {
+						// fire afterlogout event
+						component.fireEvent("afterlogout", component, response);
 					}
-					// fire afterlogout event
-					var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LogoutAction", "DoCASU.App.Core");
-					component.fireEvent("afterlogout", component);
 				}, 
 				failure: function(response, options) {
 					DoCASU.App.Error.handleFailureMessage('Failed to logout', response);
+					// fire fail event
+					var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LogoutAction", "DoCASU.App.Core");
+					component.fireEvent("fail", component, response);
 				}
 			});
 		}, 1000);
