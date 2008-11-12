@@ -17,60 +17,60 @@
  */
 
 
-// LoadFolderPermissionsAction
+// RemoveFavoriteAction
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
 /* constructor */
-DoCASU.App.Core.LoadFolderPermissionsAction = function(config) {
+DoCASU.App.Core.RemoveFavoriteAction = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.LoadFolderPermissionsAction.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Core.RemoveFavoriteAction.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
-		"beforeload",
-		"afterload",
+		"beforeremove",
+		"afterremove",
 		"fail"
 	);
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.LoadFolderPermissionsAction, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Core.RemoveFavoriteAction, DoCASU.App.Component, {
 	// configuration options
-	id			:	"LoadFolderPermissionsAction",
-	title		:	"Load Folder Permissions Action",
+	id			:	"RemoveFavoriteAction",
+	title		:	"Remove Favorite Action",
 	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
 	
-	load : function(nodeId) {
-		// fire beforeload event
-		this.fireEvent("beforeload", this);
+	remove : function(nodeId) {
+		// fire beforeremove event
+		this.fireEvent("beforeremove", this);
 		Ext.Ajax.request({
-			url: 'ui/folder/permissions/' + nodeId,
-			method: 'GET',
-			fileUpload: true,
+			url: "ui/shortcut/" + nodeId,
+			method: "DELETE",
 			success: function(response, options) {
-				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderPermissionsAction", "DoCASU.App.Core");
+				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("RemoveFavoriteAction", "DoCASU.App.Core");
 				// check response for errors
-				if(DoCASU.App.Error.checkHandleErrors('Failed to load folder permissions', response)) {
+				if(DoCASU.App.Error.checkHandleErrors("Failed to remove favorite", response)) {
 					// fire fail event
 					component.fireEvent("fail", component, response);
 				} else {
-					// fire afterload event
-					component.fireEvent("afterload", component, response);
+					// fire afterremove event
+					component.fireEvent("afterremove", component, response);
 				}
 			}, 
 			failure: function(response, options) {
-				DoCASU.App.Error.handleFailureMessage('Failed to load folder permissions', response);
+				DoCASU.App.Error.handleFailureMessage("Failed to remove favorite", response);
 				// fire fail event
-				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderPermissionsAction", "DoCASU.App.Core");
+				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("RemoveFavoriteAction", "DoCASU.App.Core");
 				component.fireEvent("fail", component, response);
+				
 			}
 		});
 	}
 
-}); // eo DoCASU.App.Core.LoadFolderPermissionsAction
+}); // eo DoCASU.App.Core.RemoveFavoriteAction

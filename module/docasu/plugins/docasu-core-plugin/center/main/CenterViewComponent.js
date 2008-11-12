@@ -444,10 +444,10 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		result.push({
 			 text: "Show infos",
 			 icon: "../../docasu/images/info.gif",
-			 handler: function() { showFileInfos(record.get("nodeId"), record.get("writePermission")); return false;}
+			 handler: function() { DoCASU.App.PluginManager.getPluginManager().getComponent("FileDetailsComponent", "DoCASU.App.Core").show(record.get("nodeId"), record.get("writePermission")); return false;}
 		});
 		html += 
-			'<a href="#" onclick="showFileInfos(\''+record.get("nodeId")+'\','+record.get("writePermission")+'); return false;">'+
+			"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('FileDetailsComponent', 'DoCASU.App.Core').show('"+record.get("nodeId")+"','"+record.get("writePermission")+"'); return false;\">"+
 				'<img title="Show infos" class="actionIcon" src="../../docasu/images/info.gif"/>'+
 			'</a>';
 		

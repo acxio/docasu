@@ -50,26 +50,26 @@ Ext.extend(DoCASU.App.Core.LoadFolderPropertiesAction, DoCASU.App.Component, {
 		// fire beforeload event
 		this.fireEvent("beforeload", this);
 		Ext.Ajax.request({
-				url: 'ui/folder/properties/' + nodeId,
-				method: 'GET',
-				success: function(response, options) {
-					var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderPropertiesAction", "DoCASU.App.Core");
-					// check response for errors
-					if(DoCASU.App.Error.checkHandleErrors('Failed to load folder properties', response)) {
-						// fire fail event
-						component.fireEvent("fail", component, response);
-					} else {
-						// fire afterload event
-						component.fireEvent("afterload", component, response);
-					}
-				}, 
-				failure: function(response, options) {
-					DoCASU.App.Error.handleFailureMessage('Failed to load folder properties', response);
+			url: 'ui/folder/properties/' + nodeId,
+			method: 'GET',
+			success: function(response, options) {
+				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderPropertiesAction", "DoCASU.App.Core");
+				// check response for errors
+				if(DoCASU.App.Error.checkHandleErrors('Failed to load folder properties', response)) {
 					// fire fail event
-					var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderPropertiesAction", "DoCASU.App.Core");
 					component.fireEvent("fail", component, response);
-					
+				} else {
+					// fire afterload event
+					component.fireEvent("afterload", component, response);
 				}
+			}, 
+			failure: function(response, options) {
+				DoCASU.App.Error.handleFailureMessage('Failed to load folder properties', response);
+				// fire fail event
+				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderPropertiesAction", "DoCASU.App.Core");
+				component.fireEvent("fail", component, response);
+				
+			}
 		});
 	}
 
