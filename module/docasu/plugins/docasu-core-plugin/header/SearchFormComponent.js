@@ -55,6 +55,7 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 						]
 		});
 		var searchTypeCombo = new Ext.form.ComboBox({
+			id				: 	"t",
 			fieldLabel		:	"Search for",
 			hiddenName		:	"t",
 			store			:	searchTypeStore,
@@ -68,6 +69,7 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 			editable		:	false
 		});
 		var searchField = new Ext.form.TextField({
+			id			:	"q",
 			colspan		:	1,
 			style		:	"margin-left: 4px",
 			name		:	"q",
@@ -130,16 +132,13 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 			// no UI widget was created thus component is disabled or closed
 			return;
 		}
-		uiWidget.on("beforeaction", function (form, action) {
-			Ext.MessageBox.show({
-				msg				:	"Search",
-				progressText	:	"Processing...",
-				width			:	200,
-				wait			:	true,
-				waitConfig		:	{interval:200},
-				icon			:	Ext.MessageBox.INFO
-			});
-		});
+		// search parameters: q, t, nodeId, createdFrom, createdTo, modifiedFrom, modifiedTo, start, limit, sort, dir
+		uiWidget.on("beforeaction", function (node, event) {
+			DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core").search(
+				Ext.ComponentMgr.get('q').getValue(),
+				Ext.ComponentMgr.get('t').getValue()
+				);
+		});		
 		uiWidget.on("render", function(panel) {
 			panel.getEl().parent("td").child("div").addClass("SearchFormComponent");
 		});

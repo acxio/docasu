@@ -154,6 +154,12 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // LoadFolderAction
+										{	// SearchAction
+											id			:	'SearchAction',
+											file		:	"../../docasu/plugins/docasu-core-plugin/actions/SearchAction.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo // SearchAction										
 										{	// LoadFolderPermissionsAction
 											id			:	"LoadFolderPermissionsAction",
 											file		:	"../../docasu/plugins/docasu-core-plugin/actions/LoadFolderPermissionsAction.js",
@@ -316,7 +322,13 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 											file		:	"../../docasu/plugins/docasu-core-plugin/center/main/CenterViewComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
-										} // eo // CenterViewComponent
+										}, // eo // CenterViewComponent											
+										{	// SearchListComponent
+											id			:	'SearchListComponent',
+											file		:	"../../docasu/plugins/docasu-core-plugin/center/main/SearchListComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										} // eo // SearchListComponent								
 									] // eo MainScreenComponent components
 				}; // eo MainScreenComponent
 	}, // eo getMainScreenComponentConfig
