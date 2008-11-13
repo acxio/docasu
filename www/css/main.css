@@ -65,7 +65,7 @@ a {
 	font-size: 16px;
 	padding-left: 30px;
 	padding-right: 25px;
-	top: 11px;
+	top: 13px;
 	color: #C8DBF4;
 }
 
@@ -202,7 +202,7 @@ a {
 }
 
 .active-tab-link {
-	top:7px;
+	top:9px;
 	color:#5987C6;
 	float:left;
 	font-size:16px;
