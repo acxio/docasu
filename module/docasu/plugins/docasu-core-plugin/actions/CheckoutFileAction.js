@@ -17,59 +17,59 @@
  */
 
 
-// DeleteNodeAction
+// CheckoutFileAction
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
 /* constructor */
-DoCASU.App.Core.DeleteNodeAction = function(config) {
+DoCASU.App.Core.CheckoutFileAction = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.DeleteNodeAction.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Core.CheckoutFileAction.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
-		"beforedelete",
-		"afterdelete",
+		"beforecheckout",
+		"aftercheckout",
 		"fail"
 	);
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.DeleteNodeAction, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Core.CheckoutFileAction, DoCASU.App.Component, {
 	// configuration options
-	id			:	"DeleteNodeAction",
-	title		:	"Delete Node Action",
+	id			:	"CheckoutFileAction",
+	title		:	"Checkout File Action",
 	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
 	
-	deleteNode : function(nodeId) {
-		// fire beforedelete event
-		this.fireEvent("beforedelete", this);
+	checkout : function(nodeId) {
+		// fire beforecheckout event
+		this.fireEvent("beforecheckout", this);
 		Ext.Ajax.request({
-			url: "ui/node/" + nodeId,
-			method: "DELETE",
+			url: "ui/node/checkout/" + nodeId,
+			method: "PUT",
 			success: function(response, options) {
-				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("DeleteNodeAction", "DoCASU.App.Core");
+				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("CheckoutFileAction", "DoCASU.App.Core");
 				// check response for errors
-				if(DoCASU.App.Error.checkHandleErrors("Failed to delete node", response)) {
+				if(DoCASU.App.Error.checkHandleErrors("Failed to checkout file", response)) {
 					// fire fail event
 					component.fireEvent("fail", component, response);
 				} else {
-					// fire afterdelete event
-					component.fireEvent("afterdelete", component, response);
+					// fire aftercheckout event
+					component.fireEvent("aftercheckout", component, response);
 				}
 			}, 
 			failure: function(response, options) {
-				DoCASU.App.Error.handleFailureMessage("Failed to delete node", response);
+				DoCASU.App.Error.handleFailureMessage("Failed to checkout file", response);
 				// fire fail event
-				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("DeleteNodeAction", "DoCASU.App.Core");
+				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("CheckoutFileAction", "DoCASU.App.Core");
 				component.fireEvent("fail", component, response);
 			}
 		});
 	}
 
-}); // eo DoCASU.App.Core.DeleteNodeAction
+}); // eo DoCASU.App.Core.CheckoutFileAction

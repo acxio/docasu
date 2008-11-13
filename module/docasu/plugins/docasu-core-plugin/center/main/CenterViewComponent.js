@@ -247,6 +247,45 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 			new Ext.LoadMask(Ext.getBody()).hide();
 			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
 		});
+		
+		var checkinAction = DoCASU.App.PluginManager.getPluginManager().getComponent("CheckinFileAction", "DoCASU.App.Core");
+		checkinAction.on("beforecheckin", function(action) {
+			new Ext.LoadMask(Ext.getBody()).show();
+		});
+		checkinAction.on("aftercheckin", function(action) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
+		});
+		checkinAction.on("fail", function(action) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
+		});
+		
+		var checkoutAction = DoCASU.App.PluginManager.getPluginManager().getComponent("CheckoutFileAction", "DoCASU.App.Core");
+		checkoutAction.on("beforecheckout", function(action) {
+			new Ext.LoadMask(Ext.getBody()).show();
+		});
+		checkoutAction.on("aftercheckout", function(action) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
+		});
+		checkoutAction.on("fail", function(action) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
+		});
+		
+		var undoCheckoutAction = DoCASU.App.PluginManager.getPluginManager().getComponent("UndoCheckoutFileAction", "DoCASU.App.Core");
+		undoCheckoutAction.on("beforeundocheckout", function(action) {
+			new Ext.LoadMask(Ext.getBody()).show();
+		});
+		undoCheckoutAction.on("afterundocheckout", function(action) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
+		});
+		undoCheckoutAction.on("fail", function(action) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
+		});
 	},
 	
 	showFolderView : function(folderId, folderName) {
@@ -476,12 +515,12 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		result.push({
 			 text: "Show infos",
 			 icon: "../../docasu/images/info.gif",
-			 handler: function() { DoCASU.App.PluginManager.getPluginManager().getComponent("FileDetailsComponent", "DoCASU.App.Core").show(record.get("nodeId"), record.get("writePermission")); return false;}
+			 handler: function() { DoCASU.App.PluginManager.getPluginManager().getComponent("FileDetailsComponent", "DoCASU.App.Core").show(record.get("nodeId"), record.get("writePermission"));}
 		});
 		html += 
 			"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('FileDetailsComponent', 'DoCASU.App.Core').show('"+record.get("nodeId")+"','"+record.get("writePermission")+"'); return false;\">"+
-				'<img title="Show infos" class="actionIcon" src="../../docasu/images/info.gif"/>'+
-			'</a>';
+				"<img title=\"Show infos\" class=\"actionIcon\" src=\"../../docasu/images/info.gif\"/>"+
+			"</a>";
 		
 		if (!record.get("locked")) {
 			if (record.get("writePermission")) {
@@ -489,48 +528,44 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 					result.push({
 						text: "Edit",
 						icon: "../../docasu/images/edit.gif",
-						handler: function() {
-							editContent(record.get("name"), record.get("nodeId"));
-						}
+						handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("EditContentComponent", "DoCASU.App.Core").show(record.get("name"), record.get("nodeId"));}
 					});
 					html += 
-						'<a href="#" onclick="editContent(\''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
-							'<img title="Edit" class="actionIcon" src="../../docasu/images/edit.gif"/>'+
-						'</a>';
+						"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('EditContentComponent', 'DoCASU.App.Core').show('"+record.get("name")+"','"+record.get("nodeId")+"'); return false;\">"+
+							"<img title=\"Edit\" class=\"actionIcon\" src=\"../../docasu/images/edit.gif\"/>"+
+						"</a>";
 				}
 		   		if (record.get("createPermission")) {
 		   			if (record.get("isWorkingCopy")) {
 		   				result.push({
 		   					text: "Checkin",
 		   					icon: "../../docasu/images/checkin.gif",
-		   					handler: function() {
-		   						checkinFile(record.get("nodeId"));
-		   					}
+		   					handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("CheckinFileAction", "DoCASU.App.Core").checkin(record.get("nodeId"));}
 		   				});
 						html += 
-							'<a href="#" onclick="checkinFile(\''+record.get('nodeId')+'\')">'+
-								'<img title="Checkin" class="actionIcon" src="../../docasu/images/checkin.gif"/>'+
-							'</a>';
+							"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('CheckinFileAction', 'DoCASU.App.Core').checkin('"+record.get("nodeId")+"'); return false;\">"+
+								"<img title=\"Checkin\" class=\"actionIcon\" src=\"../../docasu/images/checkin.gif\"/>"+
+							"</a>";
 		   				result.push({
 		   					text: "Undo checkout",
 		   					icon: "../../docasu/images/undo_checkout.gif",
-		   					handler: function() {undoCheckout(record.get("nodeId"));}
+		   					handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("UndoCheckoutFileAction", "DoCASU.App.Core").undoCheckout(record.get("nodeId"));}
 		   				});
 						html += 
-							'<a href="#" onclick="undoCheckout(\''+record.get('nodeId')+'\')">'+
-								'<img title="Undo checkout" class="actionIcon" src="../../docasu/images/undo_checkout.gif"/>'+
-							'</a>';
+							"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('UndoCheckoutFileAction', 'DoCASU.App.Core').undoCheckout('"+record.get("nodeId")+"'); return false;\">"+
+								"<img title=\"Undo checkout\" class=\"actionIcon\" src=\"../../docasu/images/undo_checkout.gif\"/>"+
+							"</a>";
 		   			}
 		   			else {
 		   				result.push({
 		   					text: "Checkout",
 		   					icon: "../../docasu/images/checkout.gif",
-		   					handler: function() {checkoutFile(record.get("nodeId"));}
+		   					handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("CheckoutFileAction", "DoCASU.App.Core").checkout(record.get("nodeId"));}
 		   				});
 		   				html += 
-							'<a href="#" onclick="checkoutFile(\''+record.get('nodeId')+'\')">'+
-								'<img title="Checkout" class="actionIcon" src="../../docasu/images/checkout.gif"/>'+
-							'</a>';
+							"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('CheckoutFileAction', 'DoCASU.App.Core').checkout('"+record.get("nodeId")+"'); return false;\">"+
+								"<img title=\"Checkout\" class=\"actionIcon\" src=\"../../docasu/images/checkout.gif\"/>"+
+							"</a>";
 		   				if (record.get("deletePermission")) {
 		   					result.push({
 		    					text: "Delete",
@@ -538,7 +573,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		    					handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core").deleteFile(record.get("name"), record.get("nodeId"));}
 		   					});
 		   					html += 
-	   							"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('CenterViewComponent', 'DoCASU.App.Core').deleteFile('"+record.get("name")+"','"+record.get("nodeId")+"')\">"+
+	   							"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('CenterViewComponent', 'DoCASU.App.Core').deleteFile('"+record.get("name")+"','"+record.get("nodeId")+"'); return false;\">"+
 	   								"<img title=\"Delete\" class=\"actionIcon\" src=\"../../docasu/images/delete.gif\"/>"+
 	   							"</a>";
 		   				}
@@ -547,12 +582,12 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		   		result.push({
 					 text: "Update",
 					 icon: "../../docasu/images/update.gif",
-					 handler: function() {updateFile(record.get("name"), record.get("nodeId"));}
+					 handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("UpdateFileComponent", "DoCASU.App.Core").show(record.get("name"), record.get("nodeId"));}
 		   		});
 		   		html += 
-					'<a href="#" onclick="updateFile(\''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
-						'<img title="Update" class="actionIcon" src="../../docasu/images/update.gif"/>'+
-					'</a>';
+					"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('UpdateFileComponent', 'DoCASU.App.Core').show('"+record.get("name")+"','"+record.get("nodeId")+"'); return false;\">"+
+						"<img title=\"Update\" class=\"actionIcon\" src=\"../../docasu/images/update.gif\"/>"+
+					"</a>";
 				result.push({
 					 text: "Categorization",
 					 icon: "../../docasu/images/categories.gif",
@@ -565,7 +600,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 				 handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("ClipboardComponent", "DoCASU.App.Core").copyLink(record.get("iconUrl"), record.get("name"), record.get("nodeId"));}
 		   	});
 		   	html += 
-				"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('ClipboardComponent', 'DoCASU.App.Core').copyLink('"+record.get("iconUrl")+"',' "+record.get("name")+"',' "+record.get("nodeId")+"')\">"+
+				"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('ClipboardComponent', 'DoCASU.App.Core').copyLink('"+record.get("iconUrl")+"',' "+record.get("name")+"',' "+record.get("nodeId")+"'); return false;\">"+
 					"<img title=\"Copy\" class=\"actionIcon\" src=\"../../docasu/images/copy.gif\"/>"+
 				"</a>";
 	    }

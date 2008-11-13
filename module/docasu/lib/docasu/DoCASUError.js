@@ -32,7 +32,7 @@ DoCASU.App.Error.checkHandleErrors = function(stringMsg, response) {
 	// check for session expiration
 	if(DoCASU.App.Session.isSessionExpired(response)) {
 		// reload docasu
-		window.location = 'ui';
+		DoCASU.App.ApplicationManager.getApplication().reload();
 		return true;
 	}
 	try {

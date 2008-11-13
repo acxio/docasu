@@ -53,7 +53,19 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 					components	:	[ // DoCASUCorePlugin components
 										docasuLayoutComponentConfig,
 										docasuActionContainerConfig,
-										fileDetailsComponentConfig
+										fileDetailsComponentConfig,
+										{	// UpdateFileComponent
+											id			:	"UpdateFileComponent",
+											file		:	"../../docasu/plugins/docasu-core-plugin/UpdateFileComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo UpdateFileComponent
+										{	// EditContentComponent
+											id			:	"EditContentComponent",
+											file		:	"../../docasu/plugins/docasu-core-plugin/EditContentComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										} // eo EditContentComponent
 									] // eo DoCASUCorePlugin components
 				}; // eo DoCASUCorePlugin
 	}, // eo getDoCASUCorePluginConfig
@@ -106,6 +118,36 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // PasteAllAction
+										{	// CheckinFileAction
+											id			:	"CheckinFileAction",
+											file		:	"../../docasu/plugins/docasu-core-plugin/actions/CheckinFileAction.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo // CheckinFileAction
+										{	// CheckoutFileAction
+											id			:	"CheckoutFileAction",
+											file		:	"../../docasu/plugins/docasu-core-plugin/actions/CheckoutFileAction.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo // CheckoutFileAction
+										{	// UndoCheckoutFileAction
+											id			:	"UndoCheckoutFileAction",
+											file		:	"../../docasu/plugins/docasu-core-plugin/actions/UndoCheckoutFileAction.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo // UndoCheckoutFileAction
+										{	// GetFileContentAction
+											id			:	"GetFileContentAction",
+											file		:	"../../docasu/plugins/docasu-core-plugin/actions/GetFileContentAction.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo // GetFileContentAction
+										{	// UpdateFileContentAction
+											id			:	"UpdateFileContentAction",
+											file		:	"../../docasu/plugins/docasu-core-plugin/actions/UpdateFileContentAction.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo // UpdateFileContentAction
 										{	// LoadFolderAction
 											id			:	"LoadFolderAction",
 											file		:	"../../docasu/plugins/docasu-core-plugin/actions/LoadFolderAction.js",

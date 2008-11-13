@@ -25,10 +25,11 @@ Ext.onReady( function() {
 	// custom config
 	Ext.BLANK_IMAGE_URL = "../../docasu/lib/extjs/resources/images/default/s.gif";
 	Ext.QuickTips.init();
-	Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
+	// DON'T USE COOKIES TO STORE DATA - MAXIMUM WAS REACHED
+	/*Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
 		path		:	"/DoCASUApp/",
 		expires		:	new Date(new Date().getTime()+(1000*60*60*24*30)) //30 days
-	}));
+	}));*/
 	document.oncontextmenu = function(e) {
 		// remove default context menu
 		if(!e) {e = window.event;}
