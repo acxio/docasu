@@ -221,6 +221,32 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 			var loadFolderAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core");
 			loadFolderAction.load(initialFolderId.value);
 		});
+		
+		var deleteAction = DoCASU.App.PluginManager.getPluginManager().getComponent("DeleteNodeAction", "DoCASU.App.Core");
+		deleteAction.on("beforedelete", function(action) {
+			new Ext.LoadMask(Ext.getBody()).show();
+		});
+		deleteAction.on("afterdelete", function(action) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
+		});
+		deleteAction.on("fail", function(action) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
+		});
+		
+		var pasteAction = DoCASU.App.PluginManager.getPluginManager().getComponent("PasteAllAction", "DoCASU.App.Core");
+		pasteAction.on("beforepaste", function(action) {
+			new Ext.LoadMask(Ext.getBody()).show();
+		});
+		pasteAction.on("afterpaste", function(action) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
+		});
+		pasteAction.on("fail", function(action) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
+		});
 	},
 	
 	showFolderView : function(folderId, folderName) {
@@ -396,6 +422,12 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		toolTip.noData = false;
 		toolTip.show(); // reset the counter for dismissDelay to 0
 	}, // eo showToolTip
+		
+	hideToolTip : function() {
+		var toolTip = this.getToolTip();
+		toolTip.noData = true;
+		toolTip.hide();
+	}, // eo hideToolTip
 	
 	fileNameRenderer : function(value, column, record) {
 		var html = "";
@@ -503,12 +535,12 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		   					result.push({
 		    					text: "Delete",
 		    					icon: "../../docasu/images/delete.gif",
-		    					handler: function() {deleteFile(record.get("name"), record.get("nodeId"));}
+		    					handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core").deleteFile(record.get("name"), record.get("nodeId"));}
 		   					});
 		   					html += 
-	   							'<a href="#" onclick="deleteFile(\''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
-	   								'<img title="Delete" class="actionIcon" src="../../docasu/images/delete.gif"/>'+
-	   							'</a>';
+	   							"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('CenterViewComponent', 'DoCASU.App.Core').deleteFile('"+record.get("name")+"','"+record.get("nodeId")+"')\">"+
+	   								"<img title=\"Delete\" class=\"actionIcon\" src=\"../../docasu/images/delete.gif\"/>"+
+	   							"</a>";
 		   				}
 		   			}
 		   		}
@@ -530,12 +562,12 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		   	result.push({
 				 text: "Copy",
 				 icon: "../../docasu/images/copy.gif",
-				 handler: function() {copyLink(record.get("iconUrl"), record.get("name"), record.get("nodeId"));}
+				 handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("ClipboardComponent", "DoCASU.App.Core").copyLink(record.get("iconUrl"), record.get("name"), record.get("nodeId"));}
 		   	});
 		   	html += 
-				'<a href="#" onclick="copyLink(\''+record.get('iconUrl')+'\', \''+record.get('name')+'\',\''+record.get('nodeId')+'\')">'+
-					'<img title="Copy" class="actionIcon" src="../../docasu/images/copy.gif"/>'+
-				'</a>';
+				"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('ClipboardComponent', 'DoCASU.App.Core').copyLink('"+record.get("iconUrl")+"',' "+record.get("name")+"',' "+record.get("nodeId")+"')\">"+
+					"<img title=\"Copy\" class=\"actionIcon\" src=\"../../docasu/images/copy.gif\"/>"+
+				"</a>";
 	    }
 		
 		var returnValue = new Array(result, html);
@@ -582,7 +614,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		if (record.createPermission) {
 			result.push({
 				text: "Paste all",
-				handler: function() {pasteAll(id);}
+				handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("PasteAllAction", "DoCASU.App.Core").paste(id);}
 			});
 			result.push({
 				text: "Create HTML content",
@@ -602,11 +634,14 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		return returnValue;
 	}, // eo createActionItemsForFolder
 	
-	hideToolTip : function() {
-		var toolTip = this.getToolTip();
-		toolTip.noData = true;
-		toolTip.hide();
-	}, // eo hideToolTip
+	deleteFile : function(fileName, nodeId) {
+		Ext.Msg.confirm("Confirm file deletion", "Are you sure you want to delete the file '" + fileName + "' ?", function(btn, text) {
+			if (btn == "yes") {
+				var deleteAction = DoCASU.App.PluginManager.getPluginManager().getComponent("DeleteNodeAction", "DoCASU.App.Core");
+				deleteAction.deleteNode(nodeId);
+			}
+		});
+	}, // eo deleteFile
 	
 	getCurrentFolder : function() {
 		return Ext.state.Manager.get(this.id + ".currentFolder");

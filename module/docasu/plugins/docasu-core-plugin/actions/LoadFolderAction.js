@@ -57,7 +57,9 @@ Ext.extend(DoCASU.App.Core.LoadFolderAction, DoCASU.App.Component, {
 			return;
 		}
 		var store = centerViewComponent.items.items[0].store;
-		store.baseParams.nodeId = folderId;
+		if(folderId && folderId != null) {
+			store.baseParams.nodeId = folderId;
+		}
 		store.baseParams.categoryId = null;
 		
 		// register listeners for store
@@ -71,6 +73,10 @@ Ext.extend(DoCASU.App.Core.LoadFolderAction, DoCASU.App.Component, {
 		});
 		
 		store.load();
-	}
+	}, // eo load
+	
+	reload : function() {
+		this.load();
+	} // eo reload
 
 }); // eo DoCASU.App.Core.LoadFolderAction

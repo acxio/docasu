@@ -94,6 +94,18 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // RemoveFavoriteAction
+										{	// DeleteNodeAction
+											id			:	"DeleteNodeAction",
+											file		:	"../../docasu/plugins/docasu-core-plugin/actions/DeleteNodeAction.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo // DeleteNodeAction
+										{	// PasteAllAction
+											id			:	"PasteAllAction",
+											file		:	"../../docasu/plugins/docasu-core-plugin/actions/PasteAllAction.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo // PasteAllAction
 										{	// LoadFolderAction
 											id			:	"LoadFolderAction",
 											file		:	"../../docasu/plugins/docasu-core-plugin/actions/LoadFolderAction.js",

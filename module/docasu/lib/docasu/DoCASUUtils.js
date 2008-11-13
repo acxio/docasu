@@ -52,3 +52,25 @@ DoCASU.App.Utils.convertTimezone = function(value) {
 DoCASU.App.Utils.mailLink = function(name, link) {
 	parent.location="mailto:?subject=mailing:%20"+name+"&body=" + escape("<a href=\""+location.protocol + "//" + location.host + link+"\">"+name+"</a>");		
 }
+
+DoCASU.App.Utils.trim = function(s) {
+	return DoCASU.App.Utils.rtrim(DoCASU.App.Utils.ltrim(s));
+}
+
+DoCASU.App.Utils.ltrim = function(s) {
+	var l=0;
+	while(l < s.length && s[l] == " ") {
+		l++;
+	}
+	return s.substring(l, s.length);
+}
+
+DoCASU.App.Utils.rtrim = function(s) {
+	var r = s.length - 1;
+	while(r > 0 && s[r] == " ") {
+		r -= 1;
+	}
+	return s.substring(0, r+1);
+}
+
+

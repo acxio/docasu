@@ -89,25 +89,26 @@ Ext.extend(DoCASU.App.Core.MainScreenHeaderComponent, DoCASU.App.Component, {
 			editable		:	false,
 			listeners		:	{
 									select : function(f, n, o) {
-										if (f.getValue() == "pasteAll"){
-											//pasteAll(Ext.state.Manager.get("currentFolder"));
-										}else if (f.getValue() == "deleteFolder"){
+										if (f.getValue() == "pasteAll") {
+											var currentFolder = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core").getCurrentFolder();
+											DoCASU.App.PluginManager.getPluginManager().getComponent("PasteAllAction", "DoCASU.App.Core").paste(currentFolder);
+										} else if (f.getValue() == "deleteFolder") {
 											//deleteFolder(Ext.state.Manager.get("currentFolder"));
-										}else if (f.getValue() == "viewDetails"){
+										} else if (f.getValue() == "viewDetails") {
 											//showFolderDetailsWindow(Ext.state.Manager.get("currentFolder"));
-										}else if (f.getValue() == "createFolder"){
+										} else if (f.getValue() == "createFolder") {
 											//createFolder(Ext.state.Manager.get("currentFolder"));
-										}else if (f.getValue() == "copyFolder"){
+										} else if (f.getValue() == "copyFolder") {
 											//copyFolder();
-										}else if (f.getValue() == "renameFolder"){
+										} else if (f.getValue() == "renameFolder") {
 											//renameFolder(Ext.state.Manager.get("currentFolder"));
-										}else if (f.getValue() == "text"){
+										} else if (f.getValue() == "text") {
 											//createContent("text", Ext.state.Manager.get("currentFolder"));
-										}else if (f.getValue() == "html"){
+										} else if (f.getValue() == "html") {
 											//createContent("HTML", Ext.state.Manager.get("currentFolder"));
-										}else if (f.getValue() == "uploadFile"){
+										} else if (f.getValue() == "uploadFile") {
 											//showUploadFile(Ext.state.Manager.get("currentFolder"));
-										}else{
+										} else {
 											Ext.MessageBox.alert("There is no action defined for " +f.getValue());
 										}
 									}

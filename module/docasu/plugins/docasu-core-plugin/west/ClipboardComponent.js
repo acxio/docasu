@@ -80,6 +80,66 @@ Ext.extend(DoCASU.App.Core.ClipboardComponent, DoCASU.App.Component, {
 				return false;
 			}
 		});
-	}	
+	}, // eo init
+	
+	copyLink : function(icon, name, nodeId) {
+		this.put(icon, name, nodeId);
+		this.update();
+	}, // eo copyLink
+	
+	put : function(icon, name, nodeId) {
+		var c = this.getAll();
+		// TODO handle duplicates
+		c.push([icon,name,nodeId].join(";"));
+		this.setClipboard(c);
+	}, // eo put
+	
+	getAll : function() {
+		var s = this.getClipboard();
+		var c = (s == "" ? new Array() : s.split(","));
+		return c;
+	}, // eo getAll
+	
+	update : function() {
+		var nodes = this.getAll();
+		var clipHtml = "<table>";
+		for(var i = 0; i < nodes.length; i++) {
+			var c = nodes[i].split(";");
+			clipHtml += "<tr>"
+			clipHtml += "<td><img src=\"" + c[0] + "\" /></td>";
+			clipHtml += "<td>" + c[1] + "</td>";
+			clipHtml += "<td><a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('ClipboardComponent', 'DoCASU.App.Core').remove('" + c[2] + "')\">" +
+				"<img src=\"../../docasu/images/delete.gif\" /></a></td>";
+			clipHtml += "</tr>";
+		}
+		clipHtml += "</table>";
+		var uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id); // get UI reference
+		uiWidget.body.dom.innerHTML = clipHtml;
+	}, // eo update	
+	
+	remove : function(id) {
+		var nodes = this.getAll();
+		for (var i=0; i<nodes.length; i++) {
+			if (nodes[i].indexOf(id) != -1) {
+				nodes.splice(i, 1);
+				break;
+			}
+		}
+		this.setClipboard(nodes);
+		this.update();
+	}, // eo remove
+	
+	clear : function() {
+		this.setClipboard(null);
+		this.update();
+	}, // eo clear
+	
+	getClipboard : function() {
+		return Ext.state.Manager.get(this.namespace + "." + this.id + ".clipboard", "");
+	}, // eo getClipboard
+	
+	setClipboard : function(c) {
+		Ext.state.Manager.set(this.namespace + "." + this.id + ".clipboard", c.join(","));
+	} // eo setClipboard
 
 }); // eo DoCASU.App.Core.ClipboardComponent
