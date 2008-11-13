@@ -113,6 +113,7 @@ a {
 .teaser-text3 {
 	color: #7BA0B2;
 	font-size: 20px;
+	left: 57px;
 }
 
 #teaser-text4 {
@@ -508,4 +509,7 @@ demo-video img{
 	border:none;
 }
 
+#demo_screenshot_title{
+	margin-top:30px;
+}
 
