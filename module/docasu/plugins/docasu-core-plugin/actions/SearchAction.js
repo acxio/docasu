@@ -60,7 +60,8 @@ Ext.extend(DoCASU.App.Core.SearchAction, DoCASU.App.Component, {
 			// no UI widget was created thus component is disabled or closed
 			return;
 		}
-		var store = centerViewComponent.items.items[1].store;
+		//var store = centerViewComponent.items.items[1].store;
+		var store = centerViewComponent.getLayout().activeItem.store;
 		store.baseParams.q = q;
 		store.baseParams.t = t;
 		store.baseParams.nodeId = nodeId;

@@ -55,7 +55,7 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 						]
 		});
 		var searchTypeCombo = new Ext.form.ComboBox({
-			id				: 	"t",
+			id				: 	"searchType",
 			fieldLabel		:	"Search for",
 			hiddenName		:	"t",
 			store			:	searchTypeStore,
@@ -137,8 +137,8 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 		uiWidget.on("beforeaction", function (node, event) {
 			DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core").search(
 				Ext.ComponentMgr.get('q').getValue(),
-				Ext.ComponentMgr.get('t').getValue()
-				);
+				Ext.ComponentMgr.get('searchType').getValue()
+			);
 		});		
 		uiWidget.on("render", function(panel) {
 			panel.getEl().parent("td").child("div").addClass("SearchFormComponent");

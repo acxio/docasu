@@ -341,6 +341,13 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 			centerViewWidget.getLayout().setActiveItem("folderView");
 		});
 		
+		var loadCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoryAction", "DoCASU.App.Categories");
+		loadCategoryAction.on("beforeload", function(action) {
+			// activate load folder results view list
+			var centerViewWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
+			centerViewWidget.getLayout().setActiveItem("folderView");
+		});
+		
 		var searchAction = DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core");
 		searchAction.on("beforeload", function(action) {
 			// activate search results view list
@@ -419,12 +426,8 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 	},
 	
 	showFolderView : function(folderId, folderName) {
-		// show folder icon 
-		Ext.get("folderName").child("img").show();
 		// show folder actions 
 		this.loadPermissions(folderId); // load permissions and action dropdown
-		Ext.get("folderActions").parent("div").show();
-		Ext.get("folderActionsLabel").show();
 		this.updateCurrentFolder(folderId);
 		this.updateBreadcrumbs(folderName, folderId);
 		// show folder name

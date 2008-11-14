@@ -56,7 +56,8 @@ Ext.extend(DoCASU.App.Categories.LoadCategoryAction, DoCASU.App.Component, {
 			// no UI widget was created thus component is disabled or closed
 			return;
 		}
-		var store = centerViewComponent.items.items[0].store;
+		//var store = centerViewComponent.items.items[0].store;
+		var store = centerViewComponent.getLayout().activeItem.store;
 		store.baseParams.nodeId = null;
 		store.baseParams.categoryId = categoryId;
 		

@@ -391,7 +391,7 @@ Ext.extend(DoCASU.App.Core.FileDetailsComponent, DoCASU.App.Component, {
 			// no UI widget was created thus component is disabled or closed
 			return;
 		}
-		var store = centerViewComponent.items.items[0].store;
+		var store = centerViewComponent.getLayout().activeItem.store;
 		var record = store.getById(nodeId);
 		// store the nodeId of this file
 		this.setSelectedFile(nodeId);
