@@ -89,25 +89,25 @@ Ext.extend(DoCASU.App.Core.MainScreenHeaderComponent, DoCASU.App.Component, {
 			editable		:	false,
 			listeners		:	{
 									select : function(f, n, o) {
+										var currentFolder = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core").getCurrentFolder();
 										if (f.getValue() == "pasteAll") {
-											var currentFolder = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core").getCurrentFolder();
 											DoCASU.App.PluginManager.getPluginManager().getComponent("PasteAllAction", "DoCASU.App.Core").paste(currentFolder);
 										} else if (f.getValue() == "deleteFolder") {
-											//deleteFolder(Ext.state.Manager.get("currentFolder"));
+											DoCASU.App.PluginManager.getPluginManager().getComponent("DeleteFolderComponent", "DoCASU.App.Core").show(currentFolder);
 										} else if (f.getValue() == "viewDetails") {
-											//showFolderDetailsWindow(Ext.state.Manager.get("currentFolder"));
+											DoCASU.App.PluginManager.getPluginManager().getComponent("FolderDetailsComponent", "DoCASU.App.Core").show(currentFolder);
 										} else if (f.getValue() == "createFolder") {
-											//createFolder(Ext.state.Manager.get("currentFolder"));
+											DoCASU.App.PluginManager.getPluginManager().getComponent("CreateFolderComponent", "DoCASU.App.Core").show(currentFolder);
 										} else if (f.getValue() == "copyFolder") {
-											//copyFolder();
+											DoCASU.App.PluginManager.getPluginManager().getComponent("CopyFolderComponent", "DoCASU.App.Core").copy(currentFolder);
 										} else if (f.getValue() == "renameFolder") {
-											//renameFolder(Ext.state.Manager.get("currentFolder"));
+											DoCASU.App.PluginManager.getPluginManager().getComponent("RenameFolderComponent", "DoCASU.App.Core").show(currentFolder);
 										} else if (f.getValue() == "text") {
-											//createContent("text", Ext.state.Manager.get("currentFolder"));
+											DoCASU.App.PluginManager.getPluginManager().getComponent("CreateContentComponent", "DoCASU.App.Core").show("txt", currentFolder);
 										} else if (f.getValue() == "html") {
-											//createContent("HTML", Ext.state.Manager.get("currentFolder"));
+											DoCASU.App.PluginManager.getPluginManager().getComponent("CreateContentComponent", "DoCASU.App.Core").show("html", currentFolder);
 										} else if (f.getValue() == "uploadFile") {
-											//showUploadFile(Ext.state.Manager.get("currentFolder"));
+											DoCASU.App.PluginManager.getPluginManager().getComponent("UploadFilesComponent", "DoCASU.App.Core").show(currentFolder);
 										} else {
 											Ext.MessageBox.alert("There is no action defined for " +f.getValue());
 										}

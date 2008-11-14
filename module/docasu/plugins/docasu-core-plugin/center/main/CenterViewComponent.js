@@ -232,7 +232,6 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		});
 		deleteAction.on("fail", function(action) {
 			new Ext.LoadMask(Ext.getBody()).hide();
-			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
 		});
 		
 		var pasteAction = DoCASU.App.PluginManager.getPluginManager().getComponent("PasteAllAction", "DoCASU.App.Core");
@@ -284,6 +283,11 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		});
 		undoCheckoutAction.on("fail", function(action) {
 			new Ext.LoadMask(Ext.getBody()).hide();
+			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
+		});
+		
+		var uploadFilesComponent = DoCASU.App.PluginManager.getPluginManager().getComponent("UploadFilesComponent", "DoCASU.App.Core");
+		uploadFilesComponent.on("afterupload", function(action) {
 			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
 		});
 	},
@@ -361,6 +365,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 				myRecord.createPermission = eval(folder.createPermission);
 				myRecord.deletePermission = eval(folder.deletePermission);
 				var centerView = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");
+				centerView.setParentFolder(folder.parentId);
 				centerView.setCurrentFolderProperties(myRecord);
 			} catch (e) {
 				Ext.MessageBox.alert("Error", "Failed to read folder properties " + e);
@@ -617,12 +622,11 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		result.push({
 			text: "View details",
 			icon: "../../docasu/images/info.gif",
-			handler: function() {showFolderDetailsWindow(id); return false;}
+			handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("FolderDetailsComponent", "DoCASU.App.Core").show(record.id);}
 		});
-		html += '<a href="#" onClick="showFolderDetailsWindow(\''+id+'\'); return false;">'+
-					'<img title="View details" class="actionIcon" src="../../docasu/images/info.gif"/>'+
-				'</a>';
-		
+		html += "<a href=\"#\" onClick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('FolderDetailsComponent', 'DoCASU.App.Core').show('"+record.id+"'); return false;\">"+
+					"<img title=\"View details\" class=\"actionIcon\" src=\"../../docasu/images/info.gif\"/>"+
+				"</a>";
 		if (record.createPermission) {
 			result.push({
 				text: "Create folder",
@@ -633,12 +637,12 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 			result.push({
 				text: "Delete folder",
 				icon: "../../docasu/images/delete.gif",
-				handler: function() {deleteFolder(id);}
+				handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core").deleteFolder(record.name, record.id);}
 			});
 			html += 
-				'<a href="#" onclick="deleteFolder(\''+record.id+'\')">'+
-					'<img title="Delete" class="actionIcon" src="../../docasu/images/delete.gif"/>'+
-				'</a>';
+				"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('CenterViewComponent', 'DoCASU.App.Core').deleteFolder('"+record.name+"','"+record.id+"'); return false;\">"+
+					"<img title=\"Delete\" class=\"actionIcon\" src=\"../../docasu/images/delete.gif\"/>"+
+				"</a>";
 		}
 		if (record.writePermission) {
 			result.push({
@@ -673,33 +677,53 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		Ext.Msg.confirm("Confirm file deletion", "Are you sure you want to delete the file '" + fileName + "' ?", function(btn, text) {
 			if (btn == "yes") {
 				var deleteAction = DoCASU.App.PluginManager.getPluginManager().getComponent("DeleteNodeAction", "DoCASU.App.Core");
+				deleteAction.on("afterdelete", function(action, response) {
+					DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
+				});
 				deleteAction.deleteNode(nodeId);
 			}
 		});
 	}, // eo deleteFile
 	
+	deleteFolder : function(folderName, nodeId) {
+		Ext.Msg.confirm("Confirm folder deletion", "Are you sure you want to delete the folder '" + folderName + "' and all it's contains ?", function(btn, text) {
+			if (btn == "yes") {
+				var deleteAction = DoCASU.App.PluginManager.getPluginManager().getComponent("DeleteNodeAction", "DoCASU.App.Core");
+				deleteAction.deleteNode(nodeId);
+			}
+		});
+	}, // eo deleteFolder
+	
 	getCurrentFolder : function() {
-		return Ext.state.Manager.get(this.id + ".currentFolder");
+		return Ext.state.Manager.get(this.namespace + "." + this.id + ".currentFolder");
 	}, // eo getCurrentFolder
 	
 	setCurrentFolder : function(folderId) {
-		Ext.state.Manager.set(this.id + ".currentFolder", folderId);
+		Ext.state.Manager.set(this.namespace + "." + this.id + ".currentFolder", folderId);
 	}, // eo setCurrentFolder
 	
+	getParentFolder : function() {
+		return Ext.state.Manager.get(this.namespace + "." + this.id + ".parentFolder");
+	}, // eo getParentFolder
+	
+	setParentFolder : function(folderId) {
+		Ext.state.Manager.set(this.namespace + "." + this.id + ".parentFolder", folderId);
+	}, // eo setParentFolder
+	
 	getCurrentFolderProperties : function() {
-		return Ext.state.Manager.get(this.id + ".currentFolderProperties");
+		return Ext.state.Manager.get(this.namespace + "." + this.id + ".currentFolderProperties");
 	}, // eo getCurrentFolderProperties
 	
 	setCurrentFolderProperties : function(folderProperties) {
-		Ext.state.Manager.set(this.id + ".currentFolderProperties", folderProperties);
+		Ext.state.Manager.set(this.namespace + "." + this.id + ".currentFolderProperties", folderProperties);
 	}, // eo setCurrentFolderProperties
 	
 	getBreadcrumb : function(key) {
-		return Ext.state.Manager.get(this.id + ".Breadcrumbs." + key);
+		return Ext.state.Manager.get(this.namespace + "." + this.id + ".Breadcrumbs." + key);
 	}, // eo getBreadcrumb
 	
 	setBreadcrumb : function(key, value) {
-		Ext.state.Manager.set(this.id + ".Breadcrumbs." + key, value);
+		Ext.state.Manager.set(this.namespace + "." + this.id + ".Breadcrumbs." + key, value);
 	} // eo setBreadcrumb
 
 }); // eo DoCASU.App.Core.CenterViewComponent
