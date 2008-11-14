@@ -126,7 +126,31 @@ Ext.extend(DoCASU.App.Core.MainScreenHeaderComponent, DoCASU.App.Component, {
 								cls			:	"center-header-bar",
 								items		:	[folderName, folderActionsLabel, folderActions]  
 							}; // the config to construct the UI object(widget)
+							
+		var loadFolderAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core");
+		loadFolderAction.on("beforeload", function(action) {
+			/* Show folder icon */
+			Ext.get('folderName').child('img').show();
+		
+			/* Show folder actions */
+			Ext.get('folderActions').parent('div').show();
+			Ext.get('folderActionsLabel').show();
+		});
+		
+		var searchAction = DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core");
+		searchAction.on("beforeload", function(action) {
+			/* Set the title to "Search results" */
+			Ext.get('folderName').child('div').update('Search Results');
+		
+			/* Hide folder icon */
+			Ext.get('folderName').child('img').setVisibilityMode(Ext.Element.DISPLAY);
+			Ext.get('folderName').child('img').hide();
+			
+			/* Hide folder actions */
+			Ext.get('folderActions').parent('div').hide();
+			Ext.get('folderActionsLabel').hide();
+		});
+									
 		return uiConfig;
-	} // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
-
+	}, // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
 }); // eo DoCASU.App.Core.MainScreenHeaderComponent
