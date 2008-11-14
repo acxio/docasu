@@ -89,8 +89,13 @@ Ext.extend(DoCASU.App.Core.SearchListComponent, DoCASU.App.Component, {
 							})
 		});
 		gridStore.on("beforeload", function(store, options) {
-			/* TODO: validate the parameters
-			var message = this.validateSearchParameters(form.getValues(false));
+			// TODO:  add missing params for paging
+			/*for (var param in store.params) {
+				options.params[param] = store.params[param];
+			}*/			
+			// TODO: validate the parameters
+			/*var searchListComponent = DoCASU.App.PluginManager.getPluginManager().getComponent("SearchListComponent", "DoCASU.App.Core");
+			var message = searchListComponent.validateSearchParameters(options);
 			if(message.length > 0) {
 				// invalid search parameters
 				Ext.MessageBox.show({
@@ -187,9 +192,14 @@ Ext.extend(DoCASU.App.Core.SearchListComponent, DoCASU.App.Component, {
  	validateSearchParameters: function (params) {
 		// validate query
 		var query = null;
+		alert('boo:'+params.q);
 		if (params.q != undefined && params.q.length > 0) {
 			query = params.q;
+		} 
+		if (query == null) {
+			return "Missing search term!";
 		}
+		
 		// validate dates
 		var createdFrom = null;
 		var createdTo = null;
@@ -219,15 +229,6 @@ Ext.extend(DoCASU.App.Core.SearchListComponent, DoCASU.App.Component, {
 		if(createdFrom != null &&  modifiedTo != null && modifiedTo < createdFrom) {
 			// if modifiedTo is before createdFrom 
 			return "'Modified Before' date cannot be set before 'Created After' date!";
-		}
-		
-		// check if valid search
-		if ((query == null || query == "") && 
-			(createdFrom == null || createdFrom == "") &&
-			(createdTo == null || createdTo == "") &&
-			(modifiedFrom == null || modifiedFrom == "") &&
-			(modifiedTo == null || modifiedTo == "")) {
-				return "Invalid search parameters";
 		}
 	
 		return "";

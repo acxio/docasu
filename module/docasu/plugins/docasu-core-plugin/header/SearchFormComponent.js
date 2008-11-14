@@ -111,7 +111,7 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 													searchField,
 													searchBtn,
 													{
-														html		:	"<a href=\"#\" class=\"header\" onclick=\"showAdvancedSearch(); return false;\">Advanced&nbsp;Search</a>",
+														html		:	"<a href=\"#\" class=\"header\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('AdvancedSearchComponent', 'DoCASU.App.Core').show(); return false;\">Advanced&nbsp;Search</a>",
 														border		:	false,
 														colspan		:	1
 													}

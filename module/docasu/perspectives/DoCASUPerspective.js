@@ -46,6 +46,7 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 		var docasuLayoutComponentConfig = this.getDoCASULayoutComponentConfig();
 		var docasuActionContainerConfig = this.getDoCASUActionContainerConfig();
 		var fileDetailsComponentConfig = this.getFileDetailsComponentConfig();
+		var advancedSearchComponentConfig = this.getAdvancedSearchComponentConfig();
 		return 	{	// DoCASUCorePlugin
 					id			:	"DoCASUCorePlugin",
 					file		:	"../../docasu/plugins/docasu-core-plugin/DoCASUCorePlugin.js",
@@ -54,6 +55,7 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 										docasuLayoutComponentConfig,
 										docasuActionContainerConfig,
 										fileDetailsComponentConfig,
+										advancedSearchComponentConfig,
 										{	// UpdateFileComponent
 											id			:	"UpdateFileComponent",
 											file		:	"../../docasu/plugins/docasu-core-plugin/UpdateFileComponent.js",
@@ -80,6 +82,17 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 									] // eo FileDetailsComponent components
 				}; // eo FileDetailsComponent
 	}, // eo getFileDetailsComponentConfig
+	
+	getAdvancedSearchComponentConfig : function() {
+		return	{	// AdvancedSearchComponent
+					id			:	"AdvancedSearchComponent",
+					file		:	"../../docasu/plugins/docasu-core-plugin/advanced-search/AdvancedSearchComponent.js",
+					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+					components	:	[ // AdvancedSearchComponent components
+									] // eo AdvancedSearchComponent components
+				}; // eo AdvancedSearchComponent
+	}, // eo getAdvancedSearchComponentConfig	
 	
 	getDoCASUActionContainerConfig : function() {
 		return	{	// DoCASUActionContainer
