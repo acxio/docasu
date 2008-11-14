@@ -181,18 +181,11 @@ Ext.extend(DoCASU.App.Core.AdvancedSearchComponent, DoCASU.App.Component, {
 	
 	advSearchSubmit : function () {
 		var searchAction = DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core");
-		searchAction.on("beforeload", function(component) {
-			new Ext.LoadMask(Ext.getBody()).show();
-		});
 		searchAction.on("afterload", function(component) {
-			new Ext.LoadMask(Ext.getBody()).hide();
-			var advancedSearchWindow = DoCASU.App.PluginManager.getPluginManager().getUIWidget("AdvancedSearchComponent");
-			advancedSearchWindow.close();
+			DoCASU.App.PluginManager.getPluginManager().getUIWidget("AdvancedSearchComponent").close();
 		});
 		searchAction.on("fail", function(component) {
-			new Ext.LoadMask(Ext.getBody()).hide();
-			var advancedSearchWindow = DoCASU.App.PluginManager.getPluginManager().getUIWidget("AdvancedSearchComponent");
-			advancedSearchWindow.close();
+			var advancedSearchWindow = DoCASU.App.PluginManager.getPluginManager().getUIWidget("AdvancedSearchComponent").close();
 		});
 	}
 		
