@@ -53,14 +53,14 @@ Ext.extend(DoCASU.App.Core.SearchAction, DoCASU.App.Component, {
 	advancedSearch : function(q, t, nodeId, createdFrom, createdTo, modifiedFrom, modifiedTo, start, limit, sort, dir) {
 		// fire beforeload event
 		this.fireEvent("beforeload", this);
-		var searchListComponent;
+		var centerViewComponent;
 		try {
-			searchListComponent = DoCASU.App.PluginManager.getPluginManager().getUIWidget("SearchListComponent");
+			centerViewComponent = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
 		} catch(err) {
 			// no UI widget was created thus component is disabled or closed
 			return;
 		}
-		var store = searchListComponent.items.items[0].store;
+		var store = centerViewComponent.items.items[1].store;
 		store.baseParams.q = q;
 		store.baseParams.t = t;
 		store.baseParams.nodeId = nodeId;
@@ -72,7 +72,6 @@ Ext.extend(DoCASU.App.Core.SearchAction, DoCASU.App.Component, {
 		store.baseParams.limit = limit;
 		store.baseParams.sort = sort;
 		store.baseParams.dir = dir;
-		
 		// register listeners for store
 		store.on("load", function(store, records, options) {
 			var searchAction = DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core");
@@ -82,7 +81,6 @@ Ext.extend(DoCASU.App.Core.SearchAction, DoCASU.App.Component, {
 			var searchAction = DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core");
 			searchAction.fireEvent("fail", searchAction, response);
 		});
-		
 		store.load();
 	}
 

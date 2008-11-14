@@ -46,6 +46,7 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 		var docasuLayoutComponentConfig = this.getDoCASULayoutComponentConfig();
 		var docasuActionContainerConfig = this.getDoCASUActionContainerConfig();
 		var fileDetailsComponentConfig = this.getFileDetailsComponentConfig();
+		var advancedSearchComponentConfig = this.getAdvancedSearchComponentConfig();
 		return 	{	// DoCASUCorePlugin
 					id			:	"DoCASUCorePlugin",
 					file		:	"../../docasu/plugins/docasu-core-plugin/DoCASUCorePlugin.js",
@@ -394,13 +395,7 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 											file		:	"../../docasu/plugins/docasu-core-plugin/center/main/CenterViewComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
-										}/*, // eo // CenterViewComponent											
-										{	// SearchListComponent
-											id			:	'SearchListComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/center/main/SearchListComponent.js",
-											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
-											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
-										}*/ // eo // SearchListComponent								
+										}, // eo // CenterViewComponent											
 									] // eo MainScreenComponent components
 				}; // eo MainScreenComponent
 	}, // eo getMainScreenComponentConfig
