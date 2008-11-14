@@ -19,8 +19,6 @@
 
 // AdvancedSearchComponent
 
-var SEARCH_FIELD_WIDTH = 150;
-
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
@@ -51,7 +49,7 @@ Ext.extend(DoCASU.App.Core.AdvancedSearchComponent, DoCASU.App.Component, {
 		var searchField = new Ext.form.TextField({
 			fieldLabel: 'Query',
 			name: 'q',
-			width: SEARCH_FIELD_WIDTH
+			width: 150
 		});
 		
 		var typeCombo = new Ext.form.ComboBox({
@@ -68,7 +66,7 @@ Ext.extend(DoCASU.App.Core.AdvancedSearchComponent, DoCASU.App.Component, {
 			valueField: 'code',
 			mode: 'local',
 			value: '',
-			width: SEARCH_FIELD_WIDTH,
+			width: 150,
 			triggerAction: 'all',
 			readOnly: true,
 			editable: false
@@ -78,33 +76,33 @@ Ext.extend(DoCASU.App.Core.AdvancedSearchComponent, DoCASU.App.Component, {
 			fieldLabel: 'Created After',
 			name: 'createdFrom',
 			format: 'Y/m/d',
-			width: SEARCH_FIELD_WIDTH
+			width: 150
 		});
 		
 		var createdTo = new Ext.form.DateField({
 			fieldLabel: 'Created Before',
 			name: 'createdTo',
 			format: 'Y/m/d',
-			width: SEARCH_FIELD_WIDTH
+			width: 150
 		});
 		
 		var modifiedFrom = new Ext.form.DateField({
 			fieldLabel: 'Modified After',
 			name: 'modFrom',
 			format: 'Y/m/d',
-			width: SEARCH_FIELD_WIDTH
+			width: 150
 		});
 		
 		var modifiedTo = new Ext.form.DateField({
 			fieldLabel: 'Modified Before',
 			name: 'modTo',
 			format: 'Y/m/d',
-			width: SEARCH_FIELD_WIDTH
+			width: 150
 		});
 		
 		var lookInCombo = new Ext.form.ComboBox({
 			fieldLabel: 'Look in',
-			width: SEARCH_FIELD_WIDTH,
+			width: 150,
 			hiddenName: 'nodeId',
 			store: new Ext.data.SimpleStore({
 				fields: ['code', 'label'],
@@ -126,7 +124,7 @@ Ext.extend(DoCASU.App.Core.AdvancedSearchComponent, DoCASU.App.Component, {
 			bodyStyle: 'border: none',
 			keys: [{
 				key: Ext.EventObject.ENTER,
-				handler: this.advSearchSubmit()
+				handler: DoCASU.App.PluginManager.getPluginManager().getComponent("AdvancedSearchComponent", "DoCASU.App.Core").advSearchSubmit()
 			}],
 			layout: 'column',
 			layoutConfig: {
@@ -147,7 +145,7 @@ Ext.extend(DoCASU.App.Core.AdvancedSearchComponent, DoCASU.App.Component, {
 			})],
 			buttons: [new Ext.Button({
 				text: 'Search',
-				handler: this.advSearchSubmit()
+				handler: DoCASU.App.PluginManager.getPluginManager().getComponent("AdvancedSearchComponent", "DoCASU.App.Core").advSearchSubmit()
 			})]
 		});
 

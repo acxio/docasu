@@ -44,7 +44,9 @@ Ext.extend(DoCASU.App.Core.SearchListComponent, DoCASU.App.Component, {
 	// configuration defaults are in DoCASU.App.Component
 	// UI
 	uiClass		:	"Ext.Panel",
-	getUIConfig : function() {
+	
+	
+	getSearchListGrid : function() {
 		/* Data store for the file grid in the main content section */
 		var gridStore = new Ext.data.Store({
 			remoteSort	:	true,
@@ -148,19 +150,9 @@ Ext.extend(DoCASU.App.Core.SearchListComponent, DoCASU.App.Component, {
 					        }),
 		    sm			:	fileSelectionModel
 		});
-
-		var uiConfig	=	{
-								// config
-								id			:	this.id,
-								// look
-								region		:	"center",
-								layout		:	"card",
-								defaults	:	{border:false},
-								activeItem	:	0,
-								items		:	[gridList/*, _initSearchResultsView()*/]
-							}; // the config to construct the UI object(widget)
-		return uiConfig;
-	}, // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
+		
+		return gridList;
+	},
 	
 	// override init()
 	init : function() {
