@@ -111,11 +111,13 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 			new Ext.LoadMask(Ext.getBody()).hide();
 			var folderName = store.reader.jsonData.folderName;
 			var folderId = store.reader.jsonData.folderId;
+			Ext.get("folderName").child("div").update(folderName);
 			var component = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");
-			if(store.baseParams.nodeId != null) {
-				component.showFolderView(folderId, folderName);
-			} else {
-				component.showCategoryView(folderName);
+			if(store.baseParams.nodeId != null) { // if load folder
+				// show folder actions 
+				component.loadPermissions(folderId); // load permissions and action dropdown
+				component.updateCurrentFolder(folderId);
+				component.updateBreadcrumbs(folderName, folderId);
 			}
 		});
 		gridStore.on("loadexception", function(proxy, options, response, error) {
@@ -124,7 +126,6 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 			// TODO: redirect to My Home folder
 		});
 		gridStore.setDefaultSort("name", "asc");
-		var fileSelectionModel = new Ext.grid.RowSelectionModel({singleSelect:true});
 	    var gridList = new Ext.grid.GridPanel({
 	        id			:	"folderView",
 			store		:	gridStore,
@@ -144,24 +145,25 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 					            displayMsg	:	"Displaying file(s) {0} - {1} of {2}",
 					            emptyMsg	:	"No files to display"
 					        }),
-		    sm			:	fileSelectionModel
+		    sm			:	new Ext.grid.RowSelectionModel({singleSelect:true})
 		});
 		gridList.on("contextmenu", function(e) {
-	        e.preventDefault();
-	        // if on a category
-			/*if (gridStore.baseParams.categoryId == null) {
-				this.contextMenu = getFolderContextMenu(Ext.state.Manager.get("currentFolder"), Ext.state.Manager.get("currentFolderProperties"));
+	        // if not on a category
+			if (this.store.baseParams.categoryId == null) {
+				var centerView = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");
+				this.contextMenu = centerView.getFolderContextMenu(centerView.getCurrentFolder(), centerView.getCurrentFolderProperties());
 				var xy = e.getXY();
 				this.contextMenu.showAt(xy);
-			}*/
+			}
 	    });
 	    gridList.on("rowcontextmenu", function (grid, rowIndex, e) {
-	    	e.preventDefault();	
 	    	// select row
-	    	/*fileSelectionModel.selectRow(rowIndex, false);
-	        var record = grid.getStore().getAt(rowIndex);
+	    	var selectionModel = this.selModel;
+	    	selectionModel.selectRow(rowIndex, false);
+	    	var centerView = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");
+	        var record = this.getStore().getAt(rowIndex);
 	        if (record.get("isFolder")) {
-	        	var myRecord = new Object("Node "+record.get("nodeId"));
+	        	var myRecord = new Object("Node " + record.get("nodeId"));
 	        	myRecord.id = record.get("nodeId");
 	        	myRecord.text = record.get("name");
 				myRecord.name = record.get("name");
@@ -171,13 +173,13 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 				myRecord.writePermission = record.get("writePermission");
 				myRecord.createPermission = record.get("createPermission");
 				myRecord.deletePermission = record.get("deletePermission");
-	        	this.contextMenu = getFolderContextMenu(record.get("nodeId"), myRecord);
+	        	this.contextMenu = centerView.getFolderContextMenu(record.get("nodeId"), myRecord);
 	        }
 	        else {
-	        	this.contextMenu = getFileContextMenu(record);
+	        	this.contextMenu = centerView.getFileContextMenu(record);
 	        }
 	        var xy = e.getXY();
-			this.contextMenu.showAt(xy);*/
+			this.contextMenu.showAt(xy);
 	    });
 	    gridList.on("mouseover", function(e, t) {
 	    	var rowIndex = this.getView().findRowIndex(t);
@@ -209,7 +211,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 	}, // eo getFolderViewListConfig
 	
 	getSearchViewListConfig : function() {
-		/* Data store for the file grid in the main content section */
+		// data store for the file grid in the main content section
 		var gridStore = new Ext.data.Store({
 			remoteSort	:	true,
 			proxy		:	new Ext.data.HttpProxy({
@@ -221,70 +223,56 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 					            totalProperty	:	"total",
 					            id				:	"nodeId",
 								fields: [
-											{name: 'created', type:'string'},
-											{name: 'author', type:'string'},
-											{name: 'creator', type:'string'},
-											{name: 'description', mapping:'description'},
-											{name: 'parentId', type:'string'},
-											{name: 'parentPath', type:'string'},
-											{name: 'mimetype', type:'string'},
-											{name: 'url', type:'string'},
-											{name: 'downloadUrl', type:'string'},
-											{name: 'modified', type:'string'},
-											{name: 'modifier', type:'string'},
-											{name: 'name', type:'string'},
-											{name: 'nodeId', type:'string'},
-											{name: 'link', type: 'string'},
-											{name: 'size', type:'int'},
-											{name: 'title', type:'string'},
-											{name: 'version', type:'string'},
-											{name: 'versionable', type:'boolean'},
-											{name: 'writePermission', type:'boolean'},
-											{name: 'createPermission', type:'boolean'},
-											{name: 'deletePermission', type:'boolean'},
-											{name: 'locked', type:'boolean'},
-											{name: 'editable', type:'boolean'},
-											{name: 'isWorkingCopy', type:'boolean'},
-											{name: 'iconUrl', type:'string'},
-											{name: 'icon32Url', type:'string'},
-											{name: 'icon64Url', type:'string'},
-											{name: 'isFolder', type:'boolean'}
+											{name:"created",			type:"string"},
+											{name:"author",				type:"string"},
+											{name:"creator",			type:"string"},
+											{name:"description",		mapping:"description"},
+											{name:"parentId",			type:"string"},
+											{name:"parentPath",			type:"string"},
+											{name:"mimetype",			type:"string"},
+											{name:"url",				type:"string"},
+											{name:"downloadUrl",		type:"string"},
+											{name:"modified",			type:"string"},
+											{name:"modifier",			type:"string"},
+											{name:"name",				type:"string"},
+											{name:"nodeId",				type:"string"},
+											{name:"link",				type: "string"},
+											{name:"size",				type:"int"},
+											{name:"title",				type:"string"},
+											{name:"version",			type:"string"},
+											{name:"versionable",		type:"boolean"},
+											{name:"writePermission",	type:"boolean"},
+											{name:"createPermission",	type:"boolean"},
+											{name:"deletePermission",	type:"boolean"},
+											{name:"locked",				type:"boolean"},
+											{name:"editable",			type:"boolean"},
+											{name:"isWorkingCopy",		type:"boolean"},
+											{name:"iconUrl",			type:"string"},
+											{name:"icon32Url",			type:"string"},
+											{name:"icon64Url",			type:"string"},
+											{name:"isFolder",			type:"boolean"}
 								         ]
 							})
 		});
 		gridStore.on("beforeload", function(store, options) {
-			var centerViewComponent = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");
-			// TODO:  add missing params for paging
-			/*for (var param in store.params) {
-				options.params[param] = store.params[param];
-			}*/			
-			// TODO: validate the parameters
-			/*
-			var message = centerViewComponent.validateSearchParameters(options);
-			if(message.length > 0) {
-				// invalid search parameters
-				Ext.MessageBox.show({
-					title: 'Invalid search parameters',
-					msg: message,
-					buttons: Ext.MessageBox.OK,
-					icon: Ext.MessageBox.ERROR
-				});
-				return false;
-			}*/
-			Ext.MessageBox.show({
+			var centerViewComponent = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");		
+			new Ext.LoadMask(Ext.getBody(), {msg:"Searching..."}).show();
+			/*Ext.MessageBox.show({
 				msg				:	"Search",
 				progressText	:	"Processing...",
 				width			:	200,
 				wait			:	true,
 				waitConfig		:	{interval:200},
 				icon			:	Ext.MessageBox.INFO
-			});		
+			});*/
 		});
 		gridStore.on("load", function(store, records, options) {
-			Ext.MessageBox.hide();
+			new Ext.LoadMask(Ext.getBody()).hide();
+			//Ext.MessageBox.hide();
 		});
 		gridStore.on("loadexception", function(proxy, options, response, error) {
-			Ext.MessageBox.hide();
+			new Ext.LoadMask(Ext.getBody()).hide();
+			//Ext.MessageBox.hide();
 			DoCASU.App.Error.checkHandleErrors("Failed to perform search", response);
 		});
 		gridStore.setDefaultSort("name", "asc");
@@ -310,7 +298,31 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 					        }),
 		    sm			:	new Ext.grid.RowSelectionModel({singleSelect:true})
 		});
-		
+		gridList.on("rowcontextmenu", function (grid, rowIndex, e) {
+	    	// select row
+	    	var selectionModel = this.selModel;
+	    	selectionModel.selectRow(rowIndex, false);
+	    	var centerView = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");
+	        var record = this.getStore().getAt(rowIndex);
+	        if (record.get("isFolder")) {
+	        	var myRecord = new Object("Node " + record.get("nodeId"));
+	        	myRecord.id = record.get("nodeId");
+	        	myRecord.text = record.get("name");
+				myRecord.name = record.get("name");
+				myRecord.parentPath = record.get("parentPath");
+				myRecord.link = record.get("link");
+				myRecord.url = record.get("url");
+				myRecord.writePermission = record.get("writePermission");
+				myRecord.createPermission = record.get("createPermission");
+				myRecord.deletePermission = record.get("deletePermission");
+	        	this.contextMenu = centerView.getFolderContextMenu(record.get("nodeId"), myRecord);
+	        }
+	        else {
+	        	this.contextMenu = centerView.getFileContextMenu(record);
+	        }
+	        var xy = e.getXY();
+			this.contextMenu.showAt(xy);
+	    });
 		return gridList;
 	}, // eo getSearchViewListConfig
 	
@@ -425,15 +437,6 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		});
 	},
 	
-	showFolderView : function(folderId, folderName) {
-		// show folder actions 
-		this.loadPermissions(folderId); // load permissions and action dropdown
-		this.updateCurrentFolder(folderId);
-		this.updateBreadcrumbs(folderName, folderId);
-		// show folder name
-		Ext.get("folderName").child("div").update(folderName);
-	}, // eo showFolderView
-	
 	loadPermissions : function(nodeId) {
 		var loadPermissionsAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderPermissionsAction", "DoCASU.App.Core");
 		loadPermissionsAction.on("beforeload", function(action) {
@@ -483,19 +486,22 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 			new Ext.LoadMask(Ext.getBody()).hide();
 			try {
 				var folder = Ext.util.JSON.decode(response.responseText);
-				var myRecord = new Object("Node " + folder.nodeId);
-		       	myRecord.id = folder.nodeId;
-		       	myRecord.text = folder.name;
-				myRecord.name = folder.name;
-				myRecord.parentPath = folder.path;
-				myRecord.link = folder.link;
-				myRecord.url = folder.url;
-				myRecord.writePermission = eval(folder.writePermission);
-				myRecord.createPermission = eval(folder.createPermission);
-				myRecord.deletePermission = eval(folder.deletePermission);
 				var centerView = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");
-				centerView.setParentFolder(folder.parentId);
-				centerView.setCurrentFolderProperties(myRecord);
+				if(centerView.getCurrentFolder() == folder.nodeId) {
+					// update only if current folder properties
+					var myRecord = new Object("Node " + folder.nodeId);
+			       	myRecord.id = folder.nodeId;
+			       	myRecord.text = folder.name;
+					myRecord.name = folder.name;
+					myRecord.parentPath = folder.path;
+					myRecord.link = folder.link;
+					myRecord.url = folder.url;
+					myRecord.writePermission = eval(folder.writePermission);
+					myRecord.createPermission = eval(folder.createPermission);
+					myRecord.deletePermission = eval(folder.deletePermission);
+					centerView.setParentFolder(folder.parentId);
+					centerView.setCurrentFolderProperties(myRecord);
+				}
 			} catch (e) {
 				Ext.MessageBox.alert("Error", "Failed to read folder properties " + e);
 			}
@@ -542,16 +548,6 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 			uiWidget.setTitle(breadcrumbs);
 		}
 	}, // eo updateBreadcrumbs
-	
-	showCategoryView : function(categoryName) {
-		// show folder icon
-		Ext.get("folderName").child("img").show();
-		// hide folder actions
-		Ext.get("folderActions").parent("div").hide();
-		Ext.get("folderActionsLabel").hide();
-		// show category name
-		Ext.get("folderName").child("div").update(categoryName);
-	}, // eo showCategoryView
 	
 	getToolTip : function() {
 		var uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
@@ -743,6 +739,39 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		return returnValue;
 	}, // eo createActionItems
 	
+	getFileContextMenu : function(record) {
+		var contextMenu = new Ext.menu.Menu({
+			id			:	"gridCtxMenu",
+			items		:	this.createActionItems(record)[0],
+			listeners	:	{click : function(menu, menuItem, e) {menu.hide();}}
+		});
+		contextMenu.add(
+		    {
+		    	text: "View in Browser",
+		    	handler: function() {DoCASU.App.Utils.newTab(record.get("link"));}
+		    }, {
+		    	text: "Download File/ Open with...",
+		    	handler: function() {DoCASU.App.Utils.newTab(record.get("downloadUrl"));}
+		    }, {
+		    	text: "Add to Favorites",
+		    	handler: function() {
+		    		var addFavoriteAction = DoCASU.App.PluginManager.getPluginManager().getComponent("AddFavoriteAction", "DoCASU.App.Core");
+					addFavoriteAction.save(record.get("nodeId"));
+		    	}
+		    }, {
+		    	text: "Mail Link",
+		    	handler: function() {DoCASU.App.Utils.mailLink(record.get("name"), record.get("url"));}
+		    }, {
+		    	text: "Copy File Path to System Clipboard",
+		    	handler: function() {DoCASU.App.Utils.copyTextToSystemClipboard(location.protocol + "//" + location.host + record.get("link"));}
+		    }, {
+		    	text: "Copy File Url To System Clipboard",
+		    	handler: function() {DoCASU.App.Utils.copyTextToSystemClipboard(location.protocol + "//" + location.host + record.get("url"));}
+		    }
+		);
+		return contextMenu;
+	}, // eo getFileContextMenu
+	
 	createActionItemsForFolder : function(record) {
 		var id = record.id;
 		var result = new Array();
@@ -759,7 +788,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		if (record.createPermission) {
 			result.push({
 				text: "Create folder",
-				handler: function() {createFolder(id);}
+				handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("CreateFolderComponent", "DoCASU.App.Core").show(id);}
 			});
 		}
 		if (record.deletePermission) {
@@ -776,7 +805,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		if (record.writePermission) {
 			result.push({
 				text: "Rename folder",
-				handler: function() {renameFolder(id);}
+				handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("RenameFolderComponent", "DoCASU.App.Core").show(id);}
 			});
 		}
 		if (record.createPermission) {
@@ -786,21 +815,55 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 			});
 			result.push({
 				text: "Create HTML content",
-				handler: function() {createContent("HTML", id);}
+				handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("CreateContentComponent", "DoCASU.App.Core").show("html", id);}
 			});
 			result.push({
 				text: "Create text content",
-				handler: function() {createContent("text", id);}
+				handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("CreateContentComponent", "DoCASU.App.Core").show("txt", id);}
 			});	
 			result.push({
 				text: "Upload file(s)",
-				handler: function() {showUploadFile(id);}
+				handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("UploadFilesComponent", "DoCASU.App.Core").show(id);}
 			});	
 		}
 			
 		var returnValue = new Array(result, html);
 		return returnValue;
 	}, // eo createActionItemsForFolder
+	
+	getFolderContextMenu : function(id, record) {
+		var contextMenu = new Ext.menu.Menu({
+			id			:	"folderCtxMenu",
+			items		:	this.createActionItemsForFolder(record)[0],
+			listeners	:	{click : function(menu, menuItem, e) {menu.hide();}}
+		});
+		contextMenu.add({
+	    	text		: "Add to Favorites",
+	    	handler : function() {
+				var addFavoriteAction = DoCASU.App.PluginManager.getPluginManager().getComponent("AddFavoriteAction", "DoCASU.App.Core");
+				addFavoriteAction.save(id);
+			}
+		});
+		// record can be null if folder properties were not loaded properly	
+		if(record && record != null){
+			contextMenu.add(
+				{
+			    	text: "Open in new tab",
+					handler: function() {DoCASU.App.Utils.newTab(location.protocol + "//" + location.host + record.url);}
+			    }, {
+			    	text: "Mail Link",
+			    	handler: function() {DoCASU.App.Utils.mailLink(record.name, record.url);}
+			    }, {
+			    	text: "Copy Folder Path to System Clipboard",
+			    	handler: function() {DoCASU.App.Utils.copyTextToSystemClipboard(location.protocol + "//" + location.host + record.link);}
+			    }, {
+			    	text: "Copy Folder Url To System Clipboard",
+			    	handler: function() {DoCASU.App.Utils.copyTextToSystemClipboard(location.protocol + "//" + location.host + record.url);}
+			    }
+			);
+		}
+		return contextMenu;
+	}, // eo getFolderContextMenu
 	
 	deleteFile : function(fileName, nodeId) {
 		Ext.Msg.confirm("Confirm file deletion", "Are you sure you want to delete the file '" + fileName + "' ?", function(btn, text) {
@@ -824,53 +887,8 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 	}, // eo deleteFolder
 	
 	parentPathRenderer : function (value, column, record) {
-		return '<a href="#" onclick="DoCASU.App.PluginManager.getPluginManager().getComponent(\'LoadFolderAction\', \'DoCASU.App.Core\').load(\''+ record.get('parentId') +'\'); return false;">' + record.get('parentPath') + '</a>';
+		return "<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('"+ record.get("parentId") +"'); return false;\">" + record.get("parentPath") + "</a>";
 	}, // eo parentPathRenderer
-
- 	validateSearchParameters: function (params) {
-		// validate query
-		var query = null;
-		alert('boo:'+params.q);
-		if (params.q != undefined && params.q.length > 0) {
-			query = params.q;
-		} 
-		if (query == null) {
-			return "Missing search term!";
-		}
-		
-		// validate dates
-		var createdFrom = null;
-		var createdTo = null;
-		var modifiedFrom = null;
-		var modifiedTo = null;
-		if (params.createdFrom != undefined && params.createdFrom.length > 0) {
-			createdFrom = Date.parse(params.createdFrom);
-		}
-		if (params.createdTo != undefined && params.createdTo.length > 0) {
-			createdTo = Date.parse(params.createdTo);
-		}
-		if (params.modFrom != undefined && params.modFrom.length > 0) {
-			modifiedFrom = Date.parse(params.modFrom);
-		}
-		if (params.modTo != undefined && params.modTo.length > 0) {
-			modifiedTo = Date.parse(params.modTo);
-		}
-		//alert("dates:"+createdFrom+","+createdTo+","+modifiedFrom+","+modifiedTo+";");
-		if(createdFrom != null &&  createdTo != null && createdTo < createdFrom) {
-			// if createdTo is before createdFrom 
-			return "'Created Before' date cannot be set before 'Created After' date!";
-		}
-		if(modifiedFrom != null &&  modifiedTo != null && modifiedTo < modifiedFrom) {
-			// if modifiedTo is before modifiedFrom 
-			return "'Modified Before' date cannot be set before 'Modified After' date!";
-		}
-		if(createdFrom != null &&  modifiedTo != null && modifiedTo < createdFrom) {
-			// if modifiedTo is before createdFrom 
-			return "'Modified Before' date cannot be set before 'Created After' date!";
-		}
-	
-		return "";
-	}, // eo validateSearchParameters
 	
 	getCurrentFolder : function() {
 		return Ext.state.Manager.get(this.namespace + "." + this.id + ".currentFolder");

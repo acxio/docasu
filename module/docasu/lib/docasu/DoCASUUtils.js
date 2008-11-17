@@ -56,3 +56,32 @@ DoCASU.App.Utils.mailLink = function(name, link) {
 DoCASU.App.Utils.trim = function(s) {
 	return s.replace(/^\s+|\s+$/g, '');
 }
+
+DoCASU.App.Utils.newTab = function(url) {
+	// TODO: make this browser compatible - Firefox opens in new tab, but IE opens in new window
+	window.open(url, "", ""); // (URL, windowName, windowFeatures)
+}
+
+DoCASU.App.Utils.copyTextToSystemClipboard = function(text2copy) {
+	/* 
+		This script and many more are available free online at The JavaScript Source <http://javascript.internet.com/forms/clipboard-copy.html>
+		Created by: 
+		 	- Mark O'Sullivan <http://lussumo.com>
+			- Jeff Larson <http://www.jeffothy.com>
+			- Mark Percival <http://webchicanery.com>
+		Licensed under GNU Lesser General Public License
+	*/
+	if (window.clipboardData) {
+	 	window.clipboardData.setData("Text", text2copy);
+	} else {
+		var flashcopier = "flashcopier";
+		if(!document.getElementById(flashcopier)) {
+			var divholder = document.createElement("div");
+			divholder.id = flashcopier;
+			document.body.appendChild(divholder);
+		}
+		document.getElementById(flashcopier).innerHTML = "";
+		var divinfo = "<embed src=\"../../docasu/lib/swf/_clipboard.swf\" FlashVars=\"clipboard="+escape(text2copy)+"\" width=\"0\" height=\"0\" type=\"application/x-shockwave-flash\"></embed>";
+		document.getElementById(flashcopier).innerHTML = divinfo;
+	}
+} // eo function copyTextToSystemClipboard

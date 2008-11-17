@@ -47,10 +47,10 @@ Ext.extend(DoCASU.App.Core.SearchAction, DoCASU.App.Component, {
 	// configuration defaults are in DoCASU.App.Component
 	
 	search : function(q, t) {
-		this.advancedSearch(q, t, null, null, null, null, null, null, null, null, null);
+		this.advancedSearch({"q" : q, "t" : t});
 	},
 	
-	advancedSearch : function(q, t, nodeId, createdFrom, createdTo, modifiedFrom, modifiedTo, start, limit, sort, dir) {
+	advancedSearch : function(searchParameters) {
 		// fire beforeload event
 		this.fireEvent("beforeload", this);
 		var centerViewComponent;
@@ -62,17 +62,13 @@ Ext.extend(DoCASU.App.Core.SearchAction, DoCASU.App.Component, {
 		}
 		//var store = centerViewComponent.items.items[1].store;
 		var store = centerViewComponent.getLayout().activeItem.store;
-		store.baseParams.q = q;
-		store.baseParams.t = t;
-		store.baseParams.nodeId = nodeId;
-		store.baseParams.createdFrom = createdFrom;
-		store.baseParams.createdTo = createdTo;
-		store.baseParams.modifiedFrom = modifiedFrom;
-		store.baseParams.modifiedTo = modifiedTo;				
-		store.baseParams.start = start;
-		store.baseParams.limit = limit;
-		store.baseParams.sort = sort;
-		store.baseParams.dir = dir;
+		store.baseParams.q = searchParameters.q;
+		store.baseParams.t = searchParameters.t;
+		store.baseParams.nodeId = searchParameters.folderId; // keep different names to break synchronization with combo-box
+		store.baseParams.createdFrom = searchParameters.createdFrom;
+		store.baseParams.createdTo = searchParameters.createdTo;
+		store.baseParams.modifiedFrom = searchParameters.modifiedFrom;
+		store.baseParams.modifiedTo = searchParameters.modifiedTo;
 		// register listeners for store
 		store.on("load", function(store, records, options) {
 			var searchAction = DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core");

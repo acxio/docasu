@@ -307,7 +307,6 @@ Ext.extend(DoCASU.App.Core.FileDetailsComponent, DoCASU.App.Component, {
 								animCollapse	:	false,
 								constrainHeader	:	true,
 								resizable		:	false,
-								closeAction		:	"hide",
 								buttonAlign		:	"center",
 								items			:	[
 														{
@@ -442,9 +441,13 @@ Ext.extend(DoCASU.App.Core.FileDetailsComponent, DoCASU.App.Component, {
 		var fileName = Ext.getCmp("filepropEditName");
 		var fileTitle = Ext.getCmp("filepropEditTitle");
 		var fileDesc = Ext.getCmp("filepropEditDescription");
+		var fileAuth = Ext.getCmp("filepropEditAuthor");
+		var fileSave = Ext.getCmp("fileDetailsSaveButton");
 		(canEditProp) ? fileName.enable() : fileName.disable();
 		(canEditProp) ? fileTitle.enable() : fileTitle.disable();
 		(canEditProp) ? fileDesc.enable() : fileDesc.disable();
+		(canEditProp) ? fileAuth.enable() : fileAuth.disable();
+		(canEditProp) ? fileSave.enable() : fileSave.disable();
 		uiWidget.setTitle(record.get("nameIcon"));
 		uiWidget.show();
 	}, // eo show

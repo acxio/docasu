@@ -113,9 +113,7 @@ Ext.extend(DoCASU.App.Core.MyHomeTreeComponent, DoCASU.App.Component, {
 			return false;
 		});
 		uiWidget.on("contextmenu", function(node, e) {
-			e.preventDefault();
-			/*
-			var myRecord = new Object('Node '+node.id);
+			var myRecord = new Object("Node " + node.id);
 	       	myRecord.id = node.id;
 	       	myRecord.text = node.text;
 			myRecord.name = node.attributes.text;
@@ -125,11 +123,10 @@ Ext.extend(DoCASU.App.Core.MyHomeTreeComponent, DoCASU.App.Component, {
 			myRecord.writePermission = eval(node.attributes.writePermission);
 			myRecord.createPermission = eval(node.attributes.createPermission);
 			myRecord.deletePermission = eval(node.attributes.deletePermission);
-	
-			this.contextMenu = getFolderContextMenu(node.id, myRecord);
-	
+			var centerView = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");
+			this.contextMenu = centerView.getFolderContextMenu(node.id, myRecord);
 			var xy = e.getXY();
-			this.contextMenu.showAt(xy);*/
+			this.contextMenu.showAt(xy);
 		});
 		uiWidget.on("beforeexpand", function(panel) {
 			var navigator = DoCASU.App.PluginManager.getPluginManager().getComponent("DoCASUWestComponent", "DoCASU.App.Core");

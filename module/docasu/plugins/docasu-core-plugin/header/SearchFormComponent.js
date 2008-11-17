@@ -111,8 +111,7 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 													searchField,
 													searchBtn,
 													{
-														//html		:	"<a href=\"#\" class=\"header\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('AdvancedSearchComponent', 'DoCASU.App.Core').show(); return false;\">Advanced&nbsp;Search</a>",
-														html		:	"<a href=\"#\" class=\"header\" onclick=\"return false;\">Advanced&nbsp;Search</a>",
+														html		:	"<a href=\"#\" class=\"header\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('AdvancedSearchComponent', 'DoCASU.App.Core').show(); return false;\">Advanced&nbsp;Search</a>",
 														border		:	false,
 														colspan		:	1
 													}
@@ -133,16 +132,27 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 			// no UI widget was created thus component is disabled or closed
 			return;
 		}
-		// search parameters: q, t, nodeId, createdFrom, createdTo, modifiedFrom, modifiedTo, start, limit, sort, dir
 		uiWidget.on("beforeaction", function (node, event) {
-			DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core").search(
-				Ext.ComponentMgr.get('q').getValue(),
-				Ext.ComponentMgr.get('searchType').getValue()
-			);
+			var q = Ext.getCmp("q").getValue();
+			var t = Ext.getCmp("searchType").getValue()
+			DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core").search(q, t);
 		});		
 		uiWidget.on("render", function(panel) {
 			panel.getEl().parent("td").child("div").addClass("SearchFormComponent");
 		});
-	}
+		// update ui after each search
+		var searchAction = DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core");
+		searchAction.on("afterload", function(component) {
+			var seachForm = DoCASU.App.PluginManager.getPluginManager().getComponent("SearchFormComponent", "DoCASU.App.Core");
+			seachForm.updateUI();
+		});
+	}, // eo init
 	
+	updateUI : function() {
+		// populate search fields according to previous search
+		var centerView = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
+		var searchParameters = centerView.items.items[1].store.baseParams;
+		var searchForm = Ext.getCmp(this.id).form;
+		searchForm.setValues(searchParameters);
+	} // eo updateUI
 }); // eo DoCASU.App.Core.SearchFormComponent
