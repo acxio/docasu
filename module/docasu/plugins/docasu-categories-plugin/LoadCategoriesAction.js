@@ -17,17 +17,17 @@
  */
 
 
-// LoadCategoryAction
+// LoadCategoriesAction
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Categories");
 
 /* constructor */
-DoCASU.App.Categories.LoadCategoryAction = function(config) {
+DoCASU.App.Categories.LoadCategoriesAction = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Categories.LoadCategoryAction.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Categories.LoadCategoriesAction.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
@@ -38,46 +38,42 @@ DoCASU.App.Categories.LoadCategoryAction = function(config) {
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Categories.LoadCategoryAction, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Categories.LoadCategoriesAction, DoCASU.App.Component, {
 	// configuration options
-	id			:	"LoadCategoryAction",
-	title		:	"Load Category Action",
+	id			:	"LoadCategoriesAction",
+	title		:	"Load Categories Action",
 	namespace	:	"DoCASU.App.Categories", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
 	
-	load : function(categoryId) {
+	load : function(nodeId) {
 		// fire beforeload event
 		this.fireEvent("beforeload", this);
-		var centerViewComponent;
+		var categorizationComponent;
 		try {
-			centerViewComponent = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
+			categorizationComponent = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CategorizationComponent");
 		} catch(err) {
 			// no UI widget was created thus component is disabled or closed
 			return;
 		}
-		//var store = centerViewComponent.items.items[0].store;
-		var store = centerViewComponent.getLayout().activeItem.store;
-		store.baseParams.nodeId = null;
-		if(categoryId && categoryId != null) {
-			store.baseParams.categoryId = categoryId;
-		}
+		// categorizationComponent -> tabp anel -> categories panel -> categories grid -> store
+		var store = categorizationComponent.items.items[0].items.items[0].items.items[0].store;
+		store.proxy = new Ext.data.HttpProxy({
+			url: "ui/node/categories/" + nodeId,
+			method: "GET"
+		}),
 		
 		// register listeners for store
 		store.on("load", function(store, records, options) {
-			var loadCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoryAction", "DoCASU.App.Categories");
+			var loadCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoriesAction", "DoCASU.App.Categories");
 			loadCategoryAction.fireEvent("afterload", loadCategoryAction, records);
 		});
 		store.on("loadexception", function(proxy, options, response, error) {
-			var loadCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoryAction", "DoCASU.App.Categories");
+			var loadCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoriesAction", "DoCASU.App.Categories");
 			loadCategoryAction.fireEvent("fail", loadCategoryAction, response);
 		});
 		
 		store.load();
-	}, // eo load
-	
-	reload : function() {
-		this.load();
-	} // eo reload
+	} // eo load
 
-}); // eo DoCASU.App.Categories.LoadCategoryAction
+}); // eo DoCASU.App.Categories.LoadCategoriesAction

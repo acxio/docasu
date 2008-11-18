@@ -199,31 +199,6 @@ Ext.extend(DoCASU.App.Core.FileDetailsComponent, DoCASU.App.Component, {
           sm				:	new Ext.grid.RowSelectionModel({singleSelect:true}),
           frame				:	false
 		});
-		// CATEGORIES GRID	
-		var categoriesGrid = new Ext.grid.GridPanel({
-			id				:	"categoriesGrid",
-			width			:	700,
-			height			:	400,
-			deferredRender	:	false,
-			store : new Ext.data.Store({
-				// set proxy before load
-				reader : new Ext.data.JsonReader({
-					root			:	"rows",
-					totalProperty	:	"total",
-					id				:	"nodeId",
-					fields			:	[
-									         {name: "id", type:"string"},
-									         {name: "text", type:"string"}
-								        ]
-				})
-			}),
-			columns			:	[
-							         {header: "Category", width: 200, sortable: true, dataIndex: "text"},
-							         {header: "Actions", width: 100, sortable: false, dataIndex: "actions", renderer: function(value, column, record){if(!Ext.getCmp("filepropEditName").disabled){return "<a href=\"#\" onclick=\"removeCategory('"+Ext.getCmp("filepropEditNodeId").getValue()+"','"+record.get("id")+"'); return false;\"><img title=\"Delete\" class=\"actionIcon\" src=\"../../docasu/images/delete.gif\"/></a>";}}}
-			          			],
-	        sm				:	new Ext.grid.RowSelectionModel({singleSelect:true}),
-	        frame			:	false
-		});
 		// create form panel
 		var showDetailsPanel = new Ext.form.FormPanel({
 			id			:	"fileDetailsPanel",
@@ -252,24 +227,6 @@ Ext.extend(DoCASU.App.Core.FileDetailsComponent, DoCASU.App.Component, {
 			items		:	[versionsGrid],
 			listeners	:	{
 								activate: function() { 
-									Ext.getCmp("fileDetailsSaveButton").hide();
-									Ext.getCmp("mailtoButton").show();
-									Ext.getCmp("favoritesButton").show();  
-								}
-							}
-		});
-		// Panel with grid for document categories, if exist
-		var categoriesPanel = new Ext.Panel({
-			id			:	"categoriesPanel",
-			title		:	"Categories",
-			frame		:	false,
-			baseCls		:	"x-plain",
-			labelWidth	:	75,
-			bodyStyle	:	"padding: 0px",
-			layout		:	"fit",
-			items		:	[categoriesGrid],
-			listeners	:	{
-								activate : function() { 
 									Ext.getCmp("fileDetailsSaveButton").hide();
 									Ext.getCmp("mailtoButton").show();
 									Ext.getCmp("favoritesButton").show();  
@@ -318,7 +275,6 @@ Ext.extend(DoCASU.App.Core.FileDetailsComponent, DoCASU.App.Component, {
 															items		:	[
 																				showDetailsPanel, 
 																				versionsPanel, 
-																				categoriesPanel, 
 																				editDetailsPanel
 																			]
 														}
@@ -427,13 +383,6 @@ Ext.extend(DoCASU.App.Core.FileDetailsComponent, DoCASU.App.Component, {
 	    } else {
 	        Ext.getCmp("versionsPanel").disable();
 	    }
-	    // load categories grid
-	    var categoriesStore = Ext.getCmp("categoriesGrid").getStore();
-	    categoriesStore.proxy = new Ext.data.HttpProxy({
-			url: "ui/node/categories/" + record.get("nodeId"),
-			method: "GET"
-		}),
-	    categoriesStore.load();
 	    Ext.getCmp("fileDetailsSaveButton").hide();
 		Ext.getCmp("fileDetailsTabPanel").setActiveTab(Ext.getCmp("fileDetailsPanel"));
 		Ext.getCmp("fileDetailsPanel").doLayout();

@@ -43,7 +43,7 @@ Ext.extend(DoCASU.App.Core.RecentDocumentsComponent, DoCASU.App.Component, {
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
 	// UI
-	uiClass		:	"Ext.grid.GridPanel",
+	uiClass		:	"Ext.Panel",
 	getUIConfig : function() {
 		var recentDocsStore = new Ext.data.Store({
 			proxy: new Ext.data.HttpProxy({
@@ -62,19 +62,14 @@ Ext.extend(DoCASU.App.Core.RecentDocumentsComponent, DoCASU.App.Component, {
 		});
 		var uiConfig	=	{
 								// config
-								id			:	this.id,
-								store		:	recentDocsStore,
+								id				:	this.id,
 								// look
-								title		:	"Latest Documents",
-	    						border		:	false,
-	    						iconCls		:	"settings",
-	    						columns		:	[
-	    											{
-	    												id			:	"name",
-	    												dataIndex	:	"nameIcon"
-	    											}
-	    										],
-	    						viewConfig	:	{forceFit:true}
+								title			:	"Latest Documents",
+						 	    html			:	"<div id=\"" + this.id + "\">No items found.<div>",
+						 	    border			:	false,
+						 	    autoScroll		:	true,
+						 	    containerScroll	:	true,
+						 	    iconCls			:	"settings"
 							}; // the config to construct the UI object(widget)
 		return uiConfig;
 	}, // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
@@ -103,8 +98,43 @@ Ext.extend(DoCASU.App.Core.RecentDocumentsComponent, DoCASU.App.Component, {
 			}
 		});
 		
-		// load data
-		uiWidget.store.load();
-	}	
+		var loadRecentDocumentsAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadRecentDocumentsAction", "DoCASU.App.Core");
+		loadRecentDocumentsAction.on("beforeload", function(component) {
+			new Ext.LoadMask(Ext.getBody()).show();
+		});
+		loadRecentDocumentsAction.on("afterload", function(component, response) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+			var recentDocumentsComponent = DoCASU.App.PluginManager.getPluginManager().getComponent("RecentDocumentsComponent", "DoCASU.App.Core");
+			recentDocumentsComponent.updateUI(response);
+		});
+		loadRecentDocumentsAction.on("fail", function(component) {
+			new Ext.LoadMask(Ext.getBody()).hide();
+		});
+		loadRecentDocumentsAction.load();
+	}, // eo init
+	
+	updateUI : function(response) {
+		var recentDocsPanel = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		var recentDocsHtml = "<table style=\"width:100%; border-spacing: 0px;\">";
+		var recentDocs = Ext.util.JSON.decode(response.responseText).rows;
+		for (var i = 0; i < recentDocs.length; i++) {
+			var doc = recentDocs[i];
+			recentDocsHtml += "<tr><td><table style=\"width:100%; border-width: 0px 0px 1px 0px; border-style: solid; border-color: #d0d0d0;\"><tr>";
+				recentDocsHtml += "<td><img src=\"" + doc.icon + "\" /></td>";
+				recentDocsHtml += "<td style=\"text-align:left;\">";
+				recentDocsHtml +=   "<a target=\"_blank\" href=\"" + doc.url + "\" title=\"Open\">" + doc.name + "</a>";
+				recentDocsHtml += "</td>";
+				recentDocsHtml += "<td style=\"text-align:right;\">";
+				recentDocsHtml +=   "<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('" + doc.parentId + "'); return false;\" title=\"Open in Folder\"><img src=\"../../docasu/lib/extjs/resources/images/default/tree/folder.gif\"/></a>";
+				recentDocsHtml += "</td>";
+			recentDocsHtml += "</tr>";
+			recentDocsHtml += "<tr>";
+				recentDocsHtml += "<td style=\"text-align:left;\" colspan=\"2\">Modified</td>";
+				recentDocsHtml += "<td style=\"text-align:right;\">" + doc.modified + "</td>";
+			recentDocsHtml += "</tr></table></td></tr>";
+		}
+		recentDocsHtml += "</table>";
+		recentDocsPanel.body.dom.innerHTML = recentDocsHtml;
+	} // eo updateUI	
 
 }); // eo DoCASU.App.Core.RecentDocumentsComponent

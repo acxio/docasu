@@ -38,7 +38,9 @@ if (node != null) {
 		}
 		for(i in categories) {
 			if(categories[i].id == categoryId) {
-				categories.pop(i); // remove category from properties
+				// splice: remove 1 item starting at position i - http://www.hunlock.com/blogs/Mastering_Javascript_Arrays#splice
+				categories.splice(i, 1); // remove category from properties
+				break;
 			}
 		}
 		// persist removal

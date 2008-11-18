@@ -47,12 +47,14 @@ Ext.extend(DoCASU.App.Core.ClipboardComponent, DoCASU.App.Component, {
 	getUIConfig : function() {
 		var uiConfig	=	{
 								// config
-								id			:	this.id,
+								id				:	this.id,
 								// look
-								title		:	"Clipboard",
-	    						html		:	"<div id=\"" + this.id + "\">No items on clipboard.</div>",
-	    						border		:	false,
-	    						iconCls		:	"settings"
+								title			:	"Clipboard",
+	    						html			:	"<div id=\"" + this.id + "\">No items on clipboard.</div>",
+	    						border			:	false,
+	    						autoScroll		:	true,
+						 	    containerScroll	:	true,
+	    						iconCls			:	"settings"
 							}; // the config to construct the UI object(widget)
 		return uiConfig;
 	}, // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
@@ -102,14 +104,17 @@ Ext.extend(DoCASU.App.Core.ClipboardComponent, DoCASU.App.Component, {
 	
 	update : function() {
 		var nodes = this.getAll();
-		var clipHtml = "<table>";
+		var clipHtml = "<table style=\"width:100%; border-spacing: 0px;\">";
 		for(var i = 0; i < nodes.length; i++) {
 			var c = nodes[i].split(";");
 			clipHtml += "<tr>"
-			clipHtml += "<td><img src=\"" + c[0] + "\" /></td>";
-			clipHtml += "<td>" + c[1] + "</td>";
-			clipHtml += "<td><a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('ClipboardComponent', 'DoCASU.App.Core').remove('" + c[2] + "')\">" +
-				"<img src=\"../../docasu/images/delete.gif\" /></a></td>";
+				clipHtml += "<td><img src=\"" + c[0] + "\" /></td>";
+				clipHtml += "<td style=\"text-align:left;\">" + c[1] + "</td>";
+				clipHtml += "<td style=\"text-align:right;\">";
+				clipHtml +=	  "<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('ClipboardComponent', 'DoCASU.App.Core').remove('" + c[2] + "'); return false;\" title=\"Remove from Clipboard\">";
+				clipHtml +=	    "<img src=\"../../docasu/images/delete.gif\" />";
+				clipHtml +=	  "</a>";
+				clipHtml +=	"</td>";
 			clipHtml += "</tr>";
 		}
 		clipHtml += "</table>";

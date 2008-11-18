@@ -721,7 +721,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 				result.push({
 					 text: "Categorization",
 					 icon: "../../docasu/images/categories.gif",
-					 handler: function() {showSelectCategoryWindow(record.get("nodeId"));}
+					 handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("CategorizationComponent", "DoCASU.App.Categories").show(record.get("nodeId"), record.get("writePermission"));}
 			   	});
 			}
 		   	result.push({

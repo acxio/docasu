@@ -47,12 +47,14 @@ Ext.extend(DoCASU.App.Core.FavoritesComponent, DoCASU.App.Component, {
 	getUIConfig : function() {
 		var uiConfig	=	{
 								// config
-								id		:	this.id,
+								id				:	this.id,
 								// look
-								title	:	"My Favorites",
-						 	    html	:	"<div id=\"" + this.id + "\">No favorites defined.<div>",
-						 	    border	:	false,
-						 	    iconCls	:	"settings"
+								title			:	"My Favorites",
+						 	    html			:	"<div id=\"" + this.id + "\">No favorites defined.<div>",
+						 	    border			:	false,
+						 	    autoScroll		:	true,
+						 	    containerScroll	:	true,
+						 	    iconCls			:	"settings"
 							}; // the config to construct the UI object(widget)
 		return uiConfig;
 	}, // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
@@ -128,25 +130,32 @@ Ext.extend(DoCASU.App.Core.FavoritesComponent, DoCASU.App.Component, {
 	},
 	
 	updateView : function(response) {
-		var favoritesPanel = DoCASU.App.PluginManager.getPluginManager().getUIWidget("FavoritesComponent");
-		var favHtml = "<table style=\"width:100%;\">";
+		var favoritesPanel = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		var favHtml = "<table style=\"width:100%; border-spacing: 0px;\">";
 		var favorites = Ext.util.JSON.decode(response.responseText).rows;
 		for (var i = 0; i < favorites.length; i++) {
 			var favorite = favorites[i];
 			favHtml += "<tr>";
 			if (favorite.isFile) {
 				favHtml += "<td><img src=\"" + favorite.icon + "\" /></td>";
-				favHtml += "<td><a target=\"_blank\" href=\"" + favorite.url + "\"> " + favorite.name + "</a></td>";
+				favHtml += "<td style=\"text-align:left;\">";
+				favHtml +=   "<a target=\"_blank\" href=\"" + favorite.url + "\" title=\"Open\">" + favorite.name + "</a>";
+				favHtml += "</td>";
 				favHtml += "<td style=\"text-align:right;\">";
 				favHtml +=   "<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('" + favorite.parentId + "'); return false;\" title=\"Open in Folder\"><img src=\"../../docasu/lib/extjs/resources/images/default/tree/folder.gif\"/></a>";
-				favHtml +=   "&nbsp;";
-				favHtml +=   "<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('RemoveFavoriteAction', 'DoCASU.App.Core').remove('" + favorite.id + "'); return false;\"><img src=\"../../docasu/images/delete.gif\" /></a>";
+				favHtml +=   "<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('RemoveFavoriteAction', 'DoCASU.App.Core').remove('" + favorite.id + "'); return false;\" title=\"Remove Favorite\"><img src=\"../../docasu/images/delete.gif\" /></a>";
 				favHtml += "</td>";
 			}
 			else {
-				favHtml += "<td><img src=\"../../docasu/lib/extjs/resources/images/default/tree/folder.gif\"/></td>";
-				favHtml += "<td><a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('" + favorite.id + "'); return false;\">" + favorite.name + "</a></td>";
-				favHtml += "<td style=\"text-align:right;\"><a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('RemoveFavoriteAction', 'DoCASU.App.Core').remove('" + favorite.id + "')\"><img src=\"../../docasu/images/delete.gif\" /></a></td>";
+				favHtml += "<td>";
+				favHtml +=   "<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('" + favorite.id + "'); return false;\" title=\"Open\"><img src=\"../../docasu/lib/extjs/resources/images/default/tree/folder.gif\"/></a>";
+				favHtml += "</td>";
+				favHtml += "<td style=\"text-align:left;\">";
+				favHtml +=   "<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('" + favorite.id + "'); return false;\" title=\"Open\">" + favorite.name + "</a>";
+				favHtml += "</td>";
+				favHtml += "<td style=\"text-align:right;\" colspan=\"2\">";
+				favHtml +=   "<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('RemoveFavoriteAction', 'DoCASU.App.Core').remove('" + favorite.id + "'); return false;\" title=\"Remove Favorite\"><img src=\"../../docasu/images/delete.gif\" /></a>";
+				favHtml += "</td>";
 			}
 			favHtml += "</tr>";
 		}
@@ -155,7 +164,7 @@ Ext.extend(DoCASU.App.Core.FavoritesComponent, DoCASU.App.Component, {
 	}, // eo updateView
 	
 	expand : function() {
-		var favoritesPanel = DoCASU.App.PluginManager.getPluginManager().getUIWidget("FavoritesComponent");
+		var favoritesPanel = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
 		favoritesPanel.expand();
 	} // eo expand
 
