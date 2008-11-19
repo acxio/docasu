@@ -44,7 +44,7 @@
 			<fileset dir="${source.dir}/main/webscripts" />
 		</copy>
 		
-		<replace file="${alfresco.deploy.dir}/docasu/docasu.js" token="@VERSION@" value="${docasu.version}"/>
+		<replace file="${alfresco.deploy.dir}/docasu/plugins/docasu-core-plugin/footer/DoCASUFooterComponent.js" token="@VERSION@" value="${docasu.version}"/>
 		<!-- use debug version of extjs -->
 		<replace file="${webscript.dir}/com/optaros/alfresco/docasu/ui/docasu.get.html.ftl" token="ext-all.js" value="ext-all-debug.js"/>
 		
