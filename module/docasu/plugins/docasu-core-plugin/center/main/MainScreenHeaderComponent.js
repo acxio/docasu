@@ -63,7 +63,7 @@ Ext.extend(DoCASU.App.Core.MainScreenHeaderComponent, DoCASU.App.Component, {
 		var actionComboBoxStore = new Ext.data.SimpleStore({
 			id		:	"actionComboBoxStore",
 			fields	:	["code", "label"],
-			data	:	[
+			data	:	[	/* these are all the fields, but the combo is empty at first
 						    ["createFolder",	"Create Folder"],
 							["renameFolder",	"Rename Folder"],
 							["deleteFolder",	"Delete Folder"],
@@ -72,6 +72,7 @@ Ext.extend(DoCASU.App.Core.MainScreenHeaderComponent, DoCASU.App.Component, {
 							["text",			"Create Text File"],
 					        ["html",			"Create HTML File"],
 							["uploadFile",		"Upload File(s)"]
+							*/
 						]
 		});
 		var folderActions = new Ext.form.ComboBox({

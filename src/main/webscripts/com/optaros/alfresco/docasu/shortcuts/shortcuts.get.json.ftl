@@ -28,7 +28,6 @@
 								"isFile"	:	${(!shortcut.isContainer)?string},
 								"url" 		:	"${url.context}${shortcut.url}",
 								"parentId"	:	"${shortcut.parent.id}",
-								"parentIcon":	"${url.context}${shortcut.parent.icon16}"
 							}<#if shortcut_has_next>,</#if>
 						</#list>
 					]
