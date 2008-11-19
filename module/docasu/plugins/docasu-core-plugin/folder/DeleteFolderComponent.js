@@ -49,7 +49,8 @@ Ext.extend(DoCASU.App.Core.DeleteFolderComponent, DoCASU.App.Component, {
 			if (btn == "yes") {
 				// make sure parent folder will be reloaded
 				var centerViewComponent = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
-				var store = centerViewComponent.items.items[0].store;
+				//var store = centerViewComponent.items.items[0].store;
+				var store = centerViewComponent.getLayout().activeItem.store;
 				store.baseParams.nodeId = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core").getParentFolder();
 				var deleteAction = DoCASU.App.PluginManager.getPluginManager().getComponent("DeleteNodeAction", "DoCASU.App.Core");
 				deleteAction.deleteNode(folderId);

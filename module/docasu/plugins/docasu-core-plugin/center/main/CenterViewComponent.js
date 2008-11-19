@@ -880,6 +880,13 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 	deleteFolder : function(folderName, nodeId) {
 		Ext.Msg.confirm("Confirm folder deletion", "Are you sure you want to delete the folder '" + folderName + "' and all it's contains ?", function(btn, text) {
 			if (btn == "yes") {
+				// if deleting current folder, make sure parent folder will be reloaded
+				var centerViewComponent = DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core");
+				if(nodeId == centerViewComponent.getCurrentFolder()) {
+					var uiWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
+					var store = uiWidget.getLayout().activeItem.store;
+					store.baseParams.nodeId = centerViewComponent.getParentFolder();
+				}
 				var deleteAction = DoCASU.App.PluginManager.getPluginManager().getComponent("DeleteNodeAction", "DoCASU.App.Core");
 				deleteAction.deleteNode(nodeId);
 			}
