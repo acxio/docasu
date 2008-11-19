@@ -17,17 +17,17 @@
  */
 
 
-// LoadFavoritesAction
+// LoadRecentDocumentsAction
 
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App.Core");
 
 /* constructor */
-DoCASU.App.Core.LoadFavoritesAction = function(config) {
+DoCASU.App.Core.LoadRecentDocumentsAction = function(config) {
 	Ext.apply(this, config);
 	
 	// call parent
-	DoCASU.App.Core.LoadFavoritesAction.superclass.constructor.apply(this, arguments);
+	DoCASU.App.Core.LoadRecentDocumentsAction.superclass.constructor.apply(this, arguments);
 	
 	// add events
 	this.addEvents(
@@ -38,10 +38,10 @@ DoCASU.App.Core.LoadFavoritesAction = function(config) {
 	
 } // eo constructor
 
-Ext.extend(DoCASU.App.Core.LoadFavoritesAction, DoCASU.App.Component, {
+Ext.extend(DoCASU.App.Core.LoadRecentDocumentsAction, DoCASU.App.Component, {
 	// configuration options
-	id			:	"LoadFavoritesAction",
-	title		:	"Load Favorites Action",
+	id			:	"LoadRecentDocumentsAction",
+	title		:	"Load Recent Documents Action",
 	namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 	// this configuration is overwritten by the perspective 
 	// configuration defaults are in DoCASU.App.Component
@@ -50,10 +50,10 @@ Ext.extend(DoCASU.App.Core.LoadFavoritesAction, DoCASU.App.Component, {
 		// fire beforeload event
 		this.fireEvent("beforeload", this);
 		Ext.Ajax.request({
-			url: 'ui/shortcuts',
+			url: 'ui/node/recentdocs',
 			method: 'GET',
 			success: function(response, options) {
-				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFavoritesAction", "DoCASU.App.Core");
+				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadRecentDocumentsAction", "DoCASU.App.Core");
 				// check response for errors
 				if(DoCASU.App.Error.checkHandleErrors("Failed to load favorite", response)) {
 					// fire fail event
@@ -66,11 +66,11 @@ Ext.extend(DoCASU.App.Core.LoadFavoritesAction, DoCASU.App.Component, {
 			failure: function(response, options) {
 				DoCASU.App.Error.handleFailureMessage("Failed to load favorite", response);
 				// fire fail event
-				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFavoritesAction", "DoCASU.App.Core");
+				var component = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadRecentDocumentsAction", "DoCASU.App.Core");
 				component.fireEvent("fail", component, response);
 				
 			}
 		});
 	}
 
-}); // eo DoCASU.App.Core.LoadFavoritesAction
+}); // eo DoCASU.App.Core.LoadRecentDocumentsAction

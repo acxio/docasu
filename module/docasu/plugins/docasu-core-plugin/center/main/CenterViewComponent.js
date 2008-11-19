@@ -435,7 +435,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		uploadFilesComponent.on("afterupload", function(action) {
 			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
 		});
-	},
+	}, // eo init
 	
 	loadPermissions : function(nodeId) {
 		var loadPermissionsAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderPermissionsAction", "DoCASU.App.Core");

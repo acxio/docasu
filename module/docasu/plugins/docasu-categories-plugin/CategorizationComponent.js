@@ -205,49 +205,56 @@ Ext.extend(DoCASU.App.Categories.CategorizationComponent, DoCASU.App.Component, 
 			// no UI widget was created thus component is disabled or closed
 			return;
 		}
-		
-		var loadCategoriesAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoriesAction", "DoCASU.App.Categories");
-		loadCategoriesAction.on("beforeload", function(action) {
-			new Ext.LoadMask(Ext.getBody()).show();
-		});
-		loadCategoriesAction.on("afterload", function(action, response) {
-			new Ext.LoadMask(Ext.getBody()).hide();
-		});
-		loadCategoriesAction.on("fail", function(action) {
-			new Ext.LoadMask(Ext.getBody()).hide();
-		});
-		loadCategoriesAction.load(nodeId);
-		
-		var addCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("AddCategoryAction", "DoCASU.App.Categories");
-		addCategoryAction.on("beforesave", function(action) {
-			new Ext.LoadMask(Ext.getBody()).show();
-		});
-		addCategoryAction.on("aftersave", function(action, response) {
-			new Ext.LoadMask(Ext.getBody()).hide();
-			Ext.Msg.alert("Status", "Category added successfully");
-			DoCASU.App.PluginManager.getPluginManager().getComponent("CategorizationComponent", "DoCASU.App.Categories").reload();
-		});
-		addCategoryAction.on("fail", function(action) {
-			new Ext.LoadMask(Ext.getBody()).hide();
-		});
-		
-		var removeCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("RemoveCategoryAction", "DoCASU.App.Categories");
-		removeCategoryAction.on("beforeremove", function(action) {
-			new Ext.LoadMask(Ext.getBody()).show();
-		});
-		removeCategoryAction.on("afterremove", function(action, response) {
-			new Ext.LoadMask(Ext.getBody()).hide();
-			DoCASU.App.PluginManager.getPluginManager().getComponent("CategorizationComponent", "DoCASU.App.Categories").reload();
-		});
-		removeCategoryAction.on("fail", function(action) {
-			new Ext.LoadMask(Ext.getBody()).hide();
-		});
-
+		this.registerHandlers();
 		this.setCurrentDocument(nodeId);
 		this.setWritePermission(writePermission);
 		this.setSelectedCategory(null);
 		uiWidget.show();
 	}, // eo show
+	
+	registerHandlers : function() {
+		// register event handlers only once
+		if(!this.getEventsRegistered()) {
+		
+			var loadCategoriesAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoriesAction", "DoCASU.App.Categories");
+			loadCategoriesAction.on("beforeload", function(action) {
+				new Ext.LoadMask(Ext.getBody()).show();
+			});
+			loadCategoriesAction.on("afterload", function(action, response) {
+				new Ext.LoadMask(Ext.getBody()).hide();
+			});
+			loadCategoriesAction.on("fail", function(action) {
+				new Ext.LoadMask(Ext.getBody()).hide();
+			});
+			
+			var addCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("AddCategoryAction", "DoCASU.App.Categories");
+			addCategoryAction.on("beforesave", function(action) {
+				new Ext.LoadMask(Ext.getBody()).show();
+			});
+			addCategoryAction.on("aftersave", function(action, response) {
+				new Ext.LoadMask(Ext.getBody()).hide();
+				Ext.Msg.alert("Status", "Category added successfully");
+				DoCASU.App.PluginManager.getPluginManager().getComponent("CategorizationComponent", "DoCASU.App.Categories").reload();
+			});
+			addCategoryAction.on("fail", function(action) {
+				new Ext.LoadMask(Ext.getBody()).hide();
+			});
+			
+			var removeCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("RemoveCategoryAction", "DoCASU.App.Categories");
+			removeCategoryAction.on("beforeremove", function(action) {
+				new Ext.LoadMask(Ext.getBody()).show();
+			});
+			removeCategoryAction.on("afterremove", function(action, response) {
+				new Ext.LoadMask(Ext.getBody()).hide();
+				DoCASU.App.PluginManager.getPluginManager().getComponent("CategorizationComponent", "DoCASU.App.Categories").reload();
+			});
+			removeCategoryAction.on("fail", function(action) {
+				new Ext.LoadMask(Ext.getBody()).hide();
+			});
+			
+			this.setEventsRegistered(true);
+		}
+	}, // eo registerHandlers
 	
 	reload : function() {
 		var loadCategoriesAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoriesAction", "DoCASU.App.Categories");
@@ -288,6 +295,14 @@ Ext.extend(DoCASU.App.Categories.CategorizationComponent, DoCASU.App.Component, 
 	
 	setSelectedCategory : function(selectedCategory) {
 		Ext.state.Manager.set(this.namespace + "." + this.id + ".selectedCategory", selectedCategory);
+	}, // eo setSelectedCategory
+	
+	getEventsRegistered : function() {
+		return Ext.state.Manager.get(this.namespace + "." + this.id + ".eventsRegistered", false);
+	}, // eo getEventsRegistered
+	
+	setEventsRegistered : function(eventsRegistered) {
+		Ext.state.Manager.set(this.namespace + "." + this.id + ".eventsRegistered", eventsRegistered);
 	} // eo setSelectedCategory
 
 }); // eo DoCASU.App.Categories.CategorizationComponent
