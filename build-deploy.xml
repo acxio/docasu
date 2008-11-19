@@ -46,7 +46,7 @@
 		
 		<replace file="${alfresco.deploy.dir}/docasu/docasu.js" token="@VERSION@" value="${docasu.version}"/>
 		<!-- use debug version of extjs -->
-		<replace file="${webscript.dir}/com/optaros/alfresco/docasu/app/docasu.get.html.ftl" token="ext-all.js" value="ext-all-debug.js"/>
+		<replace file="${webscript.dir}/com/optaros/alfresco/docasu/ui/docasu.get.html.ftl" token="ext-all.js" value="ext-all-debug.js"/>
 		
 		<echo>Modified web scripts have been uploaded to Data Dictionary. Please refresh.</echo>	
 	</target>
