@@ -435,6 +435,22 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		uploadFilesComponent.on("afterupload", function(action) {
 			DoCASU.App.PluginManager.getPluginManager().getComponent("LoadFolderAction", "DoCASU.App.Core").reload();
 		});
+		
+		
+		/* when selecting a row(node) in search view grid list, 
+		 * the nodeId on the folder view grid store should be set
+		 * to that node's parent folder - this way common actions
+		 * like delete/checkout/checkin can be runned from search
+		 * view list with 'natural' results to user's experience
+		 * (they will be redirected to that node's parent folder)  
+		*/
+		var centerView = DoCASU.App.PluginManager.getPluginManager().getUIWidget(this.id);
+		var selectionModel = centerView.items.items[1].selModel;
+		selectionModel.on("rowselect", function(selectionModel, rowIndex, record) {
+			var centerView = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
+			var store = centerView.items.items[0].store;
+			store.baseParams.nodeId = record.get("parentId");
+		});
 	}, // eo init
 	
 	loadPermissions : function(nodeId) {
