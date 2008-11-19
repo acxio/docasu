@@ -206,6 +206,8 @@ Ext.extend(DoCASU.App.Categories.CategorizationComponent, DoCASU.App.Component, 
 			return;
 		}
 		this.registerHandlers();
+		var loadCategoriesAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoriesAction", "DoCASU.App.Categories");
+		loadCategoriesAction.load(nodeId);
 		this.setCurrentDocument(nodeId);
 		this.setWritePermission(writePermission);
 		this.setSelectedCategory(null);
