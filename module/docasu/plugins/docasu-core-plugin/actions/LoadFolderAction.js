@@ -60,8 +60,10 @@ Ext.extend(DoCASU.App.Core.LoadFolderAction, DoCASU.App.Component, {
 		var store = centerViewComponent.getLayout().activeItem.store;
 		if(folderId && folderId != null) {
 			store.baseParams.nodeId = folderId;
+			store.baseParams.categoryId = null;
+		} else {
+			// leave everything unchanged and just reload
 		}
-		store.baseParams.categoryId = null;
 		
 		// register listeners for store
 		store.on("load", function(store, records, options) {

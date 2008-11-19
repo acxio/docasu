@@ -58,9 +58,11 @@ Ext.extend(DoCASU.App.Categories.LoadCategoryAction, DoCASU.App.Component, {
 		}
 		//var store = centerViewComponent.items.items[0].store;
 		var store = centerViewComponent.getLayout().activeItem.store;
-		store.baseParams.nodeId = null;
 		if(categoryId && categoryId != null) {
+			store.baseParams.nodeId = null;
 			store.baseParams.categoryId = categoryId;
+		} else {
+			// leave everything unchanged and just reload
 		}
 		
 		// register listeners for store
