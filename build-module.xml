@@ -20,6 +20,7 @@
 <project name="docasu-module" default="package-amp" basedir=".">
 
 	<import file="build-common.xml" />
+	<import file="build-minification.xml" />
 
 	<!-- include Alfresco jar files -->
 	<!-- TODO: remove dependency on Alfresco SDK and import JARs into ./vendor ! -->
@@ -92,6 +93,17 @@
 
 	<!-- Generate Alfresco Module Package (AMP) file for easy installation -->
 	<target name="package-amp" depends="prepare-amp" description="Bundle DoCASU into an Alfresco Module Package (AMP) file - development.">
+
+		<zip basedir="${amp.dir}" destfile="${amp.file}" />
+		<echo>AMP file ${amp.file} has been created.</echo>
+
+	</target>
+
+	<!-- Generate Alfresco Module Package (AMP) file for easy installation -->
+	<target name="package-production-amp" depends="prepare-amp, minify" description="Bundle DoCASU into an Alfresco Module Package (AMP) file - production.">
+
+		<copy file="production/DoCASU.js" tofile="${amp.dir}/docasu/DoCASU.js" overwrite="yes" />
+		<copy file="production/docasu.get.html.ftl" tofile="${amp.dir}/config/alfresco/extension/templates/webscripts/com/optaros/alfresco/docasu/ui/docasu.get.html.ftl" overwrite="yes" />
 
 		<zip basedir="${amp.dir}" destfile="${amp.file}" />
 		<echo>AMP file ${amp.file} has been created.</echo>
