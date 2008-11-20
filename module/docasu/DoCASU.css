@@ -90,6 +90,9 @@ body{font:normal 11px tahoma,arial,helvetica,sans-serif;}
 	margin-left: 5px;
 }
 
+#DoCASUHeaderComponent div.SearchFormComponent form {
+	background: transparent;
+}
 
 #DoCASUHeaderComponent .title {
 	font-weight: bold;
