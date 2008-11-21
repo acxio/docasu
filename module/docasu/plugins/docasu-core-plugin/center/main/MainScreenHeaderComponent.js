@@ -137,14 +137,22 @@ Ext.extend(DoCASU.App.Core.MainScreenHeaderComponent, DoCASU.App.Component, {
 			Ext.get("folderActionsLabel").show();
 		});
 		
-		var loadCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoryAction", "DoCASU.App.Categories");
-		loadCategoryAction.on("beforeload", function(action) {
-			// show folder icon
-			Ext.get("folderName").child("img").show();
-			// hide folder actions
-			Ext.get("folderActions").parent("div").hide();
-			Ext.get("folderActionsLabel").hide();
-		});
+		var categoriesPlugin = null;
+		try {
+			categoriesPlugin = DoCASU.App.PluginManager.getPluginManager().getPlugin("DoCASUCategoriesPlugin", "DoCASU.App.Categories");
+		} catch(err) {}
+
+		//make sure the plugin with ID DoCASU.App.Categories.DoCASUCategoriesPlugin was actually registered 
+		if(categoriesPlugin || categoriesPlugin != null) {
+			var loadCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoryAction", "DoCASU.App.Categories");
+			loadCategoryAction.on("beforeload", function(action) {
+				// show folder icon
+				Ext.get("folderName").child("img").show();
+				// hide folder actions
+				Ext.get("folderActions").parent("div").hide();
+				Ext.get("folderActionsLabel").hide();
+			});
+		}			
 		
 		var searchAction = DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core");
 		searchAction.on("beforeload", function(action) {

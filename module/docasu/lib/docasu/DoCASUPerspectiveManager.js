@@ -19,26 +19,84 @@
 /* Ext.namespace will create these objects if they don't already exist */
 Ext.namespace("DoCASU.App");
 
+// cookieProvider to save selected perspective by id
+var cookieProvider = new Ext.state.CookieProvider();
+
 DoCASU.App.PerspectiveManager = new Object({
 
 	namespace	:	"DoCASU.App.Perspectives",
 
-	loadDefaultPerspective : function() {
-		return DoCASU.App.Perspectives.DoCASUPerspective.getPerspective();
+	switchToPerspectiveById : function(newPerspectiveId) {
+		// 1. we need to save the new perspective id...
+		this.savePerspectiveId(newPerspectiveId);
+		// 2. reload the application
+		this.reloadApplicationByPerspectiveId(newPerspectiveId);
+	},
+
+	/* We have to assure that the new perspective has been successfully 
+	 * saved to a cookie before we can actually reload the application, 
+	 * (by looped timer pattern) otherwise we'll only end up reloading 
+	 * the current perspective.
+	 */	
+	reloadApplicationByPerspectiveId : function(newPerspectiveId) {
+		var savedPerspectiveId = this.loadPerspectiveId();
+		if(!savedPerspectiveId || savedPerspectiveId == null || savedPerspectiveId != newPerspectiveId) {
+			this.reloadApplicationByPerspectiveId(newPerspectiveId);
+		} else {
+			// reload the application...
+			DoCASU.App.ApplicationManager.getApplication().reload();
+		}
+		timer = setTimeout("this.reloadApplicationByPerspectiveId("+newPerspectiveId+")",1000);		
 	},
 	
 	getPerspective : function() {
-		var perspective = Ext.state.Manager.get(this.namespace + ".perspective");
+		//var perspective = Ext.state.Manager.get(this.namespace + ".perspective");
+		var perspective = this.loadPerspectiveById(this.loadPerspectiveId());
 		if(!perspective || perspective == null) {
 			// load default perspective
 			perspective = this.loadDefaultPerspective();
-			this.savePerspective(perspective);
+			this.savePerspectiveId(perspective.id);
 		}
 		return perspective;
 	},
 	
+	loadDefaultPerspective : function() {
+		return DoCASU.App.Perspectives.DoCASUPerspective.getPerspective();
+	},
+	
+	loadPerspectiveById : function(perspectiveId) {
+		var perspective = null;
+		
+		if(!perspectiveId || perspectiveId == null || perspectiveId == "") {
+			// if we don't have a id load default perspective
+			perspective = this.loadDefaultPerspective();
+		} else {
+			try {
+				// we try to load the perspective by id
+				var perspectiveEval = "DoCASU.App.Perspectives."+perspectiveId+".getPerspective()";
+				perspective = eval( "(" + perspectiveEval + ")" );
+			} catch(err) {
+				console.error("DoCASU.App.PerspectiveManager.loadPerspectiveById: "+err);
+			}
+			if(!perspective || perspective == null) {
+				// load default perspective
+				perspective = this.loadDefaultPerspective();
+			}		
+		}
+		return perspective;
+	},
+	
+	loadPerspectiveId : function() {
+		return cookieProvider.get(this.namespace + ".perspective");
+	},
+	
+	savePerspectiveId : function(perspectiveId) {
+		cookieProvider.set(this.namespace + ".perspective", perspectiveId);
+	},
+	
 	savePerspective : function(perspective) {
-		Ext.state.Manager.set(this.namespace + ".perspective", perspective);
+		//Ext.state.Manager.set(this.namespace + ".perspective", perspective);
+		this.savePerspectiveId(perspective.id);
 	},
 	
 	getScriptFilesFromPerspective : function() {

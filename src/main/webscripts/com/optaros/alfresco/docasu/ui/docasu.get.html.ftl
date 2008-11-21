@@ -66,7 +66,7 @@
 		
 		<!-- Perspectives -->
 		<script type="text/javascript" src="../../docasu/perspectives/DoCASUPerspective.js"></script>
-		
+		<script type="text/javascript" src="../../docasu/perspectives/DoCASUCategoriesPerspective.js"></script>		
 		
 		<!-- dinamically loaded source files go here -->
 		

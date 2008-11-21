@@ -25,7 +25,6 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 	getPerspective : function() {
 		var docasuCorePluginConfig = this.getDoCASUCorePluginConfig();
 		var docasuHelpPluginConfig = this.getDoCASUHelpPluginConfig();
-		var docasuCategoriesPluginConfig = this.getDoCASUCategoriesPluginConfig();
 		return	{	// DoCASUPerspective
 				id				:	"DoCASUPerspective",
 				title			:	"DoCASU Perspective",
@@ -36,8 +35,7 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 									}, // eo DoCASUPluginManager
 				plugins			:	[	// configure plugins
 										docasuCorePluginConfig,
-										docasuHelpPluginConfig,
-										docasuCategoriesPluginConfig
+										docasuHelpPluginConfig
 									] // eo configure plugins
 			}; // eo  DoCASU Perspective
 	}, // eo getPerspective
@@ -312,7 +310,13 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 											file		:	"../../docasu/plugins/docasu-core-plugin/header/SearchFormComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
-										} // eo SearchFormComponent
+										}, // eo SearchFormComponent
+										{	// PerspectiveSelectComponent
+											id			:	'PerspectiveSelectComponent',
+											file		:	"../../docasu/plugins/docasu-core-plugin/header/PerspectiveSelectComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										} // eo PerspectiveSelectComponent
 									] // eo DoCASUHeaderComponent components
 				}; // eo DoCASUHeaderComponent
 	}, // eo getDoCASUHeaderComponentConfig
@@ -353,13 +357,7 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 											file		:	"../../docasu/plugins/docasu-core-plugin/west/MyHomeTreeComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
-										}, // eo MyHomeTreeComponent
-										{	// CategoriesTreeComponent
-											id			:	'CategoriesTreeComponent',
-											file		:	"../../docasu/plugins/docasu-categories-plugin/CategoriesTreeComponent.js",
-											pluginId	:	"DoCASUCategoriesPlugin", // parent plugin id - this should be parent plugin and not target plugin
-											namespace	:	"DoCASU.App.Categories" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
-										} // eo CategoriesTreeComponent
+										} // eo MyHomeTreeComponent
 									] // eo DoCASUWestComponent components
 				}; // eo DoCASUWestComponent
 	}, // eo getDoCASUWestComponentConfig
@@ -446,47 +444,6 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 										} // eo // DoCASUHelpComponent
 									] // eo DoCASUHelpPlugin components
 				}; // eo DoCASUHelpPlugin
-	}, // eo getDoCASUHelpPluginConfig
-	
-	getDoCASUCategoriesPluginConfig : function() {
-		return 	{	// DoCASUCategoriesPlugin
-					id			:	"DoCASUCategoriesPlugin",
-					file		:	"../../docasu/plugins/docasu-categories-plugin/DoCASUCategoriesPlugin.js",
-					namespace	:	"DoCASU.App.Categories", // each plugin is stored under a specified namespace - must be different than any class name
-					components	:	[ // DoCASUCategoriesPlugin components
-										{	// CategorizationComponent
-											id			:	'CategorizationComponent',
-											file		:	"../../docasu/plugins/docasu-categories-plugin/CategorizationComponent.js",
-											pluginId	:	"DoCASUCategoriesPlugin", // parent plugin id - this should be parent plugin and not target plugin
-											namespace	:	"DoCASU.App.Categories" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
-										}, // eo // CategorizationComponent
-										{	// LoadCategoryAction
-											id			:	'LoadCategoryAction',
-											file		:	"../../docasu/plugins/docasu-categories-plugin/LoadCategoryAction.js",
-											pluginId	:	"DoCASUCategoriesPlugin", // parent plugin id - this should be parent plugin and not target plugin
-											namespace	:	"DoCASU.App.Categories" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
-										}, // eo // LoadCategoryAction
-										{	// LoadCategoriesAction
-											id			:	'LoadCategoriesAction',
-											file		:	"../../docasu/plugins/docasu-categories-plugin/LoadCategoriesAction.js",
-											pluginId	:	"DoCASUCategoriesPlugin", // parent plugin id - this should be parent plugin and not target plugin
-											namespace	:	"DoCASU.App.Categories" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
-										}, // eo // LoadCategoriesAction
-										{	// AddCategoryAction
-											id			:	'AddCategoryAction',
-											file		:	"../../docasu/plugins/docasu-categories-plugin/AddCategoryAction.js",
-											pluginId	:	"DoCASUCategoriesPlugin", // parent plugin id - this should be parent plugin and not target plugin
-											namespace	:	"DoCASU.App.Categories" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
-										}, // eo // AddCategoryAction
-										{	// RemoveCategoryAction
-											id			:	'RemoveCategoryAction',
-											file		:	"../../docasu/plugins/docasu-categories-plugin/RemoveCategoryAction.js",
-											pluginId	:	"DoCASUCategoriesPlugin", // parent plugin id - this should be parent plugin and not target plugin
-											namespace	:	"DoCASU.App.Categories" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
-										} // eo // RemoveCategoryAction
-									] // eo DoCASUCategoriesPlugin components
-				}; // eo DoCASUCategoriesPlugin
-	} // eo getDoCASUCategoriesPluginConfig
-	
+	} // eo getDoCASUHelpPluginConfig	
 }); // eo DoCASU.App.Perspectives.DoCASUPerspective
  

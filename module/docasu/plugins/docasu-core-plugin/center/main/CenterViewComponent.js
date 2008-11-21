@@ -352,13 +352,21 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 			var centerViewWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
 			centerViewWidget.getLayout().setActiveItem("folderView");
 		});
-		
-		var loadCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoryAction", "DoCASU.App.Categories");
-		loadCategoryAction.on("beforeload", function(action) {
-			// activate load folder results view list
-			var centerViewWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
-			centerViewWidget.getLayout().setActiveItem("folderView");
-		});
+
+		var categoriesPlugin = null;
+		try {
+			categoriesPlugin = DoCASU.App.PluginManager.getPluginManager().getPlugin("DoCASUCategoriesPlugin", "DoCASU.App.Categories");
+		} catch(err) {}
+
+		//make sure the plugin with ID DoCASU.App.Categories.DoCASUCategoriesPlugin was actually registered 
+		if(categoriesPlugin || categoriesPlugin != null) {
+			var loadCategoryAction = DoCASU.App.PluginManager.getPluginManager().getComponent("LoadCategoryAction", "DoCASU.App.Categories");
+			loadCategoryAction.on("beforeload", function(action) {
+				// activate load folder results view list
+				var centerViewWidget = DoCASU.App.PluginManager.getPluginManager().getUIWidget("CenterViewComponent");
+				centerViewWidget.getLayout().setActiveItem("folderView");
+			});
+		}
 		
 		var searchAction = DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core");
 		searchAction.on("beforeload", function(action) {
@@ -734,11 +742,20 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 					"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('UpdateFileComponent', 'DoCASU.App.Core').show('"+record.get("name")+"','"+record.get("nodeId")+"'); return false;\">"+
 						"<img title=\"Update\" class=\"actionIcon\" src=\"../../docasu/images/update.gif\"/>"+
 					"</a>";
-				result.push({
-					 text: "Categorization",
-					 icon: "../../docasu/images/categories.gif",
-					 handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("CategorizationComponent", "DoCASU.App.Categories").show(record.get("nodeId"), record.get("writePermission"));}
-			   	});
+				var categoriesPlugin = null;
+				try {
+					categoriesPlugin = DoCASU.App.PluginManager.getPluginManager().getPlugin("DoCASUCategoriesPlugin", "DoCASU.App.Categories");
+				} catch(err) {}
+
+				//make sure the plugin with ID DoCASU.App.Categories.DoCASUCategoriesPlugin was actually registered 
+				if(categoriesPlugin || categoriesPlugin != null) {
+					result.push({
+						 text: "Categorization",
+						 icon: "../../docasu/images/categories.gif",
+						 handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("CategorizationComponent", "DoCASU.App.Categories").show(record.get("nodeId"), record.get("writePermission"));}
+				   	});
+				}
+
 			}
 		   	result.push({
 				 text: "Copy",
