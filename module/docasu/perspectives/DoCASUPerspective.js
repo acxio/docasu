@@ -305,6 +305,12 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo CenterHeaderComponent
+										{	// StandardAlfrescoClientButtonComponent
+											id			:	'StandardAlfrescoClientButtonComponent',
+											file		:	"../../docasu/plugins/docasu-core-plugin/header/StandardAlfrescoClientButtonComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo StandardAlfrescoClientButtonComponent
 										{	// SearchFormComponent
 											id			:	'SearchFormComponent',
 											file		:	"../../docasu/plugins/docasu-core-plugin/header/SearchFormComponent.js",
@@ -316,7 +322,19 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 											file		:	"../../docasu/plugins/docasu-core-plugin/header/PerspectiveSelectComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
-										} // eo PerspectiveSelectComponent
+										}, // eo PerspectiveSelectComponent
+										{	// HelpButtonComponent
+											id			:	'HelpButtonComponent',
+											file		:	"../../docasu/plugins/docasu-core-plugin/header/HelpButtonComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										}, // eo HelpButtonComponent
+										{	// LogoutButtonComponent
+											id			:	'LogoutButtonComponent',
+											file		:	"../../docasu/plugins/docasu-core-plugin/header/LogoutButtonComponent.js",
+											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+										} // eo LogoutButtonComponent
 									] // eo DoCASUHeaderComponent components
 				}; // eo DoCASUHeaderComponent
 	}, // eo getDoCASUHeaderComponentConfig

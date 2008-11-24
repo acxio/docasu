@@ -53,7 +53,7 @@ Ext.extend(DoCASU.App.Core.DoCASUHeaderComponent, DoCASU.App.Component, {
 								height			:	40,
 								border			:	true,
 								layout			:	"table",
-								layoutConfig	:	{columns:4},
+								layoutConfig	:	{columns:7},
 								cls				:	"header-bar",
 								itemCls			:	"no-bgnd",
 								margins			:	"5"

@@ -71,7 +71,38 @@ Ext.extend(DoCASU.App.Core.PerspectiveSelectComponent, DoCASU.App.Component, {
 									}
 								}
 		});
-//		perspectiveCombo.setValue(DoCASU.App.PerspectiveManager.getPerspective().id);
+		
+		var perspectiveToogleBtn = new Ext.Toolbar.MenuButton({
+			text: 'Perspective',
+            tooltip: {text:'Change the user interface by perspective.', title:'Change Perspective'},
+            icon: '../../docasu/images/btn-perspectives.gif',
+			iconCls: 'x-btn-icon',
+            menu: { // <-- submenu by nested config object
+                items: [
+                    '<b class="menu-title">Choose a Perspective</b>',
+                    {
+                        text: 'DoCASU',
+						value: 'DoCASUPerspective',
+                        checked: (DoCASU.App.PerspectiveManager.getPerspective().id == 'DoCASUPerspective' ? true : false),
+                        group: 'perspective',
+                        checkHandler: onPerspectiveItemCheck
+                    }, {
+                        text: 'Categories',
+						value: 'DoCASUCategoriesPerspective',
+                        checked: (DoCASU.App.PerspectiveManager.getPerspective().id == 'DoCASUCategoriesPerspective' ? true : false),
+                        group: 'perspective',
+                        checkHandler: onPerspectiveItemCheck
+                    }
+                ]
+            }
+        });
+		
+	    // functions to display feedback
+		function onPerspectiveItemCheck(item, checked) {
+			//Ext.MessageBox.alert('Perspective Item Check', 'You '+(checked ? 'checked' : 'unchecked')+' the "'+item.value+'" menu item.');
+			DoCASU.App.PerspectiveManager.switchToPerspectiveById(item.value);
+		};
+		
 		// set the selected value to reflect the current active perspective
 		perspectiveCombo.on("beforerender", function(combo) {
 			 combo.setValue(DoCASU.App.PerspectiveManager.getPerspective().id);
@@ -87,12 +118,13 @@ Ext.extend(DoCASU.App.Core.PerspectiveSelectComponent, DoCASU.App.Component, {
 								frame		:	false,
 								layout		:	"table",
 								items		:	[
-													{
-														html		:	"<span class=\"title\">Perspective:</span>",
-														colspan		:	1,
-														bodyStyle	:	"margin-right: 4px; border-style:none"
-													},
-													perspectiveCombo
+													perspectiveToogleBtn
+													// {
+													// 	html		:	"<span class=\"title\">Perspective:</span>",
+													// 	colspan		:	1,
+													// 	bodyStyle	:	"margin-right: 4px; border-style:none"
+													// },
+													// perspectiveCombo
 												] // eo perspective form items
 								}; // the config to construct the UI object(widget)
 		return uiConfig;

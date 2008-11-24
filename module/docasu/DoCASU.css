@@ -193,7 +193,8 @@ div.folderLogo{
 a.header{
 	color:#000000;
 	text-decoration:underline;
-	margin-left:10px;
+	margin-left:5px;
+	margin-right:5px;
 }
 
 a.breadcrumb, a.breadcrumb:visited,a.breadcrumb:link{

@@ -73,7 +73,13 @@ Ext.extend(DoCASU.App.Help.DoCASUHelpComponent, DoCASU.App.Component, {
 																			{
 															                   title	:	"DoCASU",
 															                   id		:	"docasu-help", 
-																			   html		:	"<div>Coming soon</div>",
+																			   html		:	'<div>Coming soon</div>',
+															                   height	:	380
+											               					},
+																			{
+															                   title	:	"Credits",
+															                   id		:	"docasu-credits", 
+																			   html		:	'<ul><li>Icons by <a href="http://www.famfamfam.com/" target="_blank">famfamfam.com</a>, licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/2.5/">Creative Commons Attribution 2.5 License</a>.</li></ul>',
 															                   height	:	380
 											               					}
 											               				]

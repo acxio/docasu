@@ -63,7 +63,7 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 			valueField		:	"code",
 			mode			:	"local",
 			value			:	"",
-			width			:	100,
+			width			:	90,
 			triggerAction	:	"all",
 			readOnly		:	true,
 			editable		:	false
@@ -71,6 +71,7 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 		var searchField = new Ext.form.TextField({
 			id			:	"q",
 			colspan		:	1,
+			width		: 	90,
 			style		:	"margin-left: 4px",
 			name		:	"q",
 			hideLabel	:	true,
@@ -84,7 +85,6 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 		});
 		var searchBtn = new Ext.Button({
 			text		:	"Go",
-			minWidth	:	40,
 			// reference to context
 			searchFormId:	this.id,
 			handler : function() {
@@ -96,6 +96,7 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 								id			:	this.id,
 								name		:	this.id,
 								// look
+								width		: 	380,
 								bodyStyle	:	"padding: 4px;margin-top:5px;",
 								region		:	"east",
 								border		:	false,
