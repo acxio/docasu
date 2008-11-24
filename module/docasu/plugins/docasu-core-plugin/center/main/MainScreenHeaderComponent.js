@@ -169,5 +169,5 @@ Ext.extend(DoCASU.App.Core.MainScreenHeaderComponent, DoCASU.App.Component, {
 		});
 									
 		return uiConfig;
-	}, // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
+	} // the config to construct the UI object(widget) - use function for better control on building the JSON configuration
 }); // eo DoCASU.App.Core.MainScreenHeaderComponent

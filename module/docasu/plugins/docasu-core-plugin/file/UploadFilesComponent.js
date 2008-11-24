@@ -66,7 +66,7 @@ Ext.extend(DoCASU.App.Core.UploadFilesComponent, DoCASU.App.Component, {
 													method			:	"POST",
 													maxFileSize		:	1048576,
 													enableProgress	:	false, // not implemented yet
-													singleUpload	:	false, // upload a file at a time
+													singleUpload	:	false // upload a file at a time
 												}]
 							}; // the config to construct the UI object(widget)
 		return uiConfig;

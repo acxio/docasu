@@ -27,7 +27,7 @@
 								"name"		:	"${shortcut.name}",
 								"isFile"	:	${(!shortcut.isContainer)?string},
 								"url" 		:	"${url.context}${shortcut.url}",
-								"parentId"	:	"${shortcut.parent.id}",
+								"parentId"	:	"${shortcut.parent.id}"
 							}<#if shortcut_has_next>,</#if>
 						</#list>
 					]

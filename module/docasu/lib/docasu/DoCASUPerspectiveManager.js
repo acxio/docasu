@@ -61,7 +61,8 @@ DoCASU.App.PerspectiveManager = new Object({
 	},
 	
 	loadDefaultPerspective : function() {
-		return DoCASU.App.Perspectives.DoCASUPerspective.getPerspective();
+		//return DoCASU.App.Perspectives.DoCASUPerspective.getPerspective();
+		return DoCASU.App.Perspectives.DoCASUCategoriesPerspective.getPerspective();
 	},
 	
 	loadPerspectiveById : function(perspectiveId) {

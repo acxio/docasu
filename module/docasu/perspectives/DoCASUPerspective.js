@@ -31,7 +31,7 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 				pluginManager	:	{	// DoCASUPluginManager
 										id			:	"DoCASUPluginManager",
 										file		:	"../../docasu/lib/docasu/DoCASUPluginManager.js",
-										namespace	:	"DoCASU.App", // each plugin is stored under a specified namespace - must be different than any class name
+										namespace	:	"DoCASU.App" // each plugin is stored under a specified namespace - must be different than any class name
 									}, // eo DoCASUPluginManager
 				plugins			:	[	// configure plugins
 										docasuCorePluginConfig,
@@ -426,7 +426,7 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 					id			:	'DoCASUFooterComponent',
 					file		:	"../../docasu/plugins/docasu-core-plugin/footer/DoCASUFooterComponent.js",
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
-					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+					namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 				}; // eo DoCASUFooterComponent
 	}, // eo getDoCASUFooterComponentConfig
 	
