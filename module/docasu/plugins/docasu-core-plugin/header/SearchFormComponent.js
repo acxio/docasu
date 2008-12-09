@@ -102,6 +102,13 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 								border		:	false,
 								frame		:	false,
 								layout		:	"table",
+								onSubmit: Ext.emptyFn,
+								submit: function() {
+									// avoid submitting the form, execute the SearchAction instead
+									var q = Ext.getCmp("q").getValue();
+									var t = Ext.getCmp("searchType").getValue();
+									DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core").search(q, t);
+								},
 								items		:	[
 													{
 														html		:	"<span class=\"title\">Search:</span>",
@@ -133,11 +140,6 @@ Ext.extend(DoCASU.App.Core.SearchFormComponent, DoCASU.App.Component, {
 			// no UI widget was created thus component is disabled or closed
 			return;
 		}
-		uiWidget.on("beforeaction", function (node, event) {
-			var q = Ext.getCmp("q").getValue();
-			var t = Ext.getCmp("searchType").getValue()
-			DoCASU.App.PluginManager.getPluginManager().getComponent("SearchAction", "DoCASU.App.Core").search(q, t);
-		});		
 		uiWidget.on("render", function(panel) {
 			panel.getEl().parent("td").child("div").addClass("SearchFormComponent");
 		});
