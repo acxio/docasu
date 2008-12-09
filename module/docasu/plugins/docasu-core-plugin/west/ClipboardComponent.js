@@ -135,7 +135,7 @@ Ext.extend(DoCASU.App.Core.ClipboardComponent, DoCASU.App.Component, {
 	}, // eo remove
 	
 	clear : function() {
-		this.setClipboard(null);
+		this.setClipboard([]);
 		this.update();
 	}, // eo clear
 	
