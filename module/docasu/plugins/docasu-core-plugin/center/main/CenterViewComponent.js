@@ -685,7 +685,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 						handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("EditContentComponent", "DoCASU.App.Core").show(record.get("name"), record.get("nodeId"));}
 					});
 					html += 
-						"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('EditContentComponent', 'DoCASU.App.Core').show('"+record.get("name")+"','"+record.get("nodeId")+"'); return false;\">"+
+						"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('EditContentComponent', 'DoCASU.App.Core').show('"+String.escape(record.get("name"))+"','"+record.get("nodeId")+"'); return false;\">"+
 							"<img title=\"Edit\" class=\"actionIcon\" src=\"../../docasu/images/edit.gif\"/>"+
 						"</a>";
 				}
@@ -727,7 +727,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		    					handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core").deleteFile(record.get("name"), record.get("nodeId"));}
 		   					});
 		   					html += 
-	   							"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('CenterViewComponent', 'DoCASU.App.Core').deleteFile('"+record.get("name")+"','"+record.get("nodeId")+"'); return false;\">"+
+	   							"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('CenterViewComponent', 'DoCASU.App.Core').deleteFile('"+String.escape(record.get("name"))+"','"+record.get("nodeId")+"'); return false;\">"+
 	   								"<img title=\"Delete\" class=\"actionIcon\" src=\"../../docasu/images/delete.gif\"/>"+
 	   							"</a>";
 		   				}
@@ -739,7 +739,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 					 handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("UpdateFileComponent", "DoCASU.App.Core").show(record.get("name"), record.get("nodeId"));}
 		   		});
 		   		html += 
-					"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('UpdateFileComponent', 'DoCASU.App.Core').show('"+record.get("name")+"','"+record.get("nodeId")+"'); return false;\">"+
+					"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('UpdateFileComponent', 'DoCASU.App.Core').show('"+String.escape(record.get("name"))+"','"+record.get("nodeId")+"'); return false;\">"+
 						"<img title=\"Update\" class=\"actionIcon\" src=\"../../docasu/images/update.gif\"/>"+
 					"</a>";
 				var categoriesPlugin = null;
@@ -763,7 +763,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 				 handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("ClipboardComponent", "DoCASU.App.Core").copyLink(record.get("iconUrl"), record.get("name"), record.get("nodeId"));}
 		   	});
 		   	html += 
-				"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('ClipboardComponent', 'DoCASU.App.Core').copyLink('"+record.get("iconUrl")+"',' "+record.get("name")+"',' "+record.get("nodeId")+"'); return false;\">"+
+				"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('ClipboardComponent', 'DoCASU.App.Core').copyLink('"+record.get("iconUrl")+"',' "+String.escape(record.get("name"))+"',' "+record.get("nodeId")+"'); return false;\">"+
 					"<img title=\"Copy\" class=\"actionIcon\" src=\"../../docasu/images/copy.gif\"/>"+
 				"</a>";
 	    }
@@ -831,7 +831,7 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 				handler: function() {DoCASU.App.PluginManager.getPluginManager().getComponent("CenterViewComponent", "DoCASU.App.Core").deleteFolder(record.name, record.id);}
 			});
 			html += 
-				"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('CenterViewComponent', 'DoCASU.App.Core').deleteFolder('"+record.name+"','"+record.id+"'); return false;\">"+
+				"<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('CenterViewComponent', 'DoCASU.App.Core').deleteFolder('"+String.escape(record.name)+"','"+record.id+"'); return false;\">"+
 					"<img title=\"Delete\" class=\"actionIcon\" src=\"../../docasu/images/delete.gif\"/>"+
 				"</a>";
 		}
