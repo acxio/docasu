@@ -21,10 +21,11 @@
 Ext.namespace("DoCASU.App.Perspectives");
 
 DoCASU.App.Perspectives.DoCASUPerspective = new Object({
-
 	getPerspective : function() {
 		var docasuCorePluginConfig = this.getDoCASUCorePluginConfig();
 		var docasuHelpPluginConfig = this.getDoCASUHelpPluginConfig();
+		var docasuAirPluginConfig = this.getDoCASUAirPluginConfig();
+
 		return	{	// DoCASUPerspective
 				id				:	"DoCASUPerspective",
 				title			:	"DoCASU Perspective",
@@ -35,7 +36,8 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 									}, // eo DoCASUPluginManager
 				plugins			:	[	// configure plugins
 										docasuCorePluginConfig,
-										docasuHelpPluginConfig
+										docasuHelpPluginConfig,
+										docasuAirPluginConfig
 									] // eo configure plugins
 			}; // eo  DoCASU Perspective
 	}, // eo getPerspective
@@ -462,6 +464,24 @@ DoCASU.App.Perspectives.DoCASUPerspective = new Object({
 										} // eo // DoCASUHelpComponent
 									] // eo DoCASUHelpPlugin components
 				}; // eo DoCASUHelpPlugin
-	} // eo getDoCASUHelpPluginConfig	
+	}, // eo getDoCASUHelpPluginConfig
+	
+
+	getDoCASUAirPluginConfig : function() {
+		return 	{	// DoCASUAirPlugin
+					id			:	"DoCASUAirPlugin",
+					file		:	"../../docasu/plugins/docasu-air-plugin/DoCASUAirPlugin.js",
+					namespace	:	"DoCASU.App.Air", // each plugin is stored under a specified namespace - must be different than any class name
+					components: [
+									{
+											id			:	"UploadFilesComponent",
+											file		:	"../../docasu/plugins/docasu-air-plugin/UploadFilesComponent.js",
+											pluginId	:	"DoCASUAirPlugin", // parent plugin id - this should be parent plugin and not target plugin
+											namespace	:	"DoCASU.App.Air" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
+									}
+								]
+				}; // eo DoCASUHelpPlugin
+	} // eo getDoCASUAirPluginConfig
+
 }); // eo DoCASU.App.Perspectives.DoCASUPerspective
  

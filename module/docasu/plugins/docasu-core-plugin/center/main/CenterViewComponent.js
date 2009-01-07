@@ -627,7 +627,11 @@ Ext.extend(DoCASU.App.Core.CenterViewComponent, DoCASU.App.Component, {
 		if (record.get("isFolder")) {
 			html += "<a href=\"#\" onClick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('"+record.get("nodeId")+"'); return false;\">";
 		} else {
-			html += "<a href=\""+record.get("downloadUrl")+"\">";
+			if (window.parentSandboxBridge) { // Adobe Air
+				html += "<a href=\"#\" onClick=\"window.parentSandboxBridge.downloadFile('"+record.get("downloadUrl")+"'); return false;\">";
+			} else {
+				html += "<a href=\""+record.get("downloadUrl")+"\">";
+			}
 		}
 		html += "<div style=\"float: left; cursor: pointer;\">";
 		if (record.get("isFolder")) {
