@@ -70,6 +70,12 @@ Ext.extend(DoCASU.App.Core.LogoutAction, DoCASU.App.Component, {
 	},
 	
 	logout : function() {
+		// If we are in Adobe Air
+		if (window.parentSandboxBridge) {
+			window.parentSandboxBridge.exit();
+			return;
+		}
+	
 		// fire beforelogout event
 		this.fireEvent("beforelogout", this);
 		setTimeout(function() {
