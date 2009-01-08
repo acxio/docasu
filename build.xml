@@ -20,6 +20,7 @@
 <project name="docasu" default="help" basedir=".">
 	
 	<import file="build-alfresco.xml"/>
+	<import file="build-air.xml"/>
 	
 	<!-- Only to ensure configuration are created -->
 	<target name="setup" depends="docasu-module.set-source-files"/>

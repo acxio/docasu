@@ -1,0 +1,33 @@
+<html>
+
+	<head>
+	
+		<title>Docasual</title>
+		
+		<link rel="stylesheet" href="style.css" type="text/css" />
+		<script src="js/lib/AIRAliases.js" type="text/javascript"></script>
+		<script src="js/lib/jquery.js" type="text/javascript"></script>
+		<script src="js/lib/jquery.json.js" type="text/javascript"></script>
+		
+		<script src="js/docasual.js" type="text/javascript"></script>
+		<script src="js/login.js" type="text/javascript"></script>
+		<script src="js/upload.js" type="text/javascript"></script>
+		<script src="js/download.js" type="text/javascript"></script>
+		<script src="js/airBridges.js" type="text/javascript"></script>
+		
+	</head>
+	
+	<body>
+		<div id="login-div">
+			<form id="login-form" method="get" action="/login">
+				<span class="login-label">DoCASUAL server:</span><span class="login-textfield"><input id="server" type="text" /></span>
+				<span class="login-label">Username:</span><span class="login-textfield"><input id="username" type="text" /></span>
+				<span class="login-label">Password:</span><span class="login-textfield"><input id="password" type="password" /></span>
+				<span class="login-label">&nbsp;</span><span class="login-textfield"><input id="rememberPassword" type="checkbox"/>Remember this password</span>
+				<span id="login-button"><input type="submit" value="Login"/></span>
+			</form>
+		</div>
+		<iframe id="docasu-frame" width="100%" height="100%" frameborder="0" src="" sandboxRoot="" documentRoot="app:/" ondominitialize="establishParentBridge()" />
+	</body>
+	
+</html>
