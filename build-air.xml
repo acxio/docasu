@@ -27,6 +27,7 @@
 			<arg value="${air-src}/index.html"/>
 			<arg value="${air-src}/style.css"/>
 			<arg value="${air-src}/icons"/>
+			<arg value="${air-src}/images"/>
 			<arg value="${air-src}/js"/>
 		</exec>
 	</target>

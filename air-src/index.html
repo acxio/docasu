@@ -18,16 +18,20 @@
 	</head>
 	
 	<body>
-		<div id="login-div">
+<div id="background">		
+<div id="login-div" align="center">
 			<form id="login-form" method="get" action="/login">
-				<span class="login-label">DoCASUAL server:</span><span class="login-textfield"><input id="server" type="text" /></span>
-				<span class="login-label">Username:</span><span class="login-textfield"><input id="username" type="text" /></span>
-				<span class="login-label">Password:</span><span class="login-textfield"><input id="password" type="password" /></span>
-				<span class="login-label">&nbsp;</span><span class="login-textfield"><input id="rememberPassword" type="checkbox"/>Remember this password</span>
-				<span id="login-button"><input type="submit" value="Login"/></span>
-			</form>
+                	<input type="text" id="server" value="server name" />
+                    <input type="text" id="username" value="username" />
+                    <input type="password" id="password" value="password" />
+                 <div id="checkbox"><label><input type="checkbox" name="Remember me" id="rememberPassword" />Remember me</Label></div>
+                    <div id="loginbutton"><button id="Login" type="submit">Login</button> </div>
+                    
+		</form>
 		</div>
-		<iframe id="docasu-frame" width="100%" height="100%" frameborder="0" src="" sandboxRoot="" documentRoot="app:/" ondominitialize="establishParentBridge()" />
-	</body>
+ </div>
+        	
+<iframe id="docasu-frame" width="100%" height="100%" frameborder="0" src="" sandboxRoot="" documentRoot="app:/" ondominitialize="establishParentBridge()" />
+</body>
 	
 </html>

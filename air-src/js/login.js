@@ -59,5 +59,5 @@ function didGetLoginPage(data) {
 
 function didPostLoginForm(data) {
 	$("#docasu-frame").attr("src", server + "wcs/docasu/ui")
-	$("#login-div").fadeOut(1000);
+	$("#background").fadeOut(500);
 }

@@ -57,10 +57,10 @@ if (hasReqestedVersion) {
 		'allowscriptaccess','all',
 		'pluginspage','http://www.macromedia.com/go/getflashplayer',
 		'flashvars','appname=DoCASU&appurl=http://localhost/~optaros/DoCASU.air&airversion=1.0&imageurl=http://localhost/~optaros/docasu-logo.png',
-		'movie','http://localhost/~optaros/badge' ); //end AC code
+		'movie','badge' ); //end AC code
 
 } else {  // Flash Player is too old or we can't detect the plugin
-	document.write('<table id="AIRDownloadMessageTable"><tr><td>Download <a href="myapp.air">My Application</a> now.<br /><br /><span id="AIRDownloadMessageRuntime">This application requires the <a href="');
+	document.write('<table id="AIRDownloadMessageTable"><tr><td>Download <a href="http://localhost/~optaros/DoCASU.air">DoCASU</a> now.<br /><br /><span id="AIRDownloadMessageRuntime">This application requires the <a href="');
 	
 	var platform = 'unknown';
 	if (typeof(window.navigator.platform) != undefined)
