@@ -34,7 +34,7 @@
 	</target>
 
 	<!-- setup eclipse project -->
-	<target name="download-sdk" depends="init">
+	<target name="download-sdk" depends="init" unless="custom-alfresco-sdk.set">
 		<!-- download alfresco.sdk and unzip it -->
 		<get src="http://switch.dl.sourceforge.net/sourceforge/alfresco/${alfresco.sdk}.zip" dest="${download.dir}/${alfresco.sdk}.zip" usetimestamp="true" verbose="true" />
 		<!-- this jar works with both alfresco v.2 and v.3 -->

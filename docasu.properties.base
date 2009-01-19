@@ -28,7 +28,12 @@ docasu.version=1.6.0
 #Note that alfresco-labs-sdk-3a.1032 is missing alfresco-webscript-framework.jar which should be added to the docasu/download/${alfresco.sdk} folder
 alfresco.sdk=alfresco-labs-sdk-3a.1032
 
+# If you want to use a custom alfresco sdk (i.e. you don't want ant to automatically
+# download it for you), set the following property to true and put the extracted custom sdk in "download/"
+# don't forget to set the "alfresco.sdk" property anyway.
+custom-alfresco-sdk.set=false
+
 # The version of Alfresco you wish to use (2 or 3). This will use classes corresponding
 # to the particular APIs
-#alfresco.version=2
-alfresco.version=3
+alfresco.version=2
+#alfresco.version=3
