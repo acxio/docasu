@@ -386,6 +386,22 @@ a {
 	width:400px;
 }
 
+.whitepaper-text{
+	float:left;
+	padding-right:25px;
+	width:400px;
+}
+
+.book-text{
+	float:left;
+	padding-right:25px;
+	width:350px;
+}
+
+.book-img{
+	float:left;
+		}
+
 .contact-country{
 	float:left;
 	padding-top:10px;
