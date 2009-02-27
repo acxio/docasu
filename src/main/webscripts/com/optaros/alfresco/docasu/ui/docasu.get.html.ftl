@@ -16,49 +16,63 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
-    "http://www.w3.org/TR/html4/loose.dtd">
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
 <html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<link rel="stylesheet" type="text/css" href="../../docasu/lib/extjs/resources/css/ext-all.css">
-	<link rel="stylesheet" type="text/css" href="../../docasu/lib/extjs/resources/css/xtheme-gray.css">
-	<script type="text/javascript" src="../../docasu/lib/extjs/adapter/ext/ext-base.js"></script>
-	<script type="text/javascript" src="../../docasu/lib/extjs/ext-all.js"></script>
-	<script type="text/javascript" src="../../docasu/lib/extjs-extensions/statictextfield.js"></script>
-
-	<script type="text/javascript" src="../../docasu/lib/extjs/ux/miframe-min.js"></script>
-	<!-- script type="text/javascript" src="../../docasu/lib/tiny_mce3/tiny_mce.js"></script -->
-	<!-- script type="text/javascript" src="../../docasu/Ext.ux.TinyMCE.js"></script -->
+	<head>
+		<title>DoCASU Web Client</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		
+		
+		<!-- ExtJS Library and CSS files  -->
+		<link rel="stylesheet" type="text/css" href="../../docasu/lib/extjs/resources/css/ext-all.css">
+		<link rel="stylesheet" type="text/css" href="../../docasu/lib/extjs/resources/css/xtheme-gray.css">
+		
+		<script type="text/javascript" src="../../docasu/lib/extjs/adapter/ext/ext-base.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/extjs/ext-all.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/extjs-extensions/statictextfield.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/extjs/ux/miframe-min.js"></script>
+		
+		
+		<!-- Ext.ux.UploadPanel and CSS files  -->
+		<link rel="stylesheet" type="text/css" href="../../docasu/lib/Ext.ux.FileTree/css/filetree.css">
+		<link rel="stylesheet" type="text/css" href="../../docasu/lib/Ext.ux.FileTree/css/filetype.css">
+		<link rel="stylesheet" type="text/css" href="../../docasu/lib/Ext.ux.FileTree/css/icons.css">
+		
+		<script type="text/javascript" src="../../docasu/lib/Ext.ux.FileTree/js/Ext.ux.form.BrowseButton.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/Ext.ux.FileTree/js/Ext.ux.FileUploader.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/Ext.ux.FileTree/js/Ext.ux.UploadPanel.js"></script>
+		
+		
+		<!-- DoCASU Library -->
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUUtils.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUSession.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUError.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUScriptLoader.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUPerspectiveManager.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUPlugin.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUComponent.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUApplication.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUApplicationManager.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUDataManager.js"></script>
+		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUActionManager.js"></script>
+		
+		
+		<!-- Custom DoCASU Script and CSS files  -->
+		<link rel="stylesheet" type="text/css" href="../../docasu/DoCASU.css">
+		
+		<script type="text/javascript" src="../../docasu/DoCASU.js"></script>
+		
+		<!-- Perspectives -->
+		<script type="text/javascript" src="../../docasu/perspectives/DoCASUPerspective.js"></script>
+		<script type="text/javascript" src="../../docasu/perspectives/DoCASUCategoriesPerspective.js"></script>		
+		
+		<!-- dinamically loaded source files go here -->
+		
+	</head>
 	
-	<!-- Ext.ux.UploadPanel and CSS files  -->
-	<script type="text/javascript" src="../../docasu/lib/Ext.ux.FileTree/js/Ext.ux.form.BrowseButton.js"></script>
-	<script type="text/javascript" src="../../docasu/lib/Ext.ux.FileTree/js/Ext.ux.FileUploader.js"></script>
-	<script type="text/javascript" src="../../docasu/lib/Ext.ux.FileTree/js/Ext.ux.UploadPanel.js"></script>
-	<link rel="stylesheet" type="text/css" href="../../docasu/lib/Ext.ux.FileTree/css/filetree.css">
-	<link rel="stylesheet" type="text/css" href="../../docasu/lib/Ext.ux.FileTree/css/filetype.css">
-	<link rel="stylesheet" type="text/css" href="../../docasu/lib/Ext.ux.FileTree/css/icons.css">
-	
-
-	<!-- Custom DoCASU Script and CSS files  -->
-	<script type="text/javascript" src="../../docasu/docasuSession.js"></script>
-	<script type="text/javascript" src="../../docasu/docasuError.js"></script>
-
-	<script type="text/javascript" src="../../docasu/docasu.js"></script>
-
-	<script type="text/javascript" src="../../docasu/docasuHelp.js"></script>    
-	<script type="text/javascript" src="../../docasu/docasuSearch.js"></script>    
-	<script type="text/javascript" src="../../docasu/docasuClipboard.js"></script>
-	<script type="text/javascript" src="../../docasu/docasuContent.js"></script>
-	<script type="text/javascript" src="../../docasu/docasuFavorite.js"></script>
-	<script type="text/javascript" src="../../docasu/docasuFile.js"></script>
-	<script type="text/javascript" src="../../docasu/docasuFolder.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="../../docasu/docasu.css">
-
-	<title>DoCASU Web Client</title>
-</head>
-<body style="background: none !important">
-	<input type="hidden" id="initialFolderId" value="${initialFolderId}" />
-</body>
+	<body style="background: none !important">
+		<input type="hidden" id="initialFolderId" value="${initialFolderId}" />
+	</body>
 </html>

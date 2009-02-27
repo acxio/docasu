@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project name="docasu-on-air" default="air-package" basedir="air-src">
+	<property name="build" value="target"/>
+	<property name="air-src" value="air-src"/>
+
+	<target name="air-package" description="Builds the air package">
+		<echo>Building air package</echo>
+		<mkdir dir="${build}"/>
+		<exec executable="adt">
+			<arg value="-certificate"/>
+			<arg value="-cn"/>
+			<arg value="DoCASU"/>
+			<arg value="1024-RSA"/>
+			<arg value="${build}/certificate.p12"/>
+			<arg value="jogibubu"/>
+		</exec>
+		<exec executable="adt">
+			<arg value="-package"/>
+			<arg value="-storetype"/>
+			<arg value="pkcs12"/>
+			<arg value="-keystore"/>
+			<arg value="${build}/certificate.p12"/>
+			<arg value="-storepass"/>
+			<arg value="jogibubu"/>
+			<arg value="${build}/DoCASU.air"/>
+			<arg value="${air-src}/docasu.xml"/>
+			<arg value="${air-src}/index.html"/>
+			<arg value="${air-src}/style.css"/>
+			<arg value="${air-src}/icons"/>
+			<arg value="${air-src}/images"/>
+			<arg value="${air-src}/js"/>
+		</exec>
+	</target>
+</project>

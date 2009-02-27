@@ -24,8 +24,9 @@
 							{
 								"id"			:	"${node.id}",
 								"name"			:	"${node.name}",
-								"nameIcon"		:	"<div><div style='margin-bottom: 4px;width:170px;height:16px'><div style='float:left'><img src='${url.context}${node.icon16}' alt='${node.name}' /></div><div style='line-height:16px;float:right;font-size:80%;font-weight:lighter;'>${node.properties.modified?string("yyyy-MM-dd HH:mm Z")}</div></div><div><a href='${url.context}${node.url}' target='_blank'>${node.name}</a>&nbsp;<a href='#' onClick='loadFolder(\"${node.parent.id}\");' alt='Open in Folder'><img src='${url.context}${node.parent.icon16}'/></a></div></div>",
+								"icon"			:	"${url.context}${node.icon16}",
 								"path"			:	"${node.displayPath}",
+								"url" 			:	"${url.context}${node.url}",
 								"modified"		:	"${node.properties.modified?string("yyyy-MM-dd HH:mm Z")}",
 								"parentId"		:	"${node.parent.id}",
 								"parentIcon"	:	"${url.context}${node.parent.icon16}"

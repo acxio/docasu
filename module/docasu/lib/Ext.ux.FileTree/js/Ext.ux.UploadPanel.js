@@ -12,6 +12,11 @@
  * licensed development library or toolkit without explicit permission.
  * 
  * License details: http://www.gnu.org/licenses/lgpl.html
+ *
+ * This file has been extended with the "addFile" function that allows to add files
+ * to the upload report panel, without actually uploading them. This is used for the
+ * docasu on air implementation where files aren't uploaded using a form (author: Matteo Cortonesi).
+ * 
  */
 
 /*global Ext */
@@ -546,7 +551,6 @@ Ext.ux.UploadPanel = Ext.extend(Ext.Panel, {
 		if(true !== this.eventsSuspended) {
 			this.fireEvent('fileadd', this, this.store, rec);
 		}
-
 	} // eo onAddFile
 	// }}}
 	// {{{
@@ -767,7 +771,38 @@ Ext.ux.UploadPanel = Ext.extend(Ext.Panel, {
 		}
 	} // eo function syncShadow
 	// }}}
+	// BEGIN CODE FOR DOCASU ON AIR //
+	,addFile: function(file) {
+		var fileName = file.fileName;
 
+		// create new record and add it to store
+		var rec = new this.store.recordType({
+			 input:{up:function(){return null;},remove:function(){}} // dummy input
+			,fileName:fileName
+			,filePath:"whatever"
+			,shortName:Ext.util.Format.ellipsis(fileName, this.maxLength)
+			,fileCls:this.getFileCls(fileName)
+			,state:file.success ? 'done' : 'failed'
+			,error:'Unable to upload file.'
+		}, "" + Math.floor(Math.random()*1000000001)); // dummy id
+		rec.commit();
+		this.store.add(rec);
+
+		this.syncShadow();
+		
+		this.uploadBtn.enable();
+		this.removeAllBtn.enable();
+		
+		// disable Add button if maxFiles was reached
+		if(this.store.getAt(this.maxFiles-1)) {
+			this.addBtn.disable();
+		}
+		
+		if(true !== this.eventsSuspended) {
+			this.fireEvent('fileadd', this, this.store, rec);
+		}
+	}
+	// END CODE FOR DOCASU ON AIR //
 }); // eo extend
 
 // register xtype
