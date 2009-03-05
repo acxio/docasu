@@ -269,8 +269,7 @@ a {
 }
 
 .box-button {
-	background: transparent url(../images/Button.png) no-repeat scroll 0%
-		50%;
+	background: transparent url(../images/Button.png) no-repeat scroll 0% 50%;
 	color: WHITE;
 	height: 30px;
 	left: 230px;
@@ -280,13 +279,13 @@ a {
 }
 
 .download-box-button{
-	background:transparent url(../images/downloadButton.png) no-repeat scroll 0 50%;
+	background:transparent url(../images/Button_BG_Download.png) no-repeat scroll 0 70%;
 	color:WHITE;
-	height:30px;
-	left:220px;
+	height:40px;
+	left:187px;
 	position:absolute;
-	top:155px;
-	width:85px;
+	top:135px;
+	width:140px;
 }
 
 .button-text {
@@ -295,8 +294,10 @@ a {
 }
 
 .download-button-text {
-	margin-top: 3px;
-	text-align: center;
+	font-size: 18px;
+	margin-top: 11px;
+	margin-left: 15px;
+	text-align: left;
 }
 
 #footer {
