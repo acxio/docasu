@@ -19,14 +19,14 @@
 # DoCASU version number
 # This number is used to display the version number and for the amp module
 # number when deploying DoCASU
-docasu.version=1.6.0
+docasu.version=1.6.1-snapshot
 
 # The version of the Alfresco SDK you want to use (will be downloaded)
 # You may specify an older SDK to ensure backward compatibility
 #alfresco.sdk=alfresco-community-sdk-2.1.0
 #alfresco.sdk=alfresco-community-sdk-2.9.0dev
 #Note that alfresco-labs-sdk-3a.1032 is missing alfresco-webscript-framework.jar which should be added to the docasu/download/${alfresco.sdk} folder
-alfresco.sdk=alfresco-labs-sdk-3a.1032
+alfresco.sdk=alfresco-labs-sdk-3Stable
 
 # If you want to use a custom alfresco sdk (i.e. you don't want ant to automatically
 # download it for you), ***uncomment*** the following property and put the extracted custom sdk in "download/"
