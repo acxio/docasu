@@ -11,7 +11,7 @@
 	  "message" : "${status.message?j_string!""}", 
 	  "exception" : "<#if status.exception?exists>${status.exception.class.name?j_string}<#if status.exception.message?exists> - ${status.exception.message?j_string}</#if></#if>",
 	  "server" : "Alfresco ${server.edition?xml} v${server.version?xml} schema ${server.schema?xml}",
-	  "time" : "${date?datetime}"
+	  "time" : "${date?datetime}",
 
 
   "Caused by" : "<#if status.exception.cause?exists>${status.exception.cause}</#if>",
