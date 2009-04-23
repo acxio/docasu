@@ -39,7 +39,12 @@ if(node != null) {
 	}
 	if (addShortcut) {
 		// add shortcut
-		var shortcutNodes = preferences.properties["app:shortcuts"].push(nodeId);
+		var shortcutNodes = preferences.properties["app:shortcuts"];
+		if(!isArray(shortcutNodes)){
+			shortcutNodes = new Array(shortcutNodes);
+		}
+		shortcutNodes.push(nodeId);
+		preferences.properties["app:shortcuts"] = shortcutNodes;
 		preferences.save();
 		
 		model.success = true;
@@ -56,4 +61,11 @@ if(node != null) {
 	status.message = "Invalid node reference " + nodeId;
 	status.redirect = true;
 	logger.log("Invalid node reference " + nodeId);
+}
+
+function isArray(obj) {
+	   if (obj.constructor.toString().indexOf("Array") == -1)
+	      return false;
+	   else
+	      return true;
 }

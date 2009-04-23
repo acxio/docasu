@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.lang.System;
+
 
 import org.alfresco.model.ApplicationModel;
 import org.alfresco.model.ContentModel;
@@ -36,6 +38,7 @@ import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
+
 import org.alfresco.web.scripts.DeclarativeWebScript;
 import org.alfresco.web.scripts.WebScriptRequest;
 import org.alfresco.web.scripts.Status;
@@ -91,7 +94,13 @@ public class Shortcuts extends DeclarativeWebScript {
 			preferences = preferencesList.get(0).getChildRef();
 		}
 
-		List<String> shortcuts = (List<String>) nodeService.getProperty(preferences, PROP_SHORTCUTS);
+		List<String> shortcuts  = new ArrayList<String>();
+		
+		if( (nodeService.getProperty(preferences, PROP_SHORTCUTS)) instanceof List){
+			shortcuts = (List<String>) nodeService.getProperty(preferences, PROP_SHORTCUTS);
+		}else{
+			shortcuts.add((String)nodeService.getProperty(preferences, PROP_SHORTCUTS));
+		}
 
 		List<NodeRef> shortcutRefs = new ArrayList<NodeRef>();
 

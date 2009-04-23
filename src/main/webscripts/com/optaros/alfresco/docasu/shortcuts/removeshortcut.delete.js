@@ -31,20 +31,35 @@ if(node != null) {
 	
 	// remove shortcut
 	var preferences = getPreferences();
-	var shortcutNodes = preferences.properties["app:shortcuts"];
+	
+	var shortcutNodes = (preferences.properties["app:shortcuts"]);
+	if(!isArray(shortcutNodes)){
+		shortcutNodes = new Array(shortcutNodes);
+	}
+	var before = shortcutNodes.length;
+	var removed = false;
 	for (i = 0; i < shortcutNodes.length; i++) {
 		if (shortcutNodes[i] == nodeId) {
 			shortcutNodes.splice(i, 1);
+			removed = true;
 		}
 	}
+	preferences.properties["app:shortcuts"] = shortcutNodes;
 	preferences.save();
 	
 	model.success = true;
-	model.msg = "Favorite " + nodeName + " was removed";
+	model.msg = "Favorite " + nodeName + " was removed. "+ removed + " res: " + shortcutNodes + " typeof " + (typeof shortcutNodes);
 	logger.log("Favorite " + nodeName + " was removed");
 } else {
 	status.code = 400;
 	status.message = "Invalid node reference " + nodeId;
 	status.redirect = true;
 	logger.log("Invalid node reference " + nodeId);
+}
+
+function isArray(obj) {
+	   if (obj.constructor.toString().indexOf("Array") == -1)
+	      return false;
+	   else
+	      return true;
 }
