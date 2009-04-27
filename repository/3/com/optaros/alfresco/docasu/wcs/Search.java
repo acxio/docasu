@@ -148,13 +148,18 @@ public class Search extends AbstractDocumentWebScript {
 	 */
 	private List<NodeRef> filterSearchResult(List<NodeRef> searchResult) {
 		int i = 0;
+		Boolean ex;
 		// remove inaccessible records from search result
 		while (i < searchResult.size() && i < RESULT_SET_MAX_SIZE) {
-			if (permissionService.hasPermission(searchResult.get(i), PermissionService.READ) == AccessStatus.ALLOWED) {
+			ex = nodeService.exists(searchResult.get(i));
+			if (permissionService.hasPermission(searchResult.get(i), PermissionService.READ) == AccessStatus.ALLOWED && ex) {
 				// maintain node in search result
 				// increase step value
 				i++;
 			} else {
+				if(!ex){
+					System.out.println("Node Ignored: " + searchResult.get(i));
+				}
 				// remove node from search result
 				searchResult.remove(i);
 				// keep step value
