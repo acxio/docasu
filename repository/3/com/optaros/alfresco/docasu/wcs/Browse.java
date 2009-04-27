@@ -177,13 +177,18 @@ public class Browse extends AbstractDocumentWebScript {
 	 */
 	private List<NodeRef> filterListResult(List<NodeRef> listResult) {
 		int i = 0;
+		Boolean ex;
 		// remove inaccessible records from list result
 		while (i < listResult.size()) {
-			if (permissionService.hasPermission(listResult.get(i), PermissionService.READ) == AccessStatus.ALLOWED) {
+			ex = nodeService.exists(listResult.get(i));
+			if (permissionService.hasPermission(listResult.get(i), PermissionService.READ) == AccessStatus.ALLOWED && ex) {
 				// maintain node in list result
 				// increase step value
 				i++;
 			} else {
+				if(!ex){
+					System.out.println("Node Ignored: " + listResult.get(i));
+				}
 				// remove node from list result
 				listResult.remove(i);
 				// keep step value
