@@ -14,8 +14,8 @@
 	  "time" : "${date?datetime}",
 
 
-  "Caused by" : "<#if status.exception.cause?exists>${status.exception.cause}</#if>",
-<@recursestack status.exception/>     
+  "Caused by" : "<#if status.exception?exists>${status.exception.cause}</#if>",
+<#if status.exception?exists><@recursestack status.exception/></#if>   
 }
 
 <#macro recursestack exception>
