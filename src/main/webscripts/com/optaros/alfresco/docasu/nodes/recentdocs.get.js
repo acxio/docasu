@@ -51,6 +51,11 @@ for each (result in temp) {
 			result.isDocument;
 			results.push(result);
 	}catch(err){
+		if (err=="Node does not exist"){
+			logger.log(err+": "+result);
+		}else{
+			logger.log(err);
+		}
 	}
 }
 // sort the result
