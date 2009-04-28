@@ -41,7 +41,18 @@ var luceneQuery = "+@cm\\:modified:[" + writeDateForRange(oldDate) + " TO "
 			+ writeDateForRange(new Date()) + "] AND TYPE:\"cm:content\" AND NOT PATH:\"/app:company_home/app:dictionary//.\""
 			+ "AND PATH:\"/app:company_home//.\"";
 
-var results = search.luceneSearch(luceneQuery);
+var temp = search.luceneSearch(luceneQuery);
+
+var results = new Array();
+
+// Filter results to keep the existing nodes
+for each (result in temp) {
+	try{
+			result.isDocument;
+			results.push(result);
+	}catch(err){
+	}
+}
 // sort the result
 results.sort(compareModified);
 
