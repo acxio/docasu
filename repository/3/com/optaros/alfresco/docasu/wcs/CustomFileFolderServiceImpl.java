@@ -128,12 +128,13 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 	}
 
 	public List<NodeRef> search(StoreRef store, String query, SearchType type) {
+		query = filterQuery(query);
 		return search(store, query, type, null, null, null, null, null);
 	}
 
 	public List<NodeRef> search(StoreRef store, String query, SearchType type, NodeRef lookInFolder, Date createdFrom, Date createdTo, Date modifiedFrom,
 			Date modifiedTo) {
-
+		query = filterQuery(query);
 		if (logger.isDebugEnabled()) {
 			logger.debug("SEARCH PARAM store = " + store);
 			logger.debug("SEARCH PARAM query = " + query);
@@ -173,6 +174,12 @@ public class CustomFileFolderServiceImpl implements CustomFileFolderService {
 		ResultSet rs = searchService.query(params);
 		List<NodeRef> results = toNodeRef(rs);
 		return results;
+	}
+	
+	private String filterQuery(String query){
+	//Replace the double quotes (") with a space 
+		query = query.replace('"', ' ');
+		return query;
 	}
 
 }
