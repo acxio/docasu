@@ -148,17 +148,21 @@ public class Search extends AbstractDocumentWebScript {
 	 */
 	private List<NodeRef> filterSearchResult(List<NodeRef> searchResult) {
 		int i = 0;
-		Boolean ex;
+		Boolean nodeExists;
 		// remove inaccessible records from search result
 		while (i < searchResult.size() && i < RESULT_SET_MAX_SIZE) {
-			ex = nodeService.exists(searchResult.get(i));
-			if (permissionService.hasPermission(searchResult.get(i), PermissionService.READ) == AccessStatus.ALLOWED && ex) {
+			nodeExists = nodeService.exists(searchResult.get(i));
+			if (permissionService.hasPermission(searchResult.get(i), PermissionService.READ) == AccessStatus.ALLOWED && nodeExists) {
 				// maintain node in search result
 				// increase step value
 				i++;
 			} else {
-				if(!ex){
-					System.out.println("Node Ignored: " + searchResult.get(i));
+				// Node was returned by in search results but is not present for node service
+				// this is probably a de-synchronization of the lucene index with the database
+				if(!nodeExists) {
+					if (log.isWarnEnabled()) {
+						log.warn("Node found in search result, but it does not exist: " + searchResult.get(i));
+					}
 				}
 				// remove node from search result
 				searchResult.remove(i);
