@@ -33,7 +33,7 @@ if(node != null) {
 	var preferences = getPreferences();
 	
 	var shortcutNodes = (preferences.properties["app:shortcuts"]);
-	if(!isArray(shortcutNodes)){
+	if(!isArray(shortcutNodes)) {
 		shortcutNodes = new Array(shortcutNodes);
 	}
 	var before = shortcutNodes.length;

@@ -40,7 +40,7 @@ if(node != null) {
 	if (addShortcut) {
 		// add shortcut
 		var shortcutNodes = preferences.properties["app:shortcuts"];
-		if(!isArray(shortcutNodes)){
+		if(!isArray(shortcutNodes)) {
 			shortcutNodes = new Array(shortcutNodes);
 		}
 		shortcutNodes.push(nodeId);

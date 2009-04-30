@@ -95,7 +95,7 @@ public class Shortcuts extends DeclarativeWebScript {
 		
 		if( (nodeService.getProperty(preferences, PROP_SHORTCUTS)) instanceof List){
 			shortcuts = (List<String>) nodeService.getProperty(preferences, PROP_SHORTCUTS);
-		}else{
+		} else {
 			shortcuts.add((String)nodeService.getProperty(preferences, PROP_SHORTCUTS));
 		}
 
