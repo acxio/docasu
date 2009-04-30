@@ -58,9 +58,13 @@ if(node != null) {
 }
 
 function isArray(obj) {
-	if (obj.constructor.toString().indexOf("Array") == -1) {
-		return false;
+	if (obj != null) {
+		if (obj.constructor.toString().indexOf("Array") == -1) {
+			return false;
+		} else {
+			return true;
+		}
 	} else {
-		return true;
+		return false;
 	}
 }
