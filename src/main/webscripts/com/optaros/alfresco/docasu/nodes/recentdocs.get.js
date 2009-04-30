@@ -47,13 +47,13 @@ var results = new Array();
 
 // Filter results to keep the existing nodes
 for each (result in temp) {
-	try{
-			result.isDocument;
-			results.push(result);
-	}catch(err){
-		if (err=="Node does not exist"){
-			logger.log(err+": "+result);
-		}else{
+	try {
+		result.isDocument;
+		results.push(result);
+	} catch(err) {
+		if (err == "Node does not exist"){
+			logger.log(err + ": " + result);
+		} else {
 			logger.log(err);
 		}
 	}
