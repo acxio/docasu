@@ -25,5 +25,5 @@ alfresco.root.dir=/opt/alfresco
 # (copying files to the "Data Dictionary/Web Scripts" Space in Alfresco,
 # which can be mounted via CIFS/WebDAV, would note require a restart but 
 # will not work with DoCASU because of the Java files)
- webscript.dir=/opt/alfresco/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts
+webscript.dir=/opt/alfresco/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts
 #webscript.dir=/Users/optaros/Documents/Projects/alfresco/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/extension/templates/webscripts
