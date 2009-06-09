@@ -26,18 +26,20 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 		var docasuCorePluginConfig = this.getDoCASUCorePluginConfig();
 		var docasuHelpPluginConfig = this.getDoCASUHelpPluginConfig();
 		var docasuCategoriesPluginConfig = this.getDoCASUCategoriesPluginConfig();
+		var docasuSharePluginConfig = this.getDoCASUSharePluginConfig();
 		return	{	// DoCASUCategoriesPerspective
 				id				:	"DoCASUCategoriesPerspective",
 				title			:	"DoCASU Categories Perspective",
 				pluginManager	:	{	// DoCASUPluginManager
 										id			:	"DoCASUPluginManager",
-										file		:	"../../docasu/lib/docasu/DoCASUPluginManager.js",
+										file		:	getContextBase() + "/docasu/lib/docasu/DoCASUPluginManager.js",
 										namespace	:	"DoCASU.App" // each plugin is stored under a specified namespace - must be different than any class name
 									}, // eo DoCASUPluginManager
 				plugins			:	[	// configure plugins
 										docasuCorePluginConfig,
 										docasuHelpPluginConfig,
-										docasuCategoriesPluginConfig
+										docasuCategoriesPluginConfig,
+										docasuSharePluginConfig
 									] // eo configure plugins
 			}; // eo  DoCASU Perspective
 	}, // eo getPerspective
@@ -49,7 +51,7 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 		var advancedSearchComponentConfig = this.getAdvancedSearchComponentConfig();
 		return 	{	// DoCASUCorePlugin
 					id			:	"DoCASUCorePlugin",
-					file		:	"../../docasu/plugins/docasu-core-plugin/DoCASUCorePlugin.js",
+					file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/DoCASUCorePlugin.js",
 					namespace	:	"DoCASU.App.Core", // each plugin is stored under a specified namespace - must be different than any class name
 					components	:	[ // DoCASUCorePlugin components
 										docasuLayoutComponentConfig,
@@ -58,55 +60,55 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 										advancedSearchComponentConfig,
 										{	// UpdateFileComponent
 											id			:	"UpdateFileComponent",
-											file		:	"../../docasu/plugins/docasu-core-plugin/file/UpdateFileComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/file/UpdateFileComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo UpdateFileComponent
 										{	// UploadFilesComponent
 											id			:	"UploadFilesComponent",
-											file		:	"../../docasu/plugins/docasu-core-plugin/file/UploadFilesComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/file/UploadFilesComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo UploadFilesComponent
 										{	// FolderDetailsComponent
 											id			:	"FolderDetailsComponent",
-											file		:	"../../docasu/plugins/docasu-core-plugin/folder/FolderDetailsComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/folder/FolderDetailsComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo FolderDetailsComponent
 										{	// CreateFolderComponent
 											id			:	"CreateFolderComponent",
-											file		:	"../../docasu/plugins/docasu-core-plugin/folder/CreateFolderComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/folder/CreateFolderComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo CreateFolderComponent
 										{	// DeleteFolderComponent
 											id			:	"DeleteFolderComponent",
-											file		:	"../../docasu/plugins/docasu-core-plugin/folder/DeleteFolderComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/folder/DeleteFolderComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo DeleteFolderComponent
 										{	// CopyFolderComponent
 											id			:	"CopyFolderComponent",
-											file		:	"../../docasu/plugins/docasu-core-plugin/folder/CopyFolderComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/folder/CopyFolderComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo CopyFolderComponent
 										{	// RenameFolderComponent
 											id			:	"RenameFolderComponent",
-											file		:	"../../docasu/plugins/docasu-core-plugin/folder/RenameFolderComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/folder/RenameFolderComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo RenameFolderComponent
 										{	// EditContentComponent
 											id			:	"EditContentComponent",
-											file		:	"../../docasu/plugins/docasu-core-plugin/file/EditContentComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/file/EditContentComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo EditContentComponent
 										{	// CreateContentComponent
 											id			:	"CreateContentComponent",
-											file		:	"../../docasu/plugins/docasu-core-plugin/file/CreateContentComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/file/CreateContentComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										} // eo CreateContentComponent
@@ -117,7 +119,7 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 	getFileDetailsComponentConfig : function() {
 		return	{	// FileDetailsComponent
 					id			:	"FileDetailsComponent",
-					file		:	"../../docasu/plugins/docasu-core-plugin/file/FileDetailsComponent.js",
+					file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/file/FileDetailsComponent.js",
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 					components	:	[ // FileDetailsComponent components
@@ -128,7 +130,7 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 	getAdvancedSearchComponentConfig : function() {
 		return	{	// AdvancedSearchComponent
 					id			:	"AdvancedSearchComponent",
-					file		:	"../../docasu/plugins/docasu-core-plugin/advanced-search/AdvancedSearchComponent.js",
+					file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/advanced-search/AdvancedSearchComponent.js",
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 					components	:	[ // AdvancedSearchComponent components
@@ -139,127 +141,127 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 	getDoCASUActionContainerConfig : function() {
 		return	{	// DoCASUActionContainer
 					id			:	"DoCASUActionContainer",
-					file		:	"../../docasu/plugins/docasu-core-plugin/actions/DoCASUActionContainer.js",
+					file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/DoCASUActionContainer.js",
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 					components	:	[ // DoCASUActionContainer actions
 										{	// AddFavoriteAction
 											id			:	"AddFavoriteAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/AddFavoriteAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/AddFavoriteAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // AddFavoriteAction
 										{	// LoadFavoritesAction
 											id			:	"LoadFavoritesAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/LoadFavoritesAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/LoadFavoritesAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // LoadFavoritesAction
 										{	// LoadRecentDocumentsAction
 											id			:	"LoadRecentDocumentsAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/LoadRecentDocumentsAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/LoadRecentDocumentsAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // LoadRecentDocumentsAction
 										{	// RemoveFavoritesAction
 											id			:	"RemoveFavoriteAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/RemoveFavoriteAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/RemoveFavoriteAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // RemoveFavoriteAction
 										{	// DeleteNodeAction
 											id			:	"DeleteNodeAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/DeleteNodeAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/DeleteNodeAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // DeleteNodeAction
 										{	// PasteAllAction
 											id			:	"PasteAllAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/PasteAllAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/PasteAllAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // PasteAllAction
 										{	// CheckinFileAction
 											id			:	"CheckinFileAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/CheckinFileAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/CheckinFileAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // CheckinFileAction
 										{	// CheckoutFileAction
 											id			:	"CheckoutFileAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/CheckoutFileAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/CheckoutFileAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // CheckoutFileAction
 										{	// UndoCheckoutFileAction
 											id			:	"UndoCheckoutFileAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/UndoCheckoutFileAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/UndoCheckoutFileAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // UndoCheckoutFileAction
 										{	// GetFileContentAction
 											id			:	"GetFileContentAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/GetFileContentAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/GetFileContentAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // GetFileContentAction
 										{	// UpdateFileContentAction
 											id			:	"UpdateFileContentAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/UpdateFileContentAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/UpdateFileContentAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // UpdateFileContentAction
 										{	// CreateFileContentAction
 											id			:	"CreateFileContentAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/CreateFileContentAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/CreateFileContentAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // CreateFileContentAction
 										{	// LoadFolderAction
 											id			:	"LoadFolderAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/LoadFolderAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/LoadFolderAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // LoadFolderAction
 										{	// CreateFolderAction
 											id			:	"CreateFolderAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/CreateFolderAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/CreateFolderAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // CreateFolderAction
 										{	// RenameFolderAction
 											id			:	"RenameFolderAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/RenameFolderAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/RenameFolderAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // RenameFolderAction
 										{	// SearchAction
 											id			:	'SearchAction',
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/SearchAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/SearchAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // SearchAction										
 										{	// LoadFolderPermissionsAction
 											id			:	"LoadFolderPermissionsAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/LoadFolderPermissionsAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/LoadFolderPermissionsAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // LoadFolderPermissionsAction
 										{	// LoadFolderPropertiesAction
 											id			:	"LoadFolderPropertiesAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/LoadFolderPropertiesAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/LoadFolderPropertiesAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // LoadFolderPropertiesAction
 										{	// LogoutAction
 											id			:	"LogoutAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/LogoutAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/LogoutAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // SaveDocumentPropertiesAction
 										{	// SaveDocumentPropertiesAction
 											id			:	"SaveDocumentPropertiesAction",
-											file		:	"../../docasu/plugins/docasu-core-plugin/actions/SaveDocumentPropertiesAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/actions/SaveDocumentPropertiesAction.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										} // eo // SaveDocumentPropertiesAction
@@ -275,7 +277,7 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 		var docasuFooterComponentConfig = this.getDoCASUFooterComponentConfig();
 		return	{	// DoCASULayoutComponent
 					id			:	'DoCASULayoutComponent',
-					file		:	"../../docasu/plugins/docasu-core-plugin/DoCASULayoutComponent.js",
+					file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/DoCASULayoutComponent.js",
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 					components	:	[ // DoCASULayoutComponent components
@@ -291,49 +293,49 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 	getDoCASUHeaderComponentConfig : function() {
 		return	{	// DoCASUHeaderComponent
 					id			:	'DoCASUHeaderComponent',
-					file		:	"../../docasu/plugins/docasu-core-plugin/header/DoCASUHeaderComponent.js",
+					file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/header/DoCASUHeaderComponent.js",
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 					components	:	[ 
 										{	// DoCASULogoComponent
 											id			:	'DoCASULogoComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/header/DoCASULogoComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/header/DoCASULogoComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugi
 										}, // eo DoCASULogoComponent
 										{	// CenterHeaderComponent
 											id			:	'CenterHeaderComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/header/CenterHeaderComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/header/CenterHeaderComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo CenterHeaderComponent
 										{	// StandardAlfrescoClientButtonComponent
 											id			:	'StandardAlfrescoClientButtonComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/header/StandardAlfrescoClientButtonComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/header/StandardAlfrescoClientButtonComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo StandardAlfrescoClientButtonComponent
 										{	// SearchFormComponent
 											id			:	'SearchFormComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/header/SearchFormComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/header/SearchFormComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo SearchFormComponent
 										{	// PerspectiveSelectComponent
 											id			:	'PerspectiveSelectComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/header/PerspectiveSelectComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/header/PerspectiveSelectComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo PerspectiveSelectComponent
 										{	// HelpButtonComponent
 											id			:	'HelpButtonComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/header/HelpButtonComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/header/HelpButtonComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo HelpButtonComponent
 										{	// LogoutButtonComponent
 											id			:	'LogoutButtonComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/header/LogoutButtonComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/header/LogoutButtonComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										} // eo LogoutButtonComponent
@@ -344,43 +346,43 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 	getDoCASUWestComponentConfig : function() {
 		return	{	// DoCASUWestComponent
 					id			:	'DoCASUWestComponent',
-					file		:	"../../docasu/plugins/docasu-core-plugin/west/DoCASUWestComponent.js",
+					file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/west/DoCASUWestComponent.js",
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 					components	:	[	// DoCASUWestComponent components
 										{	// CompanyHomeTreeComponent
 											id			:	'CompanyHomeTreeComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/west/CompanyHomeTreeComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/west/CompanyHomeTreeComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo CompanyHomeTreeComponent
 										{	// RecentDocumentsComponent
 											id			:	'RecentDocumentsComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/west/RecentDocumentsComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/west/RecentDocumentsComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo RecentDocumentsComponent
 										{	// FavoritesComponent
 											id			:	'FavoritesComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/west/FavoritesComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/west/FavoritesComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo FavoritesComponent
 										{	// ClipboardComponent
 											id			:	'ClipboardComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/west/ClipboardComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/west/ClipboardComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo ClipboardComponent
 										{	// MyHomeTreeComponent
 											id			:	'MyHomeTreeComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/west/MyHomeTreeComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/west/MyHomeTreeComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo MyHomeTreeComponent
 										{	// CategoriesTreeComponent
 											id			:	'CategoriesTreeComponent',
-											file		:	"../../docasu/plugins/docasu-categories-plugin/CategoriesTreeComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-categories-plugin/CategoriesTreeComponent.js",
 											pluginId	:	"DoCASUCategoriesPlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Categories" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										} // eo CategoriesTreeComponent
@@ -392,14 +394,14 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 		var mainScreenComponentConfig = this.getMainScreenComponentConfig();
 		return	{	// DoCASUCenterComponent
 					id			:	'DoCASUCenterComponent',
-					file		:	"../../docasu/plugins/docasu-core-plugin/center/DoCASUCenterComponent.js",
+					file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/center/DoCASUCenterComponent.js",
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 					components	:	[ // DoCASUCenterComponent components
 										mainScreenComponentConfig, // eo MainScreenComponent
 										{	// SecondaryScreenComponent
 											id			:	'SecondaryScreenComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/center/secondary/SecondaryScreenComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/center/secondary/SecondaryScreenComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										} // eo // SecondaryScreenComponent
@@ -410,19 +412,19 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 	getMainScreenComponentConfig : function() {
 		return	{ // MainScreenComponent
 					id			:	'MainScreenComponent',
-					file		:	"../../docasu/plugins/docasu-core-plugin/center/main/MainScreenComponent.js",
+					file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/center/main/MainScreenComponent.js",
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 					components	:	[ // MainScreenComponent components
 										{	// MainScreenHeaderComponent
 											id			:	'MainScreenHeaderComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/center/main/MainScreenHeaderComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/center/main/MainScreenHeaderComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // MainScreenHeaderComponent
 										{	// CenterViewComponent
 											id			:	'CenterViewComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/center/main/CenterViewComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/center/main/CenterViewComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // CenterViewComponent											
@@ -433,13 +435,13 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 	getDoCASUEastComponentConfig : function() {
 		return	{	// DoCASUEastComponent
 					id			:	'DoCASUEastComponent',
-					file		:	"../../docasu/plugins/docasu-core-plugin/east/DoCASUEastComponent.js",
+					file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/east/DoCASUEastComponent.js",
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 					namespace	:	"DoCASU.App.Core", // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 					components	:	[ // DoCASUEastComponent components
 										{	// GeneralInfoComponent
 											id			:	'GeneralInfoComponent',
-											file		:	"../../docasu/plugins/docasu-core-plugin/east/GeneralInfoComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/east/GeneralInfoComponent.js",
 											pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										} // eo // GeneralInfoComponent
@@ -450,7 +452,7 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 	getDoCASUFooterComponentConfig : function() {
 		return	{	// DoCASUFooterComponent
 					id			:	'DoCASUFooterComponent',
-					file		:	"../../docasu/plugins/docasu-core-plugin/footer/DoCASUFooterComponent.js",
+					file		:	getContextBase() + "/docasu/plugins/docasu-core-plugin/footer/DoCASUFooterComponent.js",
 					pluginId	:	"DoCASUCorePlugin", // parent plugin id - this should be parent plugin and not target plugin
 					namespace	:	"DoCASU.App.Core" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 				}; // eo DoCASUFooterComponent
@@ -459,12 +461,12 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 	getDoCASUHelpPluginConfig : function() {
 		return 	{	// DoCASUHelpPlugin
 					id			:	"DoCASUHelpPlugin",
-					file		:	"../../docasu/plugins/docasu-help-plugin/DoCASUHelpPlugin.js",
+					file		:	getContextBase() + "/docasu/plugins/docasu-help-plugin/DoCASUHelpPlugin.js",
 					namespace	:	"DoCASU.App.Help", // each plugin is stored under a specified namespace - must be different than any class name
 					components	:	[ // DoCASUHelpPlugin components
 										{	// DoCASUHelpComponent
 											id			:	'DoCASUHelpComponent',
-											file		:	"../../docasu/plugins/docasu-help-plugin/DoCASUHelpComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-help-plugin/DoCASUHelpComponent.js",
 											pluginId	:	"DoCASUHelpPlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Help" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										} // eo // DoCASUHelpComponent
@@ -475,42 +477,53 @@ DoCASU.App.Perspectives.DoCASUCategoriesPerspective = new Object({
 	getDoCASUCategoriesPluginConfig : function() {
 		return 	{	// DoCASUCategoriesPlugin
 					id			:	"DoCASUCategoriesPlugin",
-					file		:	"../../docasu/plugins/docasu-categories-plugin/DoCASUCategoriesPlugin.js",
+					file		:	getContextBase() + "/docasu/plugins/docasu-categories-plugin/DoCASUCategoriesPlugin.js",
 					namespace	:	"DoCASU.App.Categories", // each plugin is stored under a specified namespace - must be different than any class name
 					components	:	[ // DoCASUCategoriesPlugin components
 										{	// CategorizationComponent
 											id			:	'CategorizationComponent',
-											file		:	"../../docasu/plugins/docasu-categories-plugin/CategorizationComponent.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-categories-plugin/CategorizationComponent.js",
 											pluginId	:	"DoCASUCategoriesPlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Categories" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // CategorizationComponent
 										{	// LoadCategoryAction
 											id			:	'LoadCategoryAction',
-											file		:	"../../docasu/plugins/docasu-categories-plugin/LoadCategoryAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-categories-plugin/LoadCategoryAction.js",
 											pluginId	:	"DoCASUCategoriesPlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Categories" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // LoadCategoryAction
 										{	// LoadCategoriesAction
 											id			:	'LoadCategoriesAction',
-											file		:	"../../docasu/plugins/docasu-categories-plugin/LoadCategoriesAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-categories-plugin/LoadCategoriesAction.js",
 											pluginId	:	"DoCASUCategoriesPlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Categories" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // LoadCategoriesAction
 										{	// AddCategoryAction
 											id			:	'AddCategoryAction',
-											file		:	"../../docasu/plugins/docasu-categories-plugin/AddCategoryAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-categories-plugin/AddCategoryAction.js",
 											pluginId	:	"DoCASUCategoriesPlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Categories" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										}, // eo // AddCategoryAction
 										{	// RemoveCategoryAction
 											id			:	'RemoveCategoryAction',
-											file		:	"../../docasu/plugins/docasu-categories-plugin/RemoveCategoryAction.js",
+											file		:	getContextBase() + "/docasu/plugins/docasu-categories-plugin/RemoveCategoryAction.js",
 											pluginId	:	"DoCASUCategoriesPlugin", // parent plugin id - this should be parent plugin and not target plugin
 											namespace	:	"DoCASU.App.Categories" // each component is stored under a specified namespace - must be different than any class name and should be the same as for parent plugin
 										} // eo // RemoveCategoryAction
 									] // eo DoCASUCategoriesPlugin components
 				}; // eo DoCASUCategoriesPlugin
-	} // eo getDoCASUCategoriesPluginConfig
+	}, // eo getDoCASUCategoriesPluginConfig
+	
+	getDoCASUSharePluginConfig : function() {
+		return 	{	// DoCASUSharePlugin
+					id			:	"DoCASUSharePlugin",
+					file		:	getContextBase() + "/docasu/plugins/docasu-share-plugin/DoCASUSharePlugin.js",
+					namespace	:	"DoCASU.App.Share", // each plugin is stored under a specified namespace - must be different than any class name
+					components: [
+									
+								]
+				}; // eo DoCASUSharePlugin
+	} 
 	
 }); // eo DoCASU.App.Perspectives.DoCASUCategoriesPerspective
  

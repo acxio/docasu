@@ -40,7 +40,7 @@ Ext.extend(DoCASU.App.Plugin, Ext.util.Observable, {
 	// configuration options
 	id			:	"Plugin",
 	title		:	"Plugin",
-	file		:	"../../docasu/lib/docasu/DoCASUPlugin.js", // JS source file
+	file		:	getContextBase() + "/docasu/lib/docasu/DoCASUPlugin.js", // JS source file
 	namespace	:	"DoCASU.App", // each plugin is stored under a specified namespace  - must be different than any class name
 	pluginId	:	"", // parent plugin id, if any
 	disabled	:	false, // disabled : true only if the plugin should not be used and it is not required

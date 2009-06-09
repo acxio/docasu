@@ -75,7 +75,7 @@ Ext.extend(DoCASU.App.Core.PerspectiveSelectComponent, DoCASU.App.Component, {
 		var perspectiveToogleBtn = new Ext.Toolbar.MenuButton({
 			text: 'Perspective',
             tooltip: {text:'Change the user interface by perspective.', title:'Change Perspective'},
-            icon: '../../docasu/images/btn-perspectives.gif',
+            icon: getContextBase() + '/docasu/images/btn-perspectives.gif',
 			iconCls: 'x-btn-icon',
             menu: { // <-- submenu by nested config object
                 items: [

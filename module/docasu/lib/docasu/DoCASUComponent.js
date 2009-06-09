@@ -39,7 +39,7 @@ Ext.extend(DoCASU.App.Component, Ext.util.Observable, {
 	// configuration options
 	id			:	"Component",
 	title		:	"Component",
-	file		:	"../../docasu/lib/docasu/DoCASUComponent.js", // JS source file
+	file		:	getContextBase() + "/docasu/lib/docasu/DoCASUComponent.js", // JS source file
 	pluginId	:	"", // parent plugin id - this should be parent plugin and not target plugin
 	disabled	:	false, // disabled : true only if the plugin should not be used and it is not required
 	required	:	false, // required : true only if there are other plugins/components that depend on the features of this plugin

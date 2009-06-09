@@ -269,7 +269,7 @@ Ext.extend(DoCASU.App.Categories.CategorizationComponent, DoCASU.App.Component, 
 		var retHtml = "";
 		if(categorizationComponent.getWritePermission()) {
 			retHtml += "<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('RemoveCategoryAction', 'DoCASU.App.Categories').remove('"+categorizationComponent.getCurrentDocument()+"','"+record.get("id")+"'); return false;\">";
-			retHtml +=   "<img title=\"Remove Category\" class=\"actionIcon\" src=\"../../docasu/images/delete.gif\"/>";
+			retHtml +=   "<img title=\"Remove Category\" class=\"actionIcon\" src=\"" + getContextBase() +"/docasu/images/delete.gif\"/>";
 			retHtml += "</a>";
 		}
 		return retHtml;

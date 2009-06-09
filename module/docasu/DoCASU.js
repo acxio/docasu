@@ -23,7 +23,7 @@
 /* entry point to DoCASU */
 Ext.onReady( function() {
 	// custom config
-	Ext.BLANK_IMAGE_URL = "../../docasu/lib/extjs/resources/images/default/s.gif";
+	Ext.BLANK_IMAGE_URL = getContextBase() + "/docasu/lib/extjs/resources/images/default/s.gif";
 	Ext.QuickTips.init();
 	// DON'T USE COOKIES TO STORE DATA - MAXIMUM WAS REACHED
 	/*Ext.state.Manager.setProvider(new Ext.state.CookieProvider({
@@ -63,6 +63,9 @@ DoCASU.App.onReady = function() {
 
 	var docasuAirPlugin = pluginManager.getPlugin("DoCASUAirPlugin", "DoCASU.App.Air");
 	docasuAirPlugin.init();
+	
+	var docasuSharePlugin = pluginManager.getPlugin("DoCASUSharePlugin", "DoCASU.App.Share");
+	docasuSharePlugin.init();
 
     new Ext.LoadMask(Ext.getBody()).hide();
 }

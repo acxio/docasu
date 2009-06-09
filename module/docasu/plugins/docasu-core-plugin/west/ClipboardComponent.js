@@ -112,7 +112,7 @@ Ext.extend(DoCASU.App.Core.ClipboardComponent, DoCASU.App.Component, {
 				clipHtml += "<td style=\"text-align:left;\">" + c[1] + "</td>";
 				clipHtml += "<td style=\"text-align:right;\">";
 				clipHtml +=	  "<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('ClipboardComponent', 'DoCASU.App.Core').remove('" + c[2] + "'); return false;\" title=\"Remove from Clipboard\">";
-				clipHtml +=	    "<img src=\"../../docasu/images/delete.gif\" />";
+				clipHtml +=	    "<img src=\"" + getContextBase() + "/docasu/images/delete.gif\" />";
 				clipHtml +=	  "</a>";
 				clipHtml +=	"</td>";
 			clipHtml += "</tr>";

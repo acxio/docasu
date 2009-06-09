@@ -19,7 +19,7 @@
 # DoCASU version number
 # This number is used to display the version number and for the amp module
 # number when deploying DoCASU
-docasu.version=1.6.1
+docasu.version=1.6.2
 
 # The version of the Alfresco SDK you want to use (will be downloaded)
 # You may specify an older SDK to ensure backward compatibility

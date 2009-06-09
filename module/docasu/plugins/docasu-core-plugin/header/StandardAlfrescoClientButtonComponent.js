@@ -47,10 +47,10 @@ Ext.extend(DoCASU.App.Core.StandardAlfrescoClientButtonComponent, DoCASU.App.Com
 	getUIConfig : function() {
 		var helpBtn = new Ext.Button({
             tooltip: {text:'Switch to Standard Alfresco Client.', title:'Alfresco Client'},
-            icon: '../../docasu/images/btn-alfresco.gif',
+            icon: getContextBase() + '/docasu/images/btn-alfresco.gif',
 			cls: 'x-btn-icon',
 			handler : function() {
-				window.location="../../faces/jsp/browse/browse.jsp";
+				window.location=getContextBase() + "/faces/jsp/browse/browse.jsp";
 			}
 		});
 		var uiConfig	=	{

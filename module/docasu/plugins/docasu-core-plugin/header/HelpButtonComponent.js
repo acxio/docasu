@@ -47,7 +47,7 @@ Ext.extend(DoCASU.App.Core.HelpButtonComponent, DoCASU.App.Component, {
 	getUIConfig : function() {
 		var helpBtn = new Ext.Button({
             tooltip: {text:'Show DoCASU and Alfresco help information).', title:'Help'},
-            icon: '../../docasu/images/btn-help.gif',
+            icon: getContextBase() + '/docasu/images/btn-help.gif',
 			cls: 'x-btn-icon',
 			handler : function() {
 				DoCASU.App.PluginManager.getPluginManager().getComponent('DoCASUHelpComponent', 'DoCASU.App.Help').show();

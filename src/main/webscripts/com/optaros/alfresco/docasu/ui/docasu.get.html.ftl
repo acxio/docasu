@@ -23,52 +23,59 @@
 	<head>
 		<title>DoCASU Web Client</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<script defer="defer" type="text/javascript">
+			function getContextBase() {
+				return "${url.context}";
+			}
+		</script>
 		
 		
 		<!-- ExtJS Library and CSS files  -->
-		<link rel="stylesheet" type="text/css" href="../../docasu/lib/extjs/resources/css/ext-all.css">
-		<link rel="stylesheet" type="text/css" href="../../docasu/lib/extjs/resources/css/xtheme-gray.css">
+		<link rel="stylesheet" type="text/css" href="${url.context}/docasu/lib/extjs/resources/css/ext-all.css">
+		<link rel="stylesheet" type="text/css" href="${url.context}/docasu/lib/extjs/resources/css/xtheme-gray.css">
 		
-		<script type="text/javascript" src="../../docasu/lib/extjs/adapter/ext/ext-base.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/extjs/ext-all.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/extjs-extensions/statictextfield.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/extjs/ux/miframe-min.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/extjs/adapter/ext/ext-base.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/extjs/ext-all.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/extjs-extensions/statictextfield.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/extjs/ux/miframe-min.js"></script>
 		
 		
 		<!-- Ext.ux.UploadPanel and CSS files  -->
-		<link rel="stylesheet" type="text/css" href="../../docasu/lib/Ext.ux.FileTree/css/filetree.css">
-		<link rel="stylesheet" type="text/css" href="../../docasu/lib/Ext.ux.FileTree/css/filetype.css">
-		<link rel="stylesheet" type="text/css" href="../../docasu/lib/Ext.ux.FileTree/css/icons.css">
+		<link rel="stylesheet" type="text/css" href="${url.context}/docasu/lib/Ext.ux.FileTree/css/filetree.css">
+		<link rel="stylesheet" type="text/css" href="${url.context}/docasu/lib/Ext.ux.FileTree/css/filetype.css">
+		<link rel="stylesheet" type="text/css" href="${url.context}/docasu/lib/Ext.ux.FileTree/css/icons.css">
 		
-		<script type="text/javascript" src="../../docasu/lib/Ext.ux.FileTree/js/Ext.ux.form.BrowseButton.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/Ext.ux.FileTree/js/Ext.ux.FileUploader.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/Ext.ux.FileTree/js/Ext.ux.UploadPanel.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/Ext.ux.FileTree/js/Ext.ux.form.BrowseButton.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/Ext.ux.FileTree/js/Ext.ux.FileUploader.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/Ext.ux.FileTree/js/Ext.ux.UploadPanel.js"></script>
 		
 		
 		<!-- DoCASU Library -->
-		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUUtils.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUSession.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUError.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUScriptLoader.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUPerspectiveManager.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUPlugin.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUComponent.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUApplication.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUApplicationManager.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUDataManager.js"></script>
-		<script type="text/javascript" src="../../docasu/lib/docasu/DoCASUActionManager.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/docasu/DoCASUUtils.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/docasu/DoCASUSession.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/docasu/DoCASUError.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/docasu/DoCASUScriptLoader.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/docasu/DoCASUPerspectiveManager.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/docasu/DoCASUPlugin.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/docasu/DoCASUComponent.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/docasu/DoCASUApplication.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/docasu/DoCASUApplicationManager.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/docasu/DoCASUDataManager.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/lib/docasu/DoCASUActionManager.js"></script>
 		
 		
 		<!-- Custom DoCASU Script and CSS files  -->
-		<link rel="stylesheet" type="text/css" href="../../docasu/DoCASU.css">
+		<link rel="stylesheet" type="text/css" href="${url.context}/docasu/DoCASU.css">
 		
-		<script type="text/javascript" src="../../docasu/DoCASU.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/DoCASU.js"></script>
 		
 		<!-- Perspectives -->
-		<script type="text/javascript" src="../../docasu/perspectives/DoCASUPerspective.js"></script>
-		<script type="text/javascript" src="../../docasu/perspectives/DoCASUCategoriesPerspective.js"></script>		
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/perspectives/DoCASUPerspective.js"></script>
+		<script defer="defer" type="text/javascript" src="${url.context}/docasu/perspectives/DoCASUCategoriesPerspective.js"></script>	
 		
 		<!-- dinamically loaded source files go here -->
+		
+		
 		
 	</head>
 	

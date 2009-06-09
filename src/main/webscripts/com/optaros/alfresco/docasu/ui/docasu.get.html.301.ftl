@@ -5,7 +5,7 @@
 		<title>
 			DoCASU - Redirect...
 		</title>
-		<script type="text/javascript" charset="utf-8">
+		<script defer="defer" type="text/javascript" charset="utf-8">
 			function doRedirectToUrl(url) {
 				setTimeout(function(){window.location = url;}, 2000);
 			}

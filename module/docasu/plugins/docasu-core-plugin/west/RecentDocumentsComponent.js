@@ -125,7 +125,7 @@ Ext.extend(DoCASU.App.Core.RecentDocumentsComponent, DoCASU.App.Component, {
 				recentDocsHtml +=   "<a target=\"_blank\" href=\"" + doc.url + "\" title=\"Open\">" + doc.name + "</a>";
 				recentDocsHtml += "</td>";
 				recentDocsHtml += "<td style=\"text-align:right;\">";
-				recentDocsHtml +=   "<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('" + doc.parentId + "'); return false;\" title=\"Open in Folder\"><img src=\"../../docasu/lib/extjs/resources/images/default/tree/folder.gif\"/></a>";
+				recentDocsHtml +=   "<a href=\"#\" onclick=\"DoCASU.App.PluginManager.getPluginManager().getComponent('LoadFolderAction', 'DoCASU.App.Core').load('" + doc.parentId + "'); return false;\" title=\"Open in Folder\"><img src=\"" + getContextBase() + "/docasu/lib/extjs/resources/images/default/tree/folder.gif\"/></a>";
 				recentDocsHtml += "</td>";
 			recentDocsHtml += "</tr>";
 			recentDocsHtml += "<tr>";

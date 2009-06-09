@@ -47,7 +47,7 @@ Ext.extend(DoCASU.App.Core.MainScreenHeaderComponent, DoCASU.App.Component, {
 	getUIConfig : function() {
 		var folderName = new Ext.Panel({
 			border	:	false,
-			html	:	"<div id=\"folderName\"><img src=\"../../docasu/images/folder.gif\"/><div></div></div>"
+			html	:	"<div id=\"folderName\"><img src=\"" + getContextBase() + "/docasu/images/folder.gif\"/><div></div></div>"
 		});
 		folderName.on("render", function(panel) {
 			panel.getEl().parent("td").addClass("folderName");

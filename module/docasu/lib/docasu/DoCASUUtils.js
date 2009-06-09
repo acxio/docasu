@@ -81,7 +81,7 @@ DoCASU.App.Utils.copyTextToSystemClipboard = function(text2copy) {
 			document.body.appendChild(divholder);
 		}
 		document.getElementById(flashcopier).innerHTML = "";
-		var divinfo = "<embed src=\"../../docasu/lib/swf/_clipboard.swf\" FlashVars=\"clipboard="+escape(text2copy)+"\" width=\"0\" height=\"0\" type=\"application/x-shockwave-flash\"></embed>";
+		var divinfo = "<embed src=\"" + getContextBase() + "/docasu/lib/swf/_clipboard.swf\" FlashVars=\"clipboard="+escape(text2copy)+"\" width=\"0\" height=\"0\" type=\"application/x-shockwave-flash\"></embed>";
 		document.getElementById(flashcopier).innerHTML = divinfo;
 	}
 } // eo function copyTextToSystemClipboard

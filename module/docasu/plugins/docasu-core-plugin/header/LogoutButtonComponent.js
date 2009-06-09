@@ -47,7 +47,7 @@ Ext.extend(DoCASU.App.Core.LogoutButtonComponent, DoCASU.App.Component, {
 	getUIConfig : function() {
 		var logoutBtn = new Ext.Button({
             tooltip: {text:'Logout from DoCASU (Alfresco).', title:'Logout'},
-            icon: '../../docasu/images/btn-logout.gif',
+            icon: getContextBase() + '/docasu/images/btn-logout.gif',
 			cls: 'x-btn-icon',
 			handler : function() {
 				DoCASU.App.PluginManager.getPluginManager().getComponent('LogoutAction', 'DoCASU.App.Core').logout();

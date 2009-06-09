@@ -52,7 +52,7 @@ Ext.extend(DoCASU.App.Core.DoCASULogoComponent, DoCASU.App.Component, {
 								width		:	205,
 								margins		:	'0 2 0 0',
 								border		:	false,
-								html		:	"<img src='../../docasu/images/logo.gif' alt='Alfresco ECMS' style='margin-top:3px;margin-left:3px;'/>"
+								html		:	"<img src='" + getContextBase() + "/docasu/images/logo.gif' alt='Alfresco ECMS' style='margin-top:3px;margin-left:3px;'/>"
 							}; // the config to construct the UI object(widget)
 		return uiConfig;
 	} // the config to construct the UI object(widget) - use function for better control on building the JSON configuration	
