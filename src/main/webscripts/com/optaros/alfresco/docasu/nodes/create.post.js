@@ -44,7 +44,7 @@ if(folderToWriteIn != null) {
 			// create the new document
 		    file = folderToWriteIn.createFile(fileName);
 			file.content = contentToWrite;
-			if ('HTML' == contentType) {
+			if ('html' == contentType) {
 				file.properties.content.mimetype = 'text/html';
 			} else {
 				file.properties.content.mimetype = 'text/plain';
