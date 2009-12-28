@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Properties;
 
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.search.impl.lucene.QueryParser;
+import org.alfresco.repo.search.impl.lucene.LuceneQueryParser;
 import org.alfresco.service.cmr.repository.NodeRef;
 
 import com.optaros.alfresco.docasu.wcs.CustomFileFolderService.SearchType;
@@ -92,7 +92,7 @@ public class QueryManager {
 
 		if (query != null && query.length() > 0) {
 			// Escape Lucene characters.
-			query = QueryParser.escape(query);
+			query = LuceneQueryParser.escape(query);
 
 			if (type == SearchType.ALL) {
 				luceneQuery.append(" +(TEXT:\"" + query + "\" @cm\\:name:\"" + query + "\")");
