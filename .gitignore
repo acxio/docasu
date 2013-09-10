@@ -1,0 +1,16 @@
+
+# /
+/deploy-local.properties
+/docasu.properties
+/download
+/target
+/.settings
+/.classpath
+/.project
+/doc
+
+# /src/main/extension/
+/src/main/extension/docasu-context.xml
+
+# /src/main/java/
+/src/main/java/com
